@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.data.ExpenseTrackerData
+import com.jonathan_russ.expense_tracker.toFloatIgnoreSeparator
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -149,7 +150,7 @@ private fun AddRecurringExpenseInternal(
                         ExpenseTrackerData(
                             name,
                             description,
-                            price.toFloat()
+                            price.toFloatIgnoreSeparator()
                         )
                     )
                 }
