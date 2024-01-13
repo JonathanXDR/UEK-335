@@ -16,9 +16,8 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel(
-    private val expenseRepository: ExpenseRepository,
+        private val expenseRepository: ExpenseRepository,
 ) : ViewModel() {
-
     private val _ExpenseTrackerData = mutableStateListOf<ExpenseTrackerData>()
     val expenseTrackerData: ImmutableList<ExpenseTrackerData>
         get() = _ExpenseTrackerData.toImmutableList()
@@ -39,12 +38,12 @@ class MainActivityViewModel(
                 _ExpenseTrackerData.clear()
                 recurringExpenses.forEach {
                     _ExpenseTrackerData.add(
-                        ExpenseTrackerData(
-                            id = it.id,
-                            name = it.name!!,
-                            description = it.description!!,
-                            price = it.price!!,
-                        ),
+                            ExpenseTrackerData(
+                                    id = it.id,
+                                    name = it.name!!,
+                                    description = it.description!!,
+                                    price = it.price!!,
+                            ),
                     )
                 }
                 updateExpenseSummary()
@@ -55,12 +54,12 @@ class MainActivityViewModel(
     fun addRecurringExpense(recurringExpense: ExpenseTrackerData) {
         viewModelScope.launch {
             expenseRepository.insert(
-                RecurringExpense(
-                    id = 0,
-                    name = recurringExpense.name,
-                    description = recurringExpense.description,
-                    price = recurringExpense.price,
-                ),
+                    RecurringExpense(
+                            id = 0,
+                            name = recurringExpense.name,
+                            description = recurringExpense.description,
+                            price = recurringExpense.price,
+                    ),
             )
         }
     }
@@ -68,12 +67,12 @@ class MainActivityViewModel(
     fun editRecurringExpense(recurringExpense: ExpenseTrackerData) {
         viewModelScope.launch {
             expenseRepository.update(
-                RecurringExpense(
-                    id = recurringExpense.id,
-                    name = recurringExpense.name,
-                    description = recurringExpense.description,
-                    price = recurringExpense.price,
-                ),
+                    RecurringExpense(
+                            id = recurringExpense.id,
+                            name = recurringExpense.name,
+                            description = recurringExpense.description,
+                            price = recurringExpense.price,
+                    ),
             )
         }
     }
@@ -81,12 +80,12 @@ class MainActivityViewModel(
     fun deleteRecurringExpense(recurringExpense: ExpenseTrackerData) {
         viewModelScope.launch {
             expenseRepository.delete(
-                RecurringExpense(
-                    id = recurringExpense.id,
-                    name = recurringExpense.name,
-                    description = recurringExpense.description,
-                    price = recurringExpense.price,
-                ),
+                    RecurringExpense(
+                            id = recurringExpense.id,
+                            name = recurringExpense.name,
+                            description = recurringExpense.description,
+                            price = recurringExpense.price,
+                    ),
             )
         }
     }
@@ -102,7 +101,6 @@ class MainActivityViewModel(
     }
 
     companion object {
-
         fun create(expenseRepository: ExpenseRepository): ViewModelProvider.Factory {
             return object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {

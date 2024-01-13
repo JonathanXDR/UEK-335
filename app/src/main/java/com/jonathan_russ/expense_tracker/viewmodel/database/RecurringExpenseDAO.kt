@@ -8,8 +8,7 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface RecurringExpenseDAO {
-
+interface RecurringExpenseDao {
     @Query("SELECT * FROM recurring_expenses")
     fun getAll(): Flow<List<RecurringExpense>>
 

@@ -53,53 +53,53 @@ import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditRecurringExpense(
-    onUpdateExpense: (ExpenseTrackerData) -> Unit,
-    onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier,
-    currentData: ExpenseTrackerData? = null,
-    onDeleteExpense: ((ExpenseTrackerData) -> Unit)? = null,
+        onUpdateExpense: (ExpenseTrackerData) -> Unit,
+        onDismissRequest: () -> Unit,
+        modifier: Modifier = Modifier,
+        currentData: ExpenseTrackerData? = null,
+        onDeleteExpense: ((ExpenseTrackerData) -> Unit)? = null,
 ) {
     val sheetState: SheetState =
-        rememberModalBottomSheetState(
-            skipPartiallyExpanded = true,
-        )
+            rememberModalBottomSheetState(
+                    skipPartiallyExpanded = true,
+            )
     ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
-        sheetState = sheetState,
-        windowInsets = WindowInsets.statusBars,
-        modifier = modifier,
+            onDismissRequest = onDismissRequest,
+            sheetState = sheetState,
+            windowInsets = WindowInsets.statusBars,
+            modifier = modifier,
     ) {
         EditRecurringExpenseInternal(
-            onUpdateExpense = onUpdateExpense,
-            confirmButtonString =
-            if (currentData == null) {
-                stringResource(R.string.edit_expense_button_add)
-            } else {
-                stringResource(
-                    R.string.edit_expense_button_update,
-                )
-            },
-            currentData = currentData,
-            onDeleteExpense = onDeleteExpense,
+                onUpdateExpense = onUpdateExpense,
+                confirmButtonString =
+                if (currentData == null) {
+                    stringResource(R.string.edit_expense_button_add)
+                } else {
+                    stringResource(
+                            R.string.edit_expense_button_update,
+                    )
+                },
+                currentData = currentData,
+                onDeleteExpense = onDeleteExpense,
         )
     }
 }
 
 @Composable
 private fun EditRecurringExpenseInternal(
-    onUpdateExpense: (ExpenseTrackerData) -> Unit,
-    confirmButtonString: String,
-    modifier: Modifier = Modifier,
-    currentData: ExpenseTrackerData? = null,
-    onDeleteExpense: ((ExpenseTrackerData) -> Unit)? = null,
+        onUpdateExpense: (ExpenseTrackerData) -> Unit,
+        confirmButtonString: String,
+        modifier: Modifier = Modifier,
+        currentData: ExpenseTrackerData? = null,
+        onDeleteExpense: ((ExpenseTrackerData) -> Unit)? = null,
 ) {
     var nameState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(currentData?.name ?: ""))
     }
     val nameInputError =
-        rememberSaveable {
-            mutableStateOf(false)
-        }
+            rememberSaveable {
+                mutableStateOf(false)
+            }
     var descriptionState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(currentData?.description ?: ""))
     }
@@ -107,140 +107,140 @@ private fun EditRecurringExpenseInternal(
         mutableStateOf(TextFieldValue(currentData?.price?.toLocalString() ?: ""))
     }
     val priceInputError =
-        rememberSaveable {
-            mutableStateOf(false)
-        }
+            rememberSaveable {
+                mutableStateOf(false)
+            }
 
     val scrollState = rememberScrollState()
     val localFocusManager = LocalFocusManager.current
 
     Column(
-        modifier =
-        modifier
-            .padding(horizontal = 16.dp)
-            .verticalScroll(scrollState),
+            modifier =
+            modifier
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(scrollState),
     ) {
         Text(
-            text = stringResource(R.string.edit_expense_name),
-            style = MaterialTheme.typography.bodyLarge,
+                text = stringResource(R.string.edit_expense_name),
+                style = MaterialTheme.typography.bodyLarge,
         )
         CustomTextField(
-            value = nameState,
-            onValueChange = { nameState = it },
-            placeholder = stringResource(R.string.edit_expense_name_placeholder),
-            keyboardActions =
-            KeyboardActions(
-                onNext = { localFocusManager.moveFocus(FocusDirection.Next) },
-            ),
-            singleLine = true,
-            isError = nameInputError.value,
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                value = nameState,
+                onValueChange = { nameState = it },
+                placeholder = stringResource(R.string.edit_expense_name_placeholder),
+                keyboardActions =
+                KeyboardActions(
+                        onNext = { localFocusManager.moveFocus(FocusDirection.Next) },
+                ),
+                singleLine = true,
+                isError = nameInputError.value,
+                modifier =
+                Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
         )
         Text(
-            text = stringResource(R.string.edit_expense_description),
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(top = 8.dp),
+                text = stringResource(R.string.edit_expense_description),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(top = 8.dp),
         )
         CustomTextField(
-            value = descriptionState,
-            onValueChange = { descriptionState = it },
-            placeholder = stringResource(R.string.edit_expense_description_placeholder),
-            keyboardActions =
-            KeyboardActions(
-                onNext = { localFocusManager.moveFocus(FocusDirection.Next) },
-            ),
-            maxLines = 2,
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                value = descriptionState,
+                onValueChange = { descriptionState = it },
+                placeholder = stringResource(R.string.edit_expense_description_placeholder),
+                keyboardActions =
+                KeyboardActions(
+                        onNext = { localFocusManager.moveFocus(FocusDirection.Next) },
+                ),
+                maxLines = 2,
+                modifier =
+                Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
         )
         Text(
-            text = stringResource(R.string.edit_expense_price),
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(top = 8.dp),
+                text = stringResource(R.string.edit_expense_price),
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(top = 8.dp),
         )
         CustomTextField(
-            value = priceState,
-            onValueChange = { priceState = it },
-            placeholder = 0f.toLocalString(),
-            keyboardOptions =
-            KeyboardOptions(
-                keyboardType = KeyboardType.Decimal,
-                imeAction = ImeAction.Done,
-            ),
-            keyboardActions =
-            KeyboardActions(
-                onDone = {
-                    onConfirmClicked(
-                        nameInputError,
-                        priceInputError,
-                        nameState,
-                        descriptionState,
-                        priceState,
-                        onUpdateExpense,
-                        currentData,
-                    )
-                },
-            ),
-            singleLine = true,
-            isError = priceInputError.value,
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                value = priceState,
+                onValueChange = { priceState = it },
+                placeholder = 0f.toLocalString(),
+                keyboardOptions =
+                KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = ImeAction.Done,
+                ),
+                keyboardActions =
+                KeyboardActions(
+                        onDone = {
+                            onConfirmClicked(
+                                    nameInputError,
+                                    priceInputError,
+                                    nameState,
+                                    descriptionState,
+                                    priceState,
+                                    onUpdateExpense,
+                                    currentData,
+                            )
+                        },
+                ),
+                singleLine = true,
+                isError = priceInputError.value,
+                modifier =
+                Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
         )
         Row(
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(align = Alignment.CenterHorizontally)
-                .navigationBarsPadding()
-                .padding(top = 8.dp, bottom = 24.dp),
+                modifier =
+                Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(align = Alignment.CenterHorizontally)
+                        .navigationBarsPadding()
+                        .padding(top = 8.dp, bottom = 24.dp),
         ) {
             if (currentData != null) {
                 OutlinedButton(
-                    onClick = {
-                        onDeleteExpense?.invoke(currentData)
-                    },
-                    colors =
-                    ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error,
-                    ),
-                    modifier =
-                    Modifier
-                        .weight(1f)
-                        .wrapContentWidth(),
+                        onClick = {
+                            onDeleteExpense?.invoke(currentData)
+                        },
+                        colors =
+                        ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colorScheme.error,
+                        ),
+                        modifier =
+                        Modifier
+                                .weight(1f)
+                                .wrapContentWidth(),
                 ) {
                     Text(
-                        text = stringResource(R.string.edit_expense_button_delete),
-                        modifier = Modifier.padding(vertical = 4.dp),
+                            text = stringResource(R.string.edit_expense_button_delete),
+                            modifier = Modifier.padding(vertical = 4.dp),
                     )
                 }
             }
             Button(
-                onClick = {
-                    onConfirmClicked(
-                        nameInputError,
-                        priceInputError,
-                        nameState,
-                        descriptionState,
-                        priceState,
-                        onUpdateExpense,
-                        currentData,
-                    )
-                },
-                modifier =
-                Modifier
-                    .weight(1f)
-                    .wrapContentWidth(),
+                    onClick = {
+                        onConfirmClicked(
+                                nameInputError,
+                                priceInputError,
+                                nameState,
+                                descriptionState,
+                                priceState,
+                                onUpdateExpense,
+                                currentData,
+                        )
+                    },
+                    modifier =
+                    Modifier
+                            .weight(1f)
+                            .wrapContentWidth(),
             ) {
                 Text(
-                    text = confirmButtonString,
-                    modifier = Modifier.padding(vertical = 4.dp),
+                        text = confirmButtonString,
+                        modifier = Modifier.padding(vertical = 4.dp),
                 )
             }
         }
@@ -249,58 +249,58 @@ private fun EditRecurringExpenseInternal(
 
 @Composable
 private fun CustomTextField(
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
-    placeholder: String,
-    modifier: Modifier = Modifier,
-    keyboardOptions: KeyboardOptions =
-        KeyboardOptions(
-            capitalization = KeyboardCapitalization.Words,
-            imeAction = ImeAction.Next,
-        ),
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
-    singleLine: Boolean = false,
-    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
-    isError: Boolean = false,
+        value: TextFieldValue,
+        onValueChange: (TextFieldValue) -> Unit,
+        placeholder: String,
+        modifier: Modifier = Modifier,
+        keyboardOptions: KeyboardOptions =
+                KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next,
+                ),
+        keyboardActions: KeyboardActions = KeyboardActions.Default,
+        singleLine: Boolean = false,
+        maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+        isError: Boolean = false,
 ) {
     TextField(
-        value = value,
-        onValueChange = onValueChange,
-        placeholder = { Text(text = placeholder) },
-        keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        singleLine = singleLine,
-        isError = isError,
-        maxLines = maxLines,
-        supportingText = {
-            if (isError) {
-                Text(
-                    text = stringResource(R.string.edit_expense_invalid_input),
-                    color = MaterialTheme.colorScheme.error,
-                )
-            }
-        },
-        trailingIcon = {
-            if (isError) {
-                Icon(
-                    imageVector = Icons.Rounded.Error,
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.error,
-                )
-            }
-        },
-        modifier = modifier,
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = { Text(text = placeholder) },
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
+            singleLine = singleLine,
+            isError = isError,
+            maxLines = maxLines,
+            supportingText = {
+                if (isError) {
+                    Text(
+                            text = stringResource(R.string.edit_expense_invalid_input),
+                            color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            },
+            trailingIcon = {
+                if (isError) {
+                    Icon(
+                            imageVector = Icons.Rounded.Error,
+                            contentDescription = "",
+                            tint = MaterialTheme.colorScheme.error,
+                    )
+                }
+            },
+            modifier = modifier,
     )
 }
 
 private fun onConfirmClicked(
-    nameInputError: MutableState<Boolean>,
-    priceInputError: MutableState<Boolean>,
-    nameState: TextFieldValue,
-    descriptionState: TextFieldValue,
-    priceState: TextFieldValue,
-    onUpdateExpense: (ExpenseTrackerData) -> Unit,
-    currentData: ExpenseTrackerData?,
+        nameInputError: MutableState<Boolean>,
+        priceInputError: MutableState<Boolean>,
+        nameState: TextFieldValue,
+        descriptionState: TextFieldValue,
+        priceState: TextFieldValue,
+        onUpdateExpense: (ExpenseTrackerData) -> Unit,
+        currentData: ExpenseTrackerData?,
 ) {
     nameInputError.value = false
     priceInputError.value = false
@@ -309,28 +309,28 @@ private fun onConfirmClicked(
     val description = descriptionState.text
     val price = priceState.text
     if (verifyUserInput(
-            name = name,
-            onNameInputError = { nameInputError.value = true },
-            price = price,
-            onPriceInputError = { priceInputError.value = true },
-        )
+                    name = name,
+                    onNameInputError = { nameInputError.value = true },
+                    price = price,
+                    onPriceInputError = { priceInputError.value = true },
+            )
     ) {
         onUpdateExpense(
-            ExpenseTrackerData(
-                id = currentData?.id ?: 0,
-                name = name,
-                description = description,
-                price = price.toFloatIgnoreSeparator(),
-            ),
+                ExpenseTrackerData(
+                        id = currentData?.id ?: 0,
+                        name = name,
+                        description = description,
+                        price = price.toFloatIgnoreSeparator(),
+                ),
         )
     }
 }
 
 private fun verifyUserInput(
-    name: String,
-    onNameInputError: () -> Unit,
-    price: String,
-    onPriceInputError: () -> Unit,
+        name: String,
+        onNameInputError: () -> Unit,
+        price: String,
+        onPriceInputError: () -> Unit,
 ): Boolean {
     var everythingCorrect = true
     if (!isNameValid(name)) {
@@ -359,8 +359,8 @@ private fun EditRecurringExpensePreview() {
     ExpenseTrackerTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             EditRecurringExpenseInternal(
-                onUpdateExpense = {},
-                confirmButtonString = "Add Expense",
+                    onUpdateExpense = {},
+                    confirmButtonString = "Add Expense",
             )
         }
     }
