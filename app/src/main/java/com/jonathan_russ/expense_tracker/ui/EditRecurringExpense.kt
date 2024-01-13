@@ -103,7 +103,7 @@ private fun EditRecurringExpenseInternal(
         mutableStateOf(TextFieldValue(currentData?.description ?: ""))
     }
     var priceState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(currentData?.priceValue?.toString() ?: ""))
+        mutableStateOf(TextFieldValue(currentData?.priceValue?.toValueString() ?: ""))
     }
     val priceInputError =
         rememberSaveable {
