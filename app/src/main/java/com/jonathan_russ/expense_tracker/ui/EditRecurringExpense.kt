@@ -44,6 +44,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jonathan_russ.expense_tracker.R
 import com.jonathan_russ.expense_tracker.data.ExpenseTrackerData
 import com.jonathan_russ.expense_tracker.toFloatIgnoreSeparator
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
@@ -70,13 +71,13 @@ fun EditRecurringExpense(
         EditRecurringExpenseInternal(
             onUpdateExpense = onUpdateExpense,
             confirmButtonString =
-                if (currentData == null) {
-                    stringResource(R.string.edit_expense_button_add)
-                } else {
-                    stringResource(
-                        R.string.edit_expense_button_update,
-                    )
-                },
+            if (currentData == null) {
+                stringResource(R.string.edit_expense_button_add)
+            } else {
+                stringResource(
+                    R.string.edit_expense_button_update,
+                )
+            },
             currentData = currentData,
             onDeleteExpense = onDeleteExpense,
         )

@@ -1,4 +1,4 @@
-package de.dbauer.expensetracker
+package com.jonathan_russ.expense_tracker
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -36,7 +36,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.jonathan_russ.expense_tracker.ExpenseTrackerApplication
 import com.jonathan_russ.expense_tracker.data.BottomNavigation
 import com.jonathan_russ.expense_tracker.data.ExpenseTrackerData
 import com.jonathan_russ.expense_tracker.ui.EditRecurringExpense
@@ -160,7 +159,10 @@ fun MainActivityContent(
                     FloatingActionButton(onClick = {
                         addRecurringExpenseVisible = true
                     }) {
-                        Icon(imageVector = Icons.Rounded.Add, contentDescription = stringResource(R.string.home_add_expense_fab_content_description))
+                        Icon(
+                            imageVector = Icons.Rounded.Add,
+                            contentDescription = stringResource(R.string.home_add_expense_fab_content_description)
+                        )
                     }
                 },
                 content = { paddingValues ->

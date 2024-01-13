@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Expense Tracker</string>
+
+    <!-- Bottom Navigation -->
     <string name="bottom_nav_home">Home</string>
     <string name="bottom_nav_settings">Settings</string>
 
