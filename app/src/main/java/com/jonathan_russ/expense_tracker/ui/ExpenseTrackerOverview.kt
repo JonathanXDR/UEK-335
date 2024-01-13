@@ -30,7 +30,7 @@ fun ExpenseTrackerOverview(
     weeklyExpense: String,
     monthlyExpense: String,
     yearlyExpense: String,
-    recurringExpenseData: ImmutableList<ExpenseTrackerData>,
+    expenseTrackerData: ImmutableList<ExpenseTrackerData>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -48,9 +48,9 @@ fun ExpenseTrackerOverview(
                     .padding(bottom = 8.dp)
             )
         }
-        items(items = recurringExpenseData) { recurringExpenseData ->
+        items(items = expenseTrackerData) { recurringExpenseData ->
             RecurringExpense(
-                recurringExpenseData = recurringExpenseData,
+                expenseTrackerData = recurringExpenseData,
             )
         }
     }
@@ -113,7 +113,7 @@ private fun RecurringExpenseSummary(
 
 @Composable
 private fun RecurringExpense(
-    recurringExpenseData: ExpenseTrackerData,
+    expenseTrackerData: ExpenseTrackerData,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -130,20 +130,20 @@ private fun RecurringExpense(
                     .weight(1f)
             ) {
                 Text(
-                    text = recurringExpenseData.name,
+                    text = expenseTrackerData.name,
                     style = MaterialTheme.typography.headlineSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    text = recurringExpenseData.description,
+                    text = expenseTrackerData.description,
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
             Text(
-                text = recurringExpenseData.priceString,
+                text = expenseTrackerData.priceString,
                 style = MaterialTheme.typography.headlineMedium
             )
         }
@@ -159,7 +159,7 @@ private fun ExpenseTrackerOverviewPreview() {
                 weeklyExpense = "4,00 €",
                 monthlyExpense = "16,00 €",
                 yearlyExpense = "192,00 €",
-                recurringExpenseData = persistentListOf(
+                expenseTrackerData = persistentListOf(
                     ExpenseTrackerData(
                         name = "Netflix",
                         description = "My Netflix description",

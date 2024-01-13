@@ -38,17 +38,20 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jonathan_russ.expense_tracker.data.BottomNavItem
 import com.jonathan_russ.expense_tracker.data.ExpenseTrackerData
-import com.jonathan_russ.expense_tracker.data.MainActivityViewModel
 import com.jonathan_russ.expense_tracker.data.NavigationRoute
 import com.jonathan_russ.expense_tracker.ui.AddRecurringExpense
 import com.jonathan_russ.expense_tracker.ui.ExpenseTrackerOverview
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
+import com.jonathan_russ.expense_tracker.viewmodel.MainActivityViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<MainActivityViewModel>()
+    private val viewModel: MainActivityViewModel by viewModels {
+        MainActivityViewModel.create((application as ExpenseTrackerApplication).repository)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -59,7 +62,7 @@ class MainActivity : ComponentActivity() {
                 weeklyExpense = viewModel.weeklyExpense,
                 monthlyExpense = viewModel.monthlyExpense,
                 yearlyExpense = viewModel.yearlyExpense,
-                recurringExpenseData = viewModel.recurringExpenseData,
+                expenseTrackerData = viewModel.expenseTrackerData,
                 onRecurringExpenseAdded = {
                     viewModel.addRecurringExpense(
                         it
@@ -76,7 +79,7 @@ fun MainActivityContent(
     weeklyExpense: String,
     monthlyExpense: String,
     yearlyExpense: String,
-    recurringExpenseData: ImmutableList<ExpenseTrackerData>,
+    expenseTrackerData: ImmutableList<ExpenseTrackerData>,
     onRecurringExpenseAdded: (ExpenseTrackerData) -> Unit,
 ) {
     val navController = rememberNavController()
@@ -149,12 +152,12 @@ fun MainActivityContent(
                             weeklyExpense = weeklyExpense,
                             monthlyExpense = monthlyExpense,
                             yearlyExpense = yearlyExpense,
-                            recurringExpenseData = recurringExpenseData,
+                            expenseTrackerData = expenseTrackerData,
                             contentPadding = PaddingValues(top = 8.dp, bottom = 88.dp),
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .nestedScroll(scrollBehavior.nestedScrollConnection),
-                            )
+                        )
                     }
                     composable(NavigationRoute.Settings.value) {
 
@@ -182,7 +185,7 @@ private fun MainActivityContentPreview() {
         weeklyExpense = "4,00 €",
         monthlyExpense = "16,00 €",
         yearlyExpense = "192,00 €",
-        recurringExpenseData = persistentListOf(
+        expenseTrackerData = persistentListOf(
             ExpenseTrackerData(
                 name = "Netflix",
                 description = "My Netflix description",
