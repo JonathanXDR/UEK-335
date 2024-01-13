@@ -77,6 +77,19 @@ class MainActivityViewModel(
         }
     }
 
+    fun deleteRecurringExpense(recurringExpense: ExpenseTrackerData) {
+        viewModelScope.launch {
+            expenseRepository.delete(
+                RecurringExpense(
+                    id = recurringExpense.id,
+                    name = recurringExpense.name,
+                    description = recurringExpense.description,
+                    price = recurringExpense.priceValue,
+                )
+            )
+        }
+    }
+
     private fun updateExpenseSummary() {
         var price = 0f
         _ExpenseTrackerData.forEach {
