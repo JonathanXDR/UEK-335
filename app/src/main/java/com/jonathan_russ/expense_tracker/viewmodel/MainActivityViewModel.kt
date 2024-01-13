@@ -92,8 +92,7 @@ class MainActivityViewModel(
             return object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
-                        @Suppress("UNCHECKED_CAST")
-                        return MainActivityViewModel(expenseRepository) as T
+                        @Suppress("UNCHECKED_CAST") return MainActivityViewModel(expenseRepository) as T
                     }
                     throw IllegalArgumentException("Unknown ViewModel class")
                 }

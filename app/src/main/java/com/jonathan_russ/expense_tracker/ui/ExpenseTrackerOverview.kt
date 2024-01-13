@@ -46,8 +46,7 @@ fun ExpenseTrackerOverview(
                 weeklyExpense = weeklyExpense,
                 monthlyExpense = monthlyExpense,
                 yearlyExpense = yearlyExpense,
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 8.dp)
             )
         }
         items(items = expenseTrackerData) { expenseTrackerData ->
@@ -68,49 +67,45 @@ private fun RecurringExpenseSummary(
     yearlyExpense: String,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = modifier) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Text(
-                text = "Monthly",
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            Text(
-                text = monthlyExpense,
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Row {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = "Weekly",
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Text(
-                        text = weeklyExpense,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = "Yearly",
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Text(
-                        text = yearlyExpense,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(
+            text = "Monthly",
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        Text(
+            text = monthlyExpense,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        Spacer(modifier = Modifier.size(8.dp))
+        Row {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "Weekly",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Text(
+                    text = weeklyExpense,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "Yearly",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Text(
+                    text = yearlyExpense,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
             }
         }
     }
@@ -123,13 +118,10 @@ private fun RecurringExpense(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier
-            .clickable { onItemClicked() },
+        modifier = modifier.clickable { onItemClicked() },
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(16.dp)
+            verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(16.dp)
         ) {
             Column(
                 modifier = Modifier

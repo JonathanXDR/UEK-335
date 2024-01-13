@@ -58,8 +58,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            MainActivityContent(
-                weeklyExpense = viewModel.weeklyExpense,
+            MainActivityContent(weeklyExpense = viewModel.weeklyExpense,
                 monthlyExpense = viewModel.monthlyExpense,
                 yearlyExpense = viewModel.yearlyExpense,
                 expenseTrackerData = viewModel.expenseTrackerData,
@@ -68,8 +67,7 @@ class MainActivity : ComponentActivity() {
                 },
                 onRecurringExpenseEdited = {
                     viewModel.editRecurringExpense(it)
-                }
-            )
+                })
         }
     }
 }
