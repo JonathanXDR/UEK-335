@@ -21,8 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -40,6 +42,7 @@ import com.jonathan_russ.expense_tracker.data.BottomNavigation
 import com.jonathan_russ.expense_tracker.data.ExpenseTrackerData
 import com.jonathan_russ.expense_tracker.ui.EditRecurringExpense
 import com.jonathan_russ.expense_tracker.ui.ExpenseTrackerOverview
+import com.jonathan_russ.expense_tracker.ui.SettingsScreen
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 import com.jonathan_russ.expense_tracker.viewmodel.MainActivityViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -58,19 +61,19 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainActivityContent(
-                weeklyExpense = viewModel.weeklyExpense,
-                monthlyExpense = viewModel.monthlyExpense,
-                yearlyExpense = viewModel.yearlyExpense,
-                expenseTrackerData = viewModel.expenseTrackerData,
-                onRecurringExpenseAdded = {
-                    viewModel.addRecurringExpense(it)
-                },
-                onRecurringExpenseEdited = {
-                    viewModel.editRecurringExpense(it)
-                },
-                onRecurringExpenseDeleted = {
-                    viewModel.deleteRecurringExpense(it)
-                },
+                    weeklyExpense = viewModel.weeklyExpense,
+                    monthlyExpense = viewModel.monthlyExpense,
+                    yearlyExpense = viewModel.yearlyExpense,
+                    expenseTrackerData = viewModel.expenseTrackerData,
+                    onRecurringExpenseAdded = {
+                        viewModel.addRecurringExpense(it)
+                    },
+                    onRecurringExpenseEdited = {
+                        viewModel.editRecurringExpense(it)
+                    },
+                    onRecurringExpenseDeleted = {
+                        viewModel.deleteRecurringExpense(it)
+                    },
             )
         }
     }
@@ -79,17 +82,27 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainActivityContent(
-    weeklyExpense: String,
-    monthlyExpense: String,
-    yearlyExpense: String,
-    expenseTrackerData: ImmutableList<ExpenseTrackerData>,
-    onRecurringExpenseAdded: (ExpenseTrackerData) -> Unit,
-    onRecurringExpenseEdited: (ExpenseTrackerData) -> Unit,
-    onRecurringExpenseDeleted: (ExpenseTrackerData) -> Unit,
-    modifier: Modifier = Modifier,
+        weeklyExpense: String,
+        monthlyExpense: String,
+        yearlyExpense: String,
+        expenseTrackerData: ImmutableList<ExpenseTrackerData>,
+        onRecurringExpenseAdded: (ExpenseTrackerData) -> Unit,
+        onRecurringExpenseEdited: (ExpenseTrackerData) -> Unit,
+        onRecurringExpenseDeleted: (ExpenseTrackerData) -> Unit,
+        modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
     val backStackEntry = navController.currentBackStackEntryAsState()
+
+    val titleRes by remember {
+        derivedStateOf {
+            when (backStackEntry.value?.destination?.route) {
+                BottomNavigation.Home.route -> R.string.home_title
+                BottomNavigation.Settings.route -> R.string.settings_title
+                else -> R.string.home_title
+            }
+        }
+    }
 
     var addRecurringExpenseVisible by rememberSaveable { mutableStateOf(false) }
 
@@ -98,125 +111,129 @@ fun MainActivityContent(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val bottomNavigationItems =
-        listOf(
-            BottomNavigation.Home,
-            BottomNavigation.Settings,
-        )
+            listOf(
+                    BottomNavigation.Home,
+                    BottomNavigation.Settings,
+            )
 
     ExpenseTrackerTheme {
         Surface(
-            modifier = modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background,
+                modifier = modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background,
         ) {
             Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = stringResource(id = R.string.home_title),
-                            )
-                        },
-                        scrollBehavior = scrollBehavior,
-                    )
-                },
-                bottomBar = {
-                    NavigationBar {
-                        bottomNavigationItems.forEach { item ->
-                            val selected =
-                                item.route == backStackEntry.value?.destination?.route
-
-                            NavigationBarItem(
-                                selected = selected,
-                                onClick = {
-                                    navController.navigate(item.route) {
-                                        // Pop up to the start destination of the graph to
-                                        // avoid building up a large stack of destinations
-                                        // on the back stack as users select items
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        // Avoid multiple copies of the same destination when
-                                        // reselecting the same item
-                                        launchSingleTop = true
-                                        // Restore state when reselecting a previously selected item
-                                        restoreState = true
-                                    }
-                                },
-                                icon = {
-                                    Icon(
-                                        imageVector = item.icon,
-                                        contentDescription = null,
+                    topBar = {
+                        TopAppBar(
+                                title = {
+                                    Text(
+                                            text = stringResource(id = titleRes),
                                     )
                                 },
-                                label = {
-                                    Text(text = stringResource(id = item.name))
-                                },
-                            )
-                        }
-                    }
-                },
-                floatingActionButton = {
-                    FloatingActionButton(onClick = {
-                        addRecurringExpenseVisible = true
-                    }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Add,
-                            contentDescription = stringResource(R.string.home_add_expense_fab_content_description),
+                                scrollBehavior = scrollBehavior,
                         )
-                    }
-                },
-                content = { paddingValues ->
-                    NavHost(
-                        navController = navController,
-                        startDestination = BottomNavigation.Home.route,
-                        modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                    ) {
-                        composable(BottomNavigation.Home.route) {
-                            ExpenseTrackerOverview(
-                                weeklyExpense = weeklyExpense,
-                                monthlyExpense = monthlyExpense,
-                                yearlyExpense = yearlyExpense,
-                                expenseTrackerData = expenseTrackerData,
-                                onItemClicked = {
-                                    selectedRecurringExpense = it
-                                },
-                                contentPadding = PaddingValues(top = 8.dp, bottom = 88.dp),
+                    },
+                    bottomBar = {
+                        NavigationBar {
+                            bottomNavigationItems.forEach { item ->
+                                val selected =
+                                        item.route == backStackEntry.value?.destination?.route
+
+                                NavigationBarItem(
+                                        selected = selected,
+                                        onClick = {
+                                            navController.navigate(item.route) {
+                                                // Pop up to the start destination of the graph to
+                                                // avoid building up a large stack of destinations
+                                                // on the back stack as users select items
+                                                popUpTo(navController.graph.findStartDestination().id) {
+                                                    saveState = true
+                                                }
+                                                // Avoid multiple copies of the same destination when
+                                                // reselecting the same item
+                                                launchSingleTop = true
+                                                // Restore state when reselecting a previously selected item
+                                                restoreState = true
+                                            }
+                                        },
+                                        icon = {
+                                            Icon(
+                                                    imageVector = item.icon,
+                                                    contentDescription = null,
+                                            )
+                                        },
+                                        label = {
+                                            Text(text = stringResource(id = item.name))
+                                        },
+                                )
+                            }
+                        }
+                    },
+                    floatingActionButton = {
+                        if (BottomNavigation.Home.route == backStackEntry.value?.destination?.route) {
+                            FloatingActionButton(onClick = {
+                                addRecurringExpenseVisible = true
+                            }) {
+                                Icon(
+                                        imageVector = Icons.Rounded.Add,
+                                        contentDescription =
+                                        stringResource(R.string.home_add_expense_fab_content_description),
+                                )
+                            }
+                        }
+                    },
+                    content = { paddingValues ->
+                        NavHost(
+                                navController = navController,
+                                startDestination = BottomNavigation.Home.route,
                                 modifier =
                                 Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+                                        .fillMaxSize()
+                                        .padding(paddingValues),
+                        ) {
+                            composable(BottomNavigation.Home.route) {
+                                ExpenseTrackerOverview(
+                                        weeklyExpense = weeklyExpense,
+                                        monthlyExpense = monthlyExpense,
+                                        yearlyExpense = yearlyExpense,
+                                        expenseTrackerData = expenseTrackerData,
+                                        onItemClicked = {
+                                            selectedRecurringExpense = it
+                                        },
+                                        contentPadding = PaddingValues(top = 8.dp, bottom = 88.dp),
+                                        modifier =
+                                        Modifier
+                                                .padding(horizontal = 16.dp)
+                                                .nestedScroll(scrollBehavior.nestedScrollConnection),
+                                )
+                            }
+                            composable(BottomNavigation.Settings.route) {
+                                SettingsScreen()
+                            }
+                        }
+                        if (addRecurringExpenseVisible) {
+                            EditRecurringExpense(
+                                    onUpdateExpense = {
+                                        onRecurringExpenseAdded(it)
+                                        addRecurringExpenseVisible = false
+                                    },
+                                    onDismissRequest = { addRecurringExpenseVisible = false },
                             )
                         }
-                        composable(BottomNavigation.Settings.route) {
+                        if (selectedRecurringExpense != null) {
+                            EditRecurringExpense(
+                                    onUpdateExpense = {
+                                        onRecurringExpenseEdited(it)
+                                        selectedRecurringExpense = null
+                                    },
+                                    onDismissRequest = { selectedRecurringExpense = null },
+                                    currentData = selectedRecurringExpense,
+                                    onDeleteExpense = {
+                                        onRecurringExpenseDeleted(it)
+                                        selectedRecurringExpense = null
+                                    },
+                            )
                         }
-                    }
-                    if (addRecurringExpenseVisible) {
-                        EditRecurringExpense(
-                            onUpdateExpense = {
-                                onRecurringExpenseAdded(it)
-                                addRecurringExpenseVisible = false
-                            },
-                            onDismissRequest = { addRecurringExpenseVisible = false },
-                        )
-                    }
-                    if (selectedRecurringExpense != null) {
-                        EditRecurringExpense(
-                            onUpdateExpense = {
-                                onRecurringExpenseEdited(it)
-                                selectedRecurringExpense = null
-                            },
-                            onDismissRequest = { selectedRecurringExpense = null },
-                            currentData = selectedRecurringExpense,
-                            onDeleteExpense = {
-                                onRecurringExpenseDeleted(it)
-                                selectedRecurringExpense = null
-                            },
-                        )
-                    }
-                },
+                    },
             )
         }
     }
@@ -226,32 +243,32 @@ fun MainActivityContent(
 @Composable
 private fun MainActivityContentPreview() {
     MainActivityContent(
-        weeklyExpense = "4,00 €",
-        monthlyExpense = "16,00 €",
-        yearlyExpense = "192,00 €",
-        expenseTrackerData =
-        persistentListOf(
-            ExpenseTrackerData(
-                id = 0,
-                name = "Netflix",
-                description = "My Netflix description",
-                price = 9.99f,
+            weeklyExpense = "4,00 €",
+            monthlyExpense = "16,00 €",
+            yearlyExpense = "192,00 €",
+            expenseTrackerData =
+            persistentListOf(
+                    ExpenseTrackerData(
+                            id = 0,
+                            name = "Netflix",
+                            description = "My Netflix description",
+                            price = 9.99f,
+                    ),
+                    ExpenseTrackerData(
+                            id = 1,
+                            name = "Disney Plus",
+                            description = "My Disney Plus description",
+                            price = 5f,
+                    ),
+                    ExpenseTrackerData(
+                            id = 2,
+                            name = "Amazon Prime",
+                            description = "My Disney Plus description",
+                            price = 7.95f,
+                    ),
             ),
-            ExpenseTrackerData(
-                id = 1,
-                name = "Disney Plus",
-                description = "My Disney Plus description",
-                price = 5f,
-            ),
-            ExpenseTrackerData(
-                id = 2,
-                name = "Amazon Prime",
-                description = "My Disney Plus description",
-                price = 7.95f,
-            ),
-        ),
-        onRecurringExpenseAdded = {},
-        onRecurringExpenseEdited = {},
-        onRecurringExpenseDeleted = {},
+            onRecurringExpenseAdded = {},
+            onRecurringExpenseEdited = {},
+            onRecurringExpenseDeleted = {},
     )
 }
