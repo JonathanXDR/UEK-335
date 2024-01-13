@@ -8,5 +8,6 @@ data class ExpenseTrackerData(
     val description: String,
     val priceValue: Float,
 ) {
+
     val priceString = "${priceValue.toValueString()} €" // TODO: Make currency dynamic
 }

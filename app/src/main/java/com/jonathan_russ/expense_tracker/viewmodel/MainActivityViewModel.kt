@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 class MainActivityViewModel(
     private val expenseRepository: ExpenseRepository,
 ) : ViewModel() {
+
     private val _ExpenseTrackerData = mutableStateListOf<ExpenseTrackerData>()
     val expenseTrackerData: ImmutableList<ExpenseTrackerData>
         get() = _ExpenseTrackerData.toImmutableList()
@@ -42,8 +43,8 @@ class MainActivityViewModel(
                             id = it.id,
                             name = it.name!!,
                             description = it.description!!,
-                            priceValue = it.price!!
-                        )
+                            priceValue = it.price!!,
+                        ),
                     )
                 }
                 updateExpenseSummary()
@@ -59,7 +60,7 @@ class MainActivityViewModel(
                     name = recurringExpense.name,
                     description = recurringExpense.description,
                     price = recurringExpense.priceValue,
-                )
+                ),
             )
         }
     }
@@ -72,7 +73,7 @@ class MainActivityViewModel(
                     name = recurringExpense.name,
                     description = recurringExpense.description,
                     price = recurringExpense.priceValue,
-                )
+                ),
             )
         }
     }
@@ -85,7 +86,7 @@ class MainActivityViewModel(
                     name = recurringExpense.name,
                     description = recurringExpense.description,
                     price = recurringExpense.priceValue,
-                )
+                ),
             )
         }
     }
@@ -101,6 +102,7 @@ class MainActivityViewModel(
     }
 
     companion object {
+
         fun create(expenseRepository: ExpenseRepository): ViewModelProvider.Factory {
             return object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {

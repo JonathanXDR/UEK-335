@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecurringExpenseDAO {
+
     @Query("SELECT * FROM recurring_expenses")
     fun getAll(): Flow<List<RecurringExpense>>
 
