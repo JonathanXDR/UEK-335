@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -68,7 +69,14 @@ fun EditRecurringExpense(
     ) {
         EditRecurringExpenseInternal(
             onUpdateExpense = onUpdateExpense,
-            confirmButtonString = if (currentData == null) "Add Expense" else "Update Expense",
+            confirmButtonString =
+                if (currentData == null) {
+                    stringResource(R.string.edit_expense_button_add)
+                } else {
+                    stringResource(
+                        R.string.edit_expense_button_update,
+                    )
+                },
             currentData = currentData,
             onDeleteExpense = onDeleteExpense,
         )
@@ -111,13 +119,13 @@ private fun EditRecurringExpenseInternal(
             .verticalScroll(scrollState),
     ) {
         Text(
-            text = "Name",
+            text = stringResource(R.string.edit_expense_name),
             style = MaterialTheme.typography.bodyLarge,
         )
         CustomTextField(
             value = nameState,
             onValueChange = { nameState = it },
-            placeholder = "e.g. Netflix",
+            placeholder = stringResource(R.string.edit_expense_name_placeholder),
             keyboardActions =
             KeyboardActions(
                 onNext = { localFocusManager.moveFocus(FocusDirection.Next) },
@@ -130,14 +138,14 @@ private fun EditRecurringExpenseInternal(
                 .padding(vertical = 8.dp),
         )
         Text(
-            text = "Description",
+            text = stringResource(R.string.edit_expense_description),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp),
         )
         CustomTextField(
             value = descriptionState,
             onValueChange = { descriptionState = it },
-            placeholder = "e.g. special subscription",
+            placeholder = stringResource(R.string.edit_expense_description_placeholder),
             keyboardActions =
             KeyboardActions(
                 onNext = { localFocusManager.moveFocus(FocusDirection.Next) },
@@ -149,14 +157,14 @@ private fun EditRecurringExpenseInternal(
                 .padding(vertical = 8.dp),
         )
         Text(
-            text = "Price",
+            text = stringResource(R.string.edit_expense_price),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp),
         )
         CustomTextField(
             value = priceState,
             onValueChange = { priceState = it },
-            placeholder = "0,00",
+            placeholder = stringResource(R.string.edit_expense_price_placeholder),
             keyboardOptions =
             KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
@@ -206,7 +214,7 @@ private fun EditRecurringExpenseInternal(
                         .wrapContentWidth(),
                 ) {
                     Text(
-                        text = "Delete",
+                        text = stringResource(R.string.edit_expense_button_delete),
                         modifier = Modifier.padding(vertical = 4.dp),
                     )
                 }
@@ -264,7 +272,10 @@ private fun CustomTextField(
         maxLines = maxLines,
         supportingText = {
             if (isError) {
-                Text(text = "Invalid input", color = MaterialTheme.colorScheme.error)
+                Text(
+                    text = stringResource(R.string.edit_expense_invalid_input),
+                    color = MaterialTheme.colorScheme.error,
+                )
             }
         },
         trailingIcon = {

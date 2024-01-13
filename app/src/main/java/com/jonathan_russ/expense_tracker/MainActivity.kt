@@ -114,7 +114,7 @@ fun MainActivityContent(
                     TopAppBar(
                         title = {
                             Text(
-                                text = "Recurring Expense Tracker",
+                                text = stringResource(id = R.string.home_title),
                             )
                         },
                         scrollBehavior = scrollBehavior,
@@ -146,7 +146,7 @@ fun MainActivityContent(
                                 icon = {
                                     Icon(
                                         imageVector = item.icon,
-                                        contentDescription = "$item Icon",
+                                        contentDescription = null,
                                     )
                                 },
                                 label = {
@@ -157,12 +157,10 @@ fun MainActivityContent(
                     }
                 },
                 floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = {
-                            addRecurringExpenseVisible = true
-                        },
-                    ) {
-                        Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add")
+                    FloatingActionButton(onClick = {
+                        addRecurringExpenseVisible = true
+                    }) {
+                        Icon(imageVector = Icons.Rounded.Add, contentDescription = stringResource(R.string.home_add_expense_fab_content_description))
                     }
                 },
                 content = { paddingValues ->
