@@ -161,7 +161,7 @@ fun MainActivityContent(
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Add,
-                            contentDescription = stringResource(R.string.home_add_expense_fab_content_description)
+                            contentDescription = stringResource(R.string.home_add_expense_fab_content_description),
                         )
                     }
                 },
@@ -235,19 +235,19 @@ private fun MainActivityContentPreview() {
                 id = 0,
                 name = "Netflix",
                 description = "My Netflix description",
-                priceValue = 9.99f,
+                price = 9.99f,
             ),
             ExpenseTrackerData(
                 id = 1,
                 name = "Disney Plus",
                 description = "My Disney Plus description",
-                priceValue = 5f,
+                price = 5f,
             ),
             ExpenseTrackerData(
                 id = 2,
                 name = "Amazon Prime",
                 description = "My Disney Plus description",
-                priceValue = 7.95f,
+                price = 7.95f,
             ),
         ),
         onRecurringExpenseAdded = {},

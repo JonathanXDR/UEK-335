@@ -1,7 +1,16 @@
 package com.jonathan_russ.expense_tracker
 
-fun Float.toValueString(): String {
-    return "%.2f".format(this)
+import java.text.NumberFormat
+
+fun Float.toCurrencyString(): String {
+    return NumberFormat.getCurrencyInstance().format(this)
+}
+
+fun Float.toLocalString(): String {
+    return NumberFormat.getInstance().let {
+        it.minimumFractionDigits = 2
+        it.format(this)
+    }
 }
 
 fun String.toFloatIgnoreSeparator(): Float {

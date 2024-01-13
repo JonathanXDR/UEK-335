@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jonathan_russ.expense_tracker.data.ExpenseTrackerData
-import com.jonathan_russ.expense_tracker.toValueString
+import com.jonathan_russ.expense_tracker.toCurrencyString
 import com.jonathan_russ.expense_tracker.viewmodel.database.ExpenseRepository
 import com.jonathan_russ.expense_tracker.viewmodel.database.RecurringExpense
 import kotlinx.collections.immutable.ImmutableList
@@ -43,7 +43,7 @@ class MainActivityViewModel(
                             id = it.id,
                             name = it.name!!,
                             description = it.description!!,
-                            priceValue = it.price!!,
+                            price = it.price!!,
                         ),
                     )
                 }
@@ -59,7 +59,7 @@ class MainActivityViewModel(
                     id = 0,
                     name = recurringExpense.name,
                     description = recurringExpense.description,
-                    price = recurringExpense.priceValue,
+                    price = recurringExpense.price,
                 ),
             )
         }
@@ -72,7 +72,7 @@ class MainActivityViewModel(
                     id = recurringExpense.id,
                     name = recurringExpense.name,
                     description = recurringExpense.description,
-                    price = recurringExpense.priceValue,
+                    price = recurringExpense.price,
                 ),
             )
         }
@@ -85,7 +85,7 @@ class MainActivityViewModel(
                     id = recurringExpense.id,
                     name = recurringExpense.name,
                     description = recurringExpense.description,
-                    price = recurringExpense.priceValue,
+                    price = recurringExpense.price,
                 ),
             )
         }
@@ -94,11 +94,11 @@ class MainActivityViewModel(
     private fun updateExpenseSummary() {
         var price = 0f
         _ExpenseTrackerData.forEach {
-            price += it.priceValue
+            price += it.price
         }
-        _weeklyExpense = "${(price / 30f).toValueString()} €" // TODO: Make currency dynamic
-        _monthlyExpense = "${price.toValueString()} €" // TODO: Make currency dynamic
-        _yearlyExpense = "${(price * 12).toValueString()} €" // TODO: Make currency dynamic
+        _weeklyExpense = (price / 30f).toCurrencyString()
+        _monthlyExpense = price.toCurrencyString()
+        _yearlyExpense = (price * 12).toCurrencyString()
     }
 
     companion object {
@@ -107,7 +107,8 @@ class MainActivityViewModel(
             return object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
-                        @Suppress("UNCHECKED_CAST") return MainActivityViewModel(expenseRepository) as T
+                        @Suppress("UNCHECKED_CAST")
+                        return MainActivityViewModel(expenseRepository) as T
                     }
                     throw IllegalArgumentException("Unknown ViewModel class")
                 }
