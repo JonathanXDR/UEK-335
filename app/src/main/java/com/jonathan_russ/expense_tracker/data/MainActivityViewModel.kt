@@ -10,7 +10,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
 class MainActivityViewModel : ViewModel() {
-    private val _subscriptionsData = mutableStateListOf<ExpenseTrackerData>(
+    private val _recurringExpenseData = mutableStateListOf<ExpenseTrackerData>(
         ExpenseTrackerData(
             name = "Netflix",
             description = "My Netflix description",
@@ -23,22 +23,61 @@ class MainActivityViewModel : ViewModel() {
         ),
         ExpenseTrackerData(
             name = "Amazon Prime",
+            description = "My Amazon Prime description",
+            priceValue = 7.95f,
+        ),
+        ExpenseTrackerData(
+            name = "Netflix",
+            description = "My Netflix description",
+            priceValue = 9.99f,
+        ),
+        ExpenseTrackerData(
+            name = "Disney Plus",
             description = "My Disney Plus description",
+            priceValue = 5f,
+        ),
+        ExpenseTrackerData(
+            name = "Amazon Prime",
+            description = "My Amazon Prime description",
+            priceValue = 7.95f,
+        ),
+        ExpenseTrackerData(
+            name = "Netflix",
+            description = "My Netflix description",
+            priceValue = 9.99f,
+        ),
+        ExpenseTrackerData(
+            name = "Disney Plus",
+            description = "My Disney Plus description",
+            priceValue = 5f,
+        ),
+        ExpenseTrackerData(
+            name = "Amazon Prime",
+            description = "My Amazon Prime description",
             priceValue = 7.95f,
         ),
     )
-    val subscriptionData: ImmutableList<ExpenseTrackerData>
-        get() = _subscriptionsData.toImmutableList()
+    val recurringExpenseData: ImmutableList<ExpenseTrackerData>
+        get() = _recurringExpenseData.toImmutableList()
 
-    private var _montlyPrice by mutableStateOf("")
+    private var _monthlyPrice by mutableStateOf("")
     val monthlyPrice: String
-        get() = _montlyPrice
+        get() = _monthlyPrice
 
     init {
+        updateSummaries()
+    }
+
+    fun addRecurringExpense(recurringExpense: ExpenseTrackerData) {
+        _recurringExpenseData.add(recurringExpense)
+        updateSummaries()
+    }
+
+    private fun updateSummaries() {
         var price = 0f
-        _subscriptionsData.forEach {
+        _recurringExpenseData.forEach {
             price += it.priceValue
         }
-        _montlyPrice = "${price.toValueString()} €" // TODO: Make currency dynamic
+        _monthlyPrice = "${price.toValueString()} €" // TODO: Make currency dynamic
     }
 }

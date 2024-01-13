@@ -2,6 +2,7 @@ package com.jonathan_russ.expense_tracker.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,24 +25,26 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun ExpenseTrackerOverview(
-    subscriptionsData: ImmutableList<ExpenseTrackerData>,
+    recurringExpenseData: ImmutableList<ExpenseTrackerData>,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = contentPadding,
         modifier = modifier.fillMaxWidth(),
     ) {
-        items(items = subscriptionsData) { subscriptionData ->
-            ExpenseTracker(
-                subscriptionData = subscriptionData,
+        items(items = recurringExpenseData) { recurringExpenseData ->
+            RecurringExpense(
+                recurringExpenseData = recurringExpenseData,
             )
         }
     }
 }
 
 @Composable
-fun ExpenseTracker(
-    subscriptionData: ExpenseTrackerData,
+fun RecurringExpense(
+    recurringExpenseData: ExpenseTrackerData,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -58,20 +61,20 @@ fun ExpenseTracker(
                     .weight(1f)
             ) {
                 Text(
-                    text = subscriptionData.name,
+                    text = recurringExpenseData.name,
                     style = MaterialTheme.typography.headlineSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    text = subscriptionData.description,
+                    text = recurringExpenseData.description,
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
             Text(
-                text = subscriptionData.priceString,
+                text = recurringExpenseData.priceString,
                 style = MaterialTheme.typography.headlineMedium
             )
         }
@@ -80,7 +83,7 @@ fun ExpenseTracker(
 
 @Preview()
 @Composable
-fun ExpenseTrackerOverviewPreview() {
+private fun ExpenseTrackerOverviewPreview() {
     ExpenseTrackerTheme {
         Surface(modifier = Modifier.fillMaxWidth()) {
             ExpenseTrackerOverview(
