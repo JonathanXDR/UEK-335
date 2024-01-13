@@ -1,5 +1,6 @@
 package com.jonathan_russ.expense_tracker.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +32,7 @@ fun ExpenseTrackerOverview(
     monthlyExpense: String,
     yearlyExpense: String,
     expenseTrackerData: ImmutableList<ExpenseTrackerData>,
+    onItemClicked: (ExpenseTrackerData) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -48,9 +50,12 @@ fun ExpenseTrackerOverview(
                     .padding(bottom = 8.dp)
             )
         }
-        items(items = expenseTrackerData) { recurringExpenseData ->
+        items(items = expenseTrackerData) { expenseTrackerData ->
             RecurringExpense(
-                expenseTrackerData = recurringExpenseData,
+                expenseTrackerData = expenseTrackerData,
+                onItemClicked = {
+                    onItemClicked(expenseTrackerData)
+                },
             )
         }
     }
@@ -114,10 +119,12 @@ private fun RecurringExpenseSummary(
 @Composable
 private fun RecurringExpense(
     expenseTrackerData: ExpenseTrackerData,
+    onItemClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .clickable { onItemClicked() },
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -161,21 +168,25 @@ private fun ExpenseTrackerOverviewPreview() {
                 yearlyExpense = "192,00 €",
                 expenseTrackerData = persistentListOf(
                     ExpenseTrackerData(
+                        id = 0,
                         name = "Netflix",
                         description = "My Netflix description",
                         priceValue = 9.99f,
                     ),
                     ExpenseTrackerData(
+                        id = 1,
                         name = "Disney Plus",
                         description = "My Disney Plus very very very very very very very very very long description",
                         priceValue = 5f,
                     ),
                     ExpenseTrackerData(
+                        id = 2,
                         name = "Amazon Prime with a long name",
                         description = "My Disney Plus description",
                         priceValue = 7.95f,
                     ),
-                )
+                ),
+                onItemClicked = {},
             )
         }
     }

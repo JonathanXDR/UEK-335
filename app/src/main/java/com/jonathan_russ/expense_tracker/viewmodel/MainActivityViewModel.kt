@@ -35,9 +35,11 @@ class MainActivityViewModel(
     init {
         viewModelScope.launch {
             expenseRepository.allRecurringExpensesByPrice.collect { recurringExpenses ->
+                _ExpenseTrackerData.clear()
                 recurringExpenses.forEach {
                     _ExpenseTrackerData.add(
                         ExpenseTrackerData(
+                            id = it.id,
                             name = it.name!!,
                             description = it.description!!,
                             priceValue = it.price!!
@@ -54,6 +56,19 @@ class MainActivityViewModel(
             expenseRepository.insert(
                 RecurringExpense(
                     id = 0,
+                    name = recurringExpense.name,
+                    description = recurringExpense.description,
+                    price = recurringExpense.priceValue,
+                )
+            )
+        }
+    }
+
+    fun editRecurringExpense(recurringExpense: ExpenseTrackerData) {
+        viewModelScope.launch {
+            expenseRepository.update(
+                RecurringExpense(
+                    id = recurringExpense.id,
                     name = recurringExpense.name,
                     description = recurringExpense.description,
                     price = recurringExpense.priceValue,

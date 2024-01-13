@@ -39,7 +39,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jonathan_russ.expense_tracker.data.BottomNavItem
 import com.jonathan_russ.expense_tracker.data.ExpenseTrackerData
 import com.jonathan_russ.expense_tracker.data.NavigationRoute
-import com.jonathan_russ.expense_tracker.ui.AddRecurringExpense
+import com.jonathan_russ.expense_tracker.ui.EditRecurringExpense
 import com.jonathan_russ.expense_tracker.ui.ExpenseTrackerOverview
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 import com.jonathan_russ.expense_tracker.viewmodel.MainActivityViewModel
@@ -64,10 +64,11 @@ class MainActivity : ComponentActivity() {
                 yearlyExpense = viewModel.yearlyExpense,
                 expenseTrackerData = viewModel.expenseTrackerData,
                 onRecurringExpenseAdded = {
-                    viewModel.addRecurringExpense(
-                        it
-                    )
+                    viewModel.addRecurringExpense(it)
                 },
+                onRecurringExpenseEdited = {
+                    viewModel.editRecurringExpense(it)
+                }
             )
         }
     }
@@ -81,11 +82,14 @@ fun MainActivityContent(
     yearlyExpense: String,
     expenseTrackerData: ImmutableList<ExpenseTrackerData>,
     onRecurringExpenseAdded: (ExpenseTrackerData) -> Unit,
+    onRecurringExpenseEdited: (ExpenseTrackerData) -> Unit,
 ) {
     val navController = rememberNavController()
     val backStackEntry = navController.currentBackStackEntryAsState()
 
     var addRecurringExpenseVisible by rememberSaveable { mutableStateOf(false) }
+
+    var selectedRecurringExpense by rememberSaveable { mutableStateOf<ExpenseTrackerData?>(null) }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -153,6 +157,9 @@ fun MainActivityContent(
                             monthlyExpense = monthlyExpense,
                             yearlyExpense = yearlyExpense,
                             expenseTrackerData = expenseTrackerData,
+                            onItemClicked = {
+                                selectedRecurringExpense = it
+                            },
                             contentPadding = PaddingValues(top = 8.dp, bottom = 88.dp),
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
@@ -164,16 +171,25 @@ fun MainActivityContent(
                     }
                 }
                 if (addRecurringExpenseVisible) {
-                    AddRecurringExpense(
-                        onAddExpense = {
+                    EditRecurringExpense(
+                        onUpdateExpense = {
                             onRecurringExpenseAdded(it)
                             addRecurringExpenseVisible = false
                         },
                         onDismissRequest = { addRecurringExpenseVisible = false },
                     )
                 }
+                if (selectedRecurringExpense != null) {
+                    EditRecurringExpense(
+                        onUpdateExpense = {
+                            onRecurringExpenseEdited(it)
+                            selectedRecurringExpense = null
+                        },
+                        onDismissRequest = { selectedRecurringExpense = null },
+                        currentData = selectedRecurringExpense,
+                    )
+                }
             })
-
         }
     }
 }
@@ -187,21 +203,25 @@ private fun MainActivityContentPreview() {
         yearlyExpense = "192,00 €",
         expenseTrackerData = persistentListOf(
             ExpenseTrackerData(
+                id = 0,
                 name = "Netflix",
                 description = "My Netflix description",
                 priceValue = 9.99f,
             ),
             ExpenseTrackerData(
+                id = 1,
                 name = "Disney Plus",
                 description = "My Disney Plus description",
                 priceValue = 5f,
             ),
             ExpenseTrackerData(
+                id = 2,
                 name = "Amazon Prime",
                 description = "My Disney Plus description",
                 priceValue = 7.95f,
             ),
         ),
         onRecurringExpenseAdded = {},
+        onRecurringExpenseEdited = {},
     )
 }
