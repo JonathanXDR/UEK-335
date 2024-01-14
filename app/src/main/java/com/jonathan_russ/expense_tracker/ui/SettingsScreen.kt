@@ -22,40 +22,40 @@ import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 
 @Composable
 fun SettingsScreen(
-        modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-            modifier =
-            modifier
-                    .verticalScroll(rememberScrollState()),
+        modifier =
+        modifier
+            .verticalScroll(rememberScrollState()),
     ) {
         SettingsClickableElement(
-                name = R.string.settings_title,
-                onClick = {},
+            name = R.string.settings_licenses,
+            onClick = {},
         )
     }
 }
 
 @Composable
 private fun SettingsClickableElement(
-        @StringRes name: Int,
-        onClick: () -> Unit,
-        modifier: Modifier = Modifier,
+    @StringRes name: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
-            color = Color.Transparent,
-            modifier =
-            modifier
-                    .fillMaxWidth(),
-            onClick = onClick,
+        color = Color.Transparent,
+        modifier =
+        modifier
+            .fillMaxWidth(),
+        onClick = onClick,
     ) {
         Text(
-                text = stringResource(id = name),
-                style = MaterialTheme.typography.bodyLarge,
-                modifier =
-                Modifier
-                        .padding(16.dp),
-                overflow = TextOverflow.Ellipsis,
+            text = stringResource(id = name),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier =
+            Modifier
+                .padding(16.dp),
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

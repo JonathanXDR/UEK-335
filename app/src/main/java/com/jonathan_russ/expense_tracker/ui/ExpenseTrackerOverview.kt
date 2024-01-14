@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.R
 import com.jonathan_russ.expense_tracker.data.ExpenseTrackerData
+import com.jonathan_russ.expense_tracker.data.Recurrence
 import com.jonathan_russ.expense_tracker.toCurrencyString
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 import kotlinx.collections.immutable.ImmutableList
@@ -31,33 +32,33 @@ import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun ExpenseTrackerOverview(
-        weeklyExpense: String,
-        monthlyExpense: String,
-        yearlyExpense: String,
-        expenseTrackerData: ImmutableList<ExpenseTrackerData>,
-        onItemClicked: (ExpenseTrackerData) -> Unit,
-        modifier: Modifier = Modifier,
-        contentPadding: PaddingValues = PaddingValues(0.dp),
+    weeklyExpense: String,
+    monthlyExpense: String,
+    yearlyExpense: String,
+    expenseTrackerData: ImmutableList<ExpenseTrackerData>,
+    onItemClicked: (ExpenseTrackerData) -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = contentPadding,
-            modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = contentPadding,
+        modifier = modifier.fillMaxWidth(),
     ) {
         item {
             RecurringExpenseSummary(
-                    weeklyExpense = weeklyExpense,
-                    monthlyExpense = monthlyExpense,
-                    yearlyExpense = yearlyExpense,
-                    modifier = Modifier.padding(bottom = 8.dp),
+                weeklyExpense = weeklyExpense,
+                monthlyExpense = monthlyExpense,
+                yearlyExpense = yearlyExpense,
+                modifier = Modifier.padding(bottom = 8.dp),
             )
         }
         items(items = expenseTrackerData) { expenseTrackerData ->
             RecurringExpense(
-                    expenseTrackerData = expenseTrackerData,
-                    onItemClicked = {
-                        onItemClicked(expenseTrackerData)
-                    },
+                expenseTrackerData = expenseTrackerData,
+                onItemClicked = {
+                    onItemClicked(expenseTrackerData)
+                },
             )
         }
     }
@@ -65,52 +66,52 @@ fun ExpenseTrackerOverview(
 
 @Composable
 private fun RecurringExpenseSummary(
-        weeklyExpense: String,
-        monthlyExpense: String,
-        yearlyExpense: String,
-        modifier: Modifier = Modifier,
+    weeklyExpense: String,
+    monthlyExpense: String,
+    yearlyExpense: String,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier =
-            modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier =
+        modifier
+            .fillMaxWidth()
+            .padding(8.dp),
     ) {
         Text(
-                text = stringResource(R.string.home_summary_monthly),
-                style = MaterialTheme.typography.titleLarge,
+            text = stringResource(R.string.home_summary_monthly),
+            style = MaterialTheme.typography.titleLarge,
         )
         Text(
-                text = monthlyExpense,
-                style = MaterialTheme.typography.titleMedium,
+            text = monthlyExpense,
+            style = MaterialTheme.typography.titleMedium,
         )
         Spacer(modifier = Modifier.size(8.dp))
         Row {
             Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f),
             ) {
                 Text(
-                        text = stringResource(R.string.home_summary_weekly),
-                        style = MaterialTheme.typography.bodyLarge,
+                    text = stringResource(R.string.home_summary_weekly),
+                    style = MaterialTheme.typography.bodyLarge,
                 )
                 Text(
-                        text = weeklyExpense,
-                        style = MaterialTheme.typography.bodyLarge,
+                    text = weeklyExpense,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
             }
             Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f),
             ) {
                 Text(
-                        text = stringResource(R.string.home_summary_yearly),
-                        style = MaterialTheme.typography.bodyLarge,
+                    text = stringResource(R.string.home_summary_yearly),
+                    style = MaterialTheme.typography.bodyLarge,
                 )
                 Text(
-                        text = yearlyExpense,
-                        style = MaterialTheme.typography.bodyLarge,
+                    text = yearlyExpense,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
             }
         }
@@ -119,42 +120,55 @@ private fun RecurringExpenseSummary(
 
 @Composable
 private fun RecurringExpense(
-        expenseTrackerData: ExpenseTrackerData,
-        onItemClicked: () -> Unit,
-        modifier: Modifier = Modifier,
+    expenseTrackerData: ExpenseTrackerData,
+    onItemClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Card(
-            modifier = modifier.clickable { onItemClicked() },
+        modifier = modifier.clickable { onItemClicked() },
     ) {
         Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(16.dp),
         ) {
             Column(
-                    modifier =
-                    Modifier
-                            .padding(end = 16.dp)
-                            .weight(1f),
+                modifier =
+                Modifier
+                    .padding(end = 16.dp)
+                    .weight(1f),
             ) {
                 Text(
-                        text = expenseTrackerData.name,
-                        style = MaterialTheme.typography.titleLarge,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                    text = expenseTrackerData.name,
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 if (expenseTrackerData.description.isNotBlank()) {
                     Text(
-                            text = expenseTrackerData.description,
-                            style = MaterialTheme.typography.bodyLarge,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
+                        text = expenseTrackerData.description,
+                        style = MaterialTheme.typography.bodyLarge,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
-            Text(
-                    text = expenseTrackerData.price.toCurrencyString(),
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = expenseTrackerData.monthlyPrice.toCurrencyString(),
                     style = MaterialTheme.typography.headlineSmall,
-            )
+                )
+                if (expenseTrackerData.recurrence != Recurrence.Monthly ||
+                    expenseTrackerData.everyXRecurrence != 1
+                ) {
+                    Text(
+                        text =
+                        "${expenseTrackerData.price.toCurrencyString()} / " +
+                                "${expenseTrackerData.everyXRecurrence} " +
+                                stringResource(id = expenseTrackerData.recurrence.stringRes),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
+            }
         }
     }
 }
@@ -165,33 +179,42 @@ private fun RecurringExpenseOverviewPreview() {
     ExpenseTrackerTheme {
         Surface(modifier = Modifier.fillMaxWidth()) {
             ExpenseTrackerOverview(
-                    weeklyExpense = "4,00 €",
-                    monthlyExpense = "16,00 €",
-                    yearlyExpense = "192,00 €",
-                    expenseTrackerData =
-                    persistentListOf(
-                            ExpenseTrackerData(
-                                    id = 0,
-                                    name = "Netflix",
-                                    description = "My Netflix description",
-                                    price = 9.99f,
-                            ),
-                            ExpenseTrackerData(
-                                    id = 1,
-                                    name = "Disney Plus",
-                                    description =
-                                    "My Disney Plus very very very very very " +
-                                            "very very very very long description",
-                                    price = 5f,
-                            ),
-                            ExpenseTrackerData(
-                                    id = 2,
-                                    name = "Amazon Prime with a long name",
-                                    description = "",
-                                    price = 7.95f,
-                            ),
+                weeklyExpense = "4,00 €",
+                monthlyExpense = "16,00 €",
+                yearlyExpense = "192,00 €",
+                expenseTrackerData =
+                persistentListOf(
+                    ExpenseTrackerData(
+                        id = 0,
+                        name = "Netflix",
+                        description = "My Netflix description",
+                        price = 9.99f,
+                        monthlyPrice = 9.99f,
+                        everyXRecurrence = 1,
+                        recurrence = Recurrence.Monthly,
                     ),
-                    onItemClicked = {},
+                    ExpenseTrackerData(
+                        id = 1,
+                        name = "Disney Plus",
+                        description =
+                        "My Disney Plus very very very very very " +
+                                "very very very very long description",
+                        price = 5f,
+                        monthlyPrice = 5f,
+                        everyXRecurrence = 1,
+                        recurrence = Recurrence.Monthly,
+                    ),
+                    ExpenseTrackerData(
+                        id = 2,
+                        name = "Amazon Prime with a long name",
+                        description = "",
+                        price = 7.95f,
+                        monthlyPrice = 7.95f,
+                        everyXRecurrence = 1,
+                        recurrence = Recurrence.Monthly,
+                    ),
+                ),
+                onItemClicked = {},
             )
         }
     }

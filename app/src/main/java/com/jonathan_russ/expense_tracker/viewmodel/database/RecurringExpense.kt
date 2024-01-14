@@ -6,8 +6,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "recurring_expenses")
 data class RecurringExpense(
-        @PrimaryKey(autoGenerate = true) val id: Int,
-        @ColumnInfo(name = "name") val name: String?,
-        @ColumnInfo(name = "description") val description: String?,
-        @ColumnInfo(name = "price") val price: Float?,
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    @ColumnInfo(name = "name") val name: String?,
+    @ColumnInfo(name = "description") val description: String?,
+    @ColumnInfo(name = "price") val price: Float?,
+    @ColumnInfo(name = "everyXRecurrence") val everyXRecurrence: Int?,
+    @ColumnInfo(name = "recurrence") val recurrence: Int?,
 )
