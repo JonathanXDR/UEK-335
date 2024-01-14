@@ -2,9 +2,10 @@ package com.jonathan_russ.expense_tracker.ui.editexpense
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -18,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -34,14 +34,12 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.R
 import com.jonathan_russ.expense_tracker.data.Recurrence
 import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
 import com.jonathan_russ.expense_tracker.toFloatIgnoreSeparator
 import com.jonathan_russ.expense_tracker.toLocalString
-import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,6 +111,20 @@ private fun EditRecurringExpenseInternal(
 
     val scrollState = rememberScrollState()
     val localFocusManager = LocalFocusManager.current
+    val categories = listOf(
+        "Sports",
+        "News",
+        "Entertainment",
+        "Technology",
+        "Health",
+        "Food",
+        "Travel",
+        "Shopping",
+        "Other",
+    )
+    val handleCategorySelected: (String?) -> Unit = { category ->
+        println("Selected category: $category")
+    }
 
     Column(
         modifier =
@@ -149,6 +161,19 @@ private fun EditRecurringExpenseInternal(
             date = firstPaymentDate,
             onDateSelected = { firstPaymentDate = it },
         )
+        // add a field for an optional location. Make it possible to add a location from the map
+        // or the current location
+        /* LocationOption(
+            location = currentData?.location ?: "",
+            onLocationSelected = {},
+        ) */
+        Spacer(modifier = Modifier.height(24.dp))
+        CategoryOption(
+            categories = categories,
+        ) { selectedCategory ->
+            handleCategorySelected(selectedCategory)
+        }
+
         Row(
             modifier =
             Modifier
@@ -287,17 +312,4 @@ private fun isPriceValid(price: String): Boolean {
 
 private fun isEveryXRecurrenceValid(everyXRecurrence: String): Boolean {
     return everyXRecurrence.isBlank() || everyXRecurrence.toIntOrNull() != null
-}
-
-@Preview
-@Composable
-private fun EditRecurringExpensePreview() {
-    ExpenseTrackerTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            EditRecurringExpenseInternal(
-                onUpdateExpense = {},
-                confirmButtonString = "Add Expense",
-            )
-        }
-    }
 }
