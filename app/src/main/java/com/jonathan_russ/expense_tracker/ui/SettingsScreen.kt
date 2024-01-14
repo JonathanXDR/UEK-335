@@ -15,10 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.R
-import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 
 @Composable
 fun SettingsScreen(
@@ -84,18 +82,5 @@ private fun SettingsClickableElement(
                 .padding(16.dp),
             overflow = TextOverflow.Ellipsis,
         )
-    }
-}
-
-@Preview
-@Composable
-private fun SettingsScreenPreview() {
-    ExpenseTrackerTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            SettingsScreen(
-                onBackupClicked = {},
-                onRestoreClicked = {},
-            )
-        }
     }
 }

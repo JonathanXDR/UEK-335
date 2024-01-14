@@ -20,7 +20,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,20 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.R
-import com.jonathan_russ.expense_tracker.data.Recurrence
 import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
 import com.jonathan_russ.expense_tracker.data.UpcomingPaymentData
 import com.jonathan_russ.expense_tracker.toCurrencyString
-import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 import com.jonathan_russ.expense_tracker.viewmodel.UpcomingPaymentsViewModel
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
-import java.text.DateFormat
-import java.util.Date
-import java.util.concurrent.TimeUnit
 
 @Composable
 fun UpcomingPaymentsScreen(
@@ -187,86 +179,5 @@ fun UpcomingPaymentsOverviewPlaceholder(modifier: Modifier = Modifier) {
             text = stringResource(id = R.string.upcoming_placeholder_title),
             textAlign = TextAlign.Center,
         )
-    }
-}
-
-@Preview
-@Composable
-private fun UpcomingPaymentsOverviewPreview() {
-    val dateFormat = DateFormat.getDateInstance()
-
-    val nextPaymentDays1 = 0
-    val nextPaymentDate1String =
-        dateFormat.format(
-            Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(nextPaymentDays1.toLong())),
-        )
-    val nextPaymentDays2 = 1
-    val nextPaymentDate2String =
-        dateFormat.format(
-            Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(nextPaymentDays2.toLong())),
-        )
-    val nextPaymentDays3 = 2
-    val nextPaymentDate3String =
-        dateFormat.format(
-            Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(nextPaymentDays3.toLong())),
-        )
-
-    ExpenseTrackerTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            UpcomingPaymentsOverview(
-                upcomingPaymentsData =
-                persistentListOf(
-                    UpcomingPaymentData(
-                        id = 0,
-                        name = "Netflix",
-                        description = "Streaming service",
-                        price = 9.99f,
-                        monthlyPrice = 9.99f,
-                        everyXRecurrence = 1,
-                        recurrence = Recurrence.Monthly,
-                        0L,
-                        nextPaymentRemainingDays = nextPaymentDays1,
-                        nextPaymentDate = nextPaymentDate1String,
-                    ),
-                    UpcomingPaymentData(
-                        id = 1,
-                        name = "Disney Plus",
-                        description =
-                        "Streaming service",
-                        price = 5f,
-                        monthlyPrice = 5f,
-                        everyXRecurrence = 1,
-                        recurrence = Recurrence.Monthly,
-                        1L,
-                        nextPaymentRemainingDays = nextPaymentDays2,
-                        nextPaymentDate = nextPaymentDate2String,
-                    ),
-                    UpcomingPaymentData(
-                        id = 2,
-                        name = "Amazon Prime with a long name",
-                        description = "Streaming service",
-                        price = 7.95f,
-                        monthlyPrice = 7.95f,
-                        everyXRecurrence = 1,
-                        recurrence = Recurrence.Monthly,
-                        2L,
-                        nextPaymentRemainingDays = nextPaymentDays3,
-                        nextPaymentDate = nextPaymentDate3String,
-                    ),
-                ),
-                onItemClicked = {},
-                contentPadding = PaddingValues(8.dp),
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun UpcomingPaymentsOverviewPlaceholderPreview() {
-    ExpenseTrackerTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            UpcomingPaymentsOverviewPlaceholder()
-        }
     }
 }

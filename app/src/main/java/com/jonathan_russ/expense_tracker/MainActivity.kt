@@ -36,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -45,7 +44,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jonathan_russ.expense_tracker.data.BottomNavigation
-import com.jonathan_russ.expense_tracker.data.Recurrence
 import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
 import com.jonathan_russ.expense_tracker.ui.RecurringExpenseOverview
 import com.jonathan_russ.expense_tracker.ui.SettingsScreen
@@ -56,7 +54,6 @@ import com.jonathan_russ.expense_tracker.viewmodel.RecurringExpenseViewModel
 import com.jonathan_russ.expense_tracker.viewmodel.SettingsViewModel
 import com.jonathan_russ.expense_tracker.viewmodel.UpcomingPaymentsViewModel
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -331,53 +328,4 @@ fun MainActivityContent(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun MainActivityContentPreview() {
-    MainActivityContent(
-        weeklyExpense = "4,00 €",
-        monthlyExpense = "16,00 €",
-        yearlyExpense = "192,00 €",
-        recurringExpenseData =
-        persistentListOf(
-            RecurringExpenseData(
-                id = 0,
-                name = "Netflix",
-                description = "My Netflix description",
-                price = 9.99f,
-                monthlyPrice = 9.99f,
-                everyXRecurrence = 1,
-                recurrence = Recurrence.Monthly,
-                0L,
-            ),
-            RecurringExpenseData(
-                id = 1,
-                name = "Disney Plus",
-                description = "My Disney Plus description",
-                price = 5f,
-                monthlyPrice = 5f,
-                everyXRecurrence = 1,
-                recurrence = Recurrence.Monthly,
-                1L,
-            ),
-            RecurringExpenseData(
-                id = 2,
-                name = "Amazon Prime",
-                description = "My Disney Plus description",
-                price = 7.95f,
-                monthlyPrice = 7.95f,
-                everyXRecurrence = 1,
-                recurrence = Recurrence.Monthly,
-                2L,
-            ),
-        ),
-        onRecurringExpenseAdded = {},
-        onRecurringExpenseEdited = {},
-        onRecurringExpenseDeleted = {},
-        onSelectBackupPath = { },
-        onSelectImportFile = { },
-        upcomingPaymentsViewModel = UpcomingPaymentsViewModel(null),
-    )
 }
