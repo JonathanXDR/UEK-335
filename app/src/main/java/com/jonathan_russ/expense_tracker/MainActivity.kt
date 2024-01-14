@@ -1,6 +1,5 @@
 package com.jonathan_russ.expense_tracker
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,7 +38,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.jonathan_russ.expense_tracker.data.BottomNavigation
 import com.jonathan_russ.expense_tracker.data.Recurrence
 import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
@@ -76,9 +74,6 @@ class MainActivity : ComponentActivity() {
                 onRecurringExpenseDeleted = {
                     viewModel.deleteRecurringExpense(it)
                 },
-                onLicensesClicked = {
-                    startActivity(Intent(this, OssLicensesMenuActivity::class.java))
-                },
             )
         }
     }
@@ -94,7 +89,6 @@ fun MainActivityContent(
     onRecurringExpenseAdded: (RecurringExpenseData) -> Unit,
     onRecurringExpenseEdited: (RecurringExpenseData) -> Unit,
     onRecurringExpenseDeleted: (RecurringExpenseData) -> Unit,
-    onLicensesClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -213,9 +207,7 @@ fun MainActivityContent(
                             )
                         }
                         composable(BottomNavigation.Settings.route) {
-                            SettingsScreen(
-                                onLicensesClicked = onLicensesClicked,
-                            )
+                            SettingsScreen()
                         }
                     }
                     if (addRecurringExpenseVisible) {
@@ -287,6 +279,5 @@ private fun MainActivityContentPreview() {
         onRecurringExpenseAdded = {},
         onRecurringExpenseEdited = {},
         onRecurringExpenseDeleted = {},
-        onLicensesClicked = {},
     )
 }
