@@ -122,9 +122,10 @@ private fun UpcomingPayment(
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(modifier = modifier.fillMaxSize()) {
+                Column {
                     Text(
                         text = upcomingPaymentData.name,
                         style = MaterialTheme.typography.titleMedium,
@@ -142,11 +143,13 @@ private fun UpcomingPayment(
                 }
                 Text(
                     text = upcomingPaymentData.price.toCurrencyString(),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(start = 16.dp)
+                    style = MaterialTheme.typography.titleLarge,
+                    // fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(start = 16.dp)
                 )
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             LinearProgressIndicator(
                 progress = 1 - progress,
                 modifier = Modifier
