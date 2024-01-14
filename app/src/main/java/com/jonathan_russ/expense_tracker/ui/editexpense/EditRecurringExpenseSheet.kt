@@ -1,11 +1,10 @@
 package com.jonathan_russ.expense_tracker.ui.editexpense
 
+import LocationOption
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -161,13 +160,13 @@ private fun EditRecurringExpenseInternal(
             date = firstPaymentDate,
             onDateSelected = { firstPaymentDate = it },
         )
-        // add a field for an optional location. Make it possible to add a location from the map
-        // or the current location
-        /* LocationOption(
-            location = currentData?.location ?: "",
+        LocationOption(
+            location = null,
             onLocationSelected = {},
-        ) */
-        Spacer(modifier = Modifier.height(24.dp))
+            onLocationChanged = {},
+            locationInputError = false,
+            onNext = { localFocusManager.clearFocus() },
+        )
         CategoryOption(
             categories = categories,
         ) { selectedCategory ->

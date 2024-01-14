@@ -2,6 +2,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.provider.Settings
@@ -40,6 +42,7 @@ import com.google.android.gms.tasks.Task
 import com.jonathan_russ.expense_tracker.R
 import com.jonathan_russ.expense_tracker.ui.editexpense.ExpenseTextField
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @Composable
 fun LocationOption(
@@ -60,7 +63,7 @@ fun LocationOption(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted: Boolean ->
             if (isGranted) {
-                getCurrentLocation(fusedLocationClient) { location ->
+                getCurrentLocation(context, fusedLocationClient) { location ->
                     locationText = location
                     onLocationSelected(location)
                 }
@@ -145,14 +148,33 @@ fun rememberFusedLocationProviderClient(context: Context): FusedLocationProvider
 
 @SuppressLint("MissingPermission")
 private fun getCurrentLocation(
+    context: Context,
     fusedLocationClient: FusedLocationProviderClient,
     onLocationFound: (String) -> Unit
 ) {
     val locationResult: Task<Location> = fusedLocationClient.lastLocation
     locationResult.addOnSuccessListener { location: Location? ->
         location?.let {
-            val locationString = "${it.latitude}, ${it.longitude}"
-            onLocationFound(locationString)
+            getCityNameAsync(context, it.latitude, it.longitude, onLocationFound)
         }
     }
+}
+
+private fun getCityNameAsync(
+    context: Context,
+    latitude: Double,
+    longitude: Double,
+    onCityNameFound: (String) -> Unit
+) {
+    val geocoder = Geocoder(context, Locale.getDefault())
+    geocoder.getFromLocation(latitude, longitude, 1, object : Geocoder.GeocodeListener {
+        override fun onGeocode(addresses: List<Address>) {
+            if (addresses.isNotEmpty()) {
+                val cityName = addresses[0].locality ?: "Unknown Location"
+                onCityNameFound(cityName)
+            } else {
+                onCityNameFound("Location Not Found")
+            }
+        }
+    })
 }
