@@ -22,6 +22,7 @@ import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 
 @Composable
 fun SettingsScreen(
+    onLicensesClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -29,10 +30,7 @@ fun SettingsScreen(
         modifier
             .verticalScroll(rememberScrollState()),
     ) {
-        SettingsClickableElement(
-            name = R.string.settings_licenses,
-            onClick = {},
-        )
+        SettingsClickableElement(name = R.string.settings_licenses, onClick = onLicensesClicked)
     }
 }
 
@@ -65,7 +63,7 @@ private fun SettingsClickableElement(
 private fun SettingsScreenPreview() {
     ExpenseTrackerTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            SettingsScreen()
+            SettingsScreen(onLicensesClicked = {})
         }
     }
 }

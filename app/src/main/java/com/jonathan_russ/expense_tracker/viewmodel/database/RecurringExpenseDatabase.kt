@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(entities = [RecurringExpense::class], version = 2)
 abstract class RecurringExpenseDatabase : RoomDatabase() {
-    abstract fun recurringExpenseDao(): ExpenseTrackerDao
+    abstract fun recurringExpenseDao(): RecurringExpenseDao
 
     companion object {
         @Volatile

@@ -49,8 +49,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.R
-import com.jonathan_russ.expense_tracker.data.ExpenseTrackerData
 import com.jonathan_russ.expense_tracker.data.Recurrence
+import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
 import com.jonathan_russ.expense_tracker.toFloatIgnoreSeparator
 import com.jonathan_russ.expense_tracker.toLocalString
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
@@ -58,11 +58,11 @@ import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditRecurringExpense(
-    onUpdateExpense: (ExpenseTrackerData) -> Unit,
+    onUpdateExpense: (RecurringExpenseData) -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    currentData: ExpenseTrackerData? = null,
-    onDeleteExpense: ((ExpenseTrackerData) -> Unit)? = null,
+    currentData: RecurringExpenseData? = null,
+    onDeleteExpense: ((RecurringExpenseData) -> Unit)? = null,
 ) {
     val sheetState: SheetState =
         rememberModalBottomSheetState(
@@ -93,11 +93,11 @@ fun EditRecurringExpense(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditRecurringExpenseInternal(
-    onUpdateExpense: (ExpenseTrackerData) -> Unit,
+    onUpdateExpense: (RecurringExpenseData) -> Unit,
     confirmButtonString: String,
     modifier: Modifier = Modifier,
-    currentData: ExpenseTrackerData? = null,
-    onDeleteExpense: ((ExpenseTrackerData) -> Unit)? = null,
+    currentData: RecurringExpenseData? = null,
+    onDeleteExpense: ((RecurringExpenseData) -> Unit)? = null,
 ) {
     var nameState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(currentData?.name ?: ""))
@@ -376,8 +376,8 @@ private fun onConfirmClicked(
     priceState: TextFieldValue,
     everyXRecurrenceState: TextFieldValue,
     selectedRecurrence: Recurrence,
-    onUpdateExpense: (ExpenseTrackerData) -> Unit,
-    currentData: ExpenseTrackerData?,
+    onUpdateExpense: (RecurringExpenseData) -> Unit,
+    currentData: RecurringExpenseData?,
 ) {
     nameInputError.value = false
     priceInputError.value = false
@@ -397,7 +397,7 @@ private fun onConfirmClicked(
         )
     ) {
         onUpdateExpense(
-            ExpenseTrackerData(
+            RecurringExpenseData(
                 id = currentData?.id ?: 0,
                 name = name,
                 description = description,

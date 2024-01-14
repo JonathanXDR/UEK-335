@@ -1,5 +1,6 @@
 package com.jonathan_russ.expense_tracker
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,11 +39,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.jonathan_russ.expense_tracker.data.BottomNavigation
-import com.jonathan_russ.expense_tracker.data.ExpenseTrackerData
 import com.jonathan_russ.expense_tracker.data.Recurrence
+import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
 import com.jonathan_russ.expense_tracker.ui.EditRecurringExpense
-import com.jonathan_russ.expense_tracker.ui.ExpenseTrackerOverview
+import com.jonathan_russ.expense_tracker.ui.RecurringExpenseOverview
 import com.jonathan_russ.expense_tracker.ui.SettingsScreen
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 import com.jonathan_russ.expense_tracker.viewmodel.MainActivityViewModel
@@ -64,7 +66,7 @@ class MainActivity : ComponentActivity() {
                 weeklyExpense = viewModel.weeklyExpense,
                 monthlyExpense = viewModel.monthlyExpense,
                 yearlyExpense = viewModel.yearlyExpense,
-                expenseTrackerData = viewModel.expenseTrackerData,
+                recurringExpenseData = viewModel.recurringExpenseData,
                 onRecurringExpenseAdded = {
                     viewModel.addRecurringExpense(it)
                 },
@@ -73,8 +75,10 @@ class MainActivity : ComponentActivity() {
                 },
                 onRecurringExpenseDeleted = {
                     viewModel.deleteRecurringExpense(it)
-                }
-
+                },
+                onLicensesClicked = {
+                    startActivity(Intent(this, OssLicensesMenuActivity::class.java))
+                },
             )
         }
     }
@@ -86,10 +90,11 @@ fun MainActivityContent(
     weeklyExpense: String,
     monthlyExpense: String,
     yearlyExpense: String,
-    expenseTrackerData: ImmutableList<ExpenseTrackerData>,
-    onRecurringExpenseAdded: (ExpenseTrackerData) -> Unit,
-    onRecurringExpenseEdited: (ExpenseTrackerData) -> Unit,
-    onRecurringExpenseDeleted: (ExpenseTrackerData) -> Unit,
+    recurringExpenseData: ImmutableList<RecurringExpenseData>,
+    onRecurringExpenseAdded: (RecurringExpenseData) -> Unit,
+    onRecurringExpenseEdited: (RecurringExpenseData) -> Unit,
+    onRecurringExpenseDeleted: (RecurringExpenseData) -> Unit,
+    onLicensesClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -107,7 +112,7 @@ fun MainActivityContent(
 
     var addRecurringExpenseVisible by rememberSaveable { mutableStateOf(false) }
 
-    var selectedRecurringExpense by rememberSaveable { mutableStateOf<ExpenseTrackerData?>(null) }
+    var selectedRecurringExpense by rememberSaveable { mutableStateOf<RecurringExpenseData?>(null) }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -192,11 +197,11 @@ fun MainActivityContent(
                             .padding(paddingValues),
                     ) {
                         composable(BottomNavigation.Home.route) {
-                            ExpenseTrackerOverview(
+                            RecurringExpenseOverview(
                                 weeklyExpense = weeklyExpense,
                                 monthlyExpense = monthlyExpense,
                                 yearlyExpense = yearlyExpense,
-                                expenseTrackerData = expenseTrackerData,
+                                recurringExpenseData = recurringExpenseData,
                                 onItemClicked = {
                                     selectedRecurringExpense = it
                                 },
@@ -208,7 +213,9 @@ fun MainActivityContent(
                             )
                         }
                         composable(BottomNavigation.Settings.route) {
-                            SettingsScreen()
+                            SettingsScreen(
+                                onLicensesClicked = onLicensesClicked,
+                            )
                         }
                     }
                     if (addRecurringExpenseVisible) {
@@ -247,9 +254,9 @@ private fun MainActivityContentPreview() {
         weeklyExpense = "4,00 €",
         monthlyExpense = "16,00 €",
         yearlyExpense = "192,00 €",
-        expenseTrackerData =
+        recurringExpenseData =
         persistentListOf(
-            ExpenseTrackerData(
+            RecurringExpenseData(
                 id = 0,
                 name = "Netflix",
                 description = "My Netflix description",
@@ -258,7 +265,7 @@ private fun MainActivityContentPreview() {
                 everyXRecurrence = 1,
                 recurrence = Recurrence.Monthly,
             ),
-            ExpenseTrackerData(
+            RecurringExpenseData(
                 id = 1,
                 name = "Disney Plus",
                 description = "My Disney Plus description",
@@ -267,7 +274,7 @@ private fun MainActivityContentPreview() {
                 everyXRecurrence = 1,
                 recurrence = Recurrence.Monthly,
             ),
-            ExpenseTrackerData(
+            RecurringExpenseData(
                 id = 2,
                 name = "Amazon Prime",
                 description = "My Disney Plus description",
@@ -279,6 +286,7 @@ private fun MainActivityContentPreview() {
         ),
         onRecurringExpenseAdded = {},
         onRecurringExpenseEdited = {},
-        onRecurringExpenseDeleted = {}
+        onRecurringExpenseDeleted = {},
+        onLicensesClicked = {},
     )
 }

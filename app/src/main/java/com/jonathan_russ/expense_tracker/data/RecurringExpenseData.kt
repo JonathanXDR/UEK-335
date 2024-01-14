@@ -12,7 +12,7 @@ enum class Recurrence(
     Yearly(R.string.edit_expense_recurrence_year),
 }
 
-data class ExpenseTrackerData(
+data class RecurringExpenseData(
     val id: Int,
     val name: String,
     val description: String,

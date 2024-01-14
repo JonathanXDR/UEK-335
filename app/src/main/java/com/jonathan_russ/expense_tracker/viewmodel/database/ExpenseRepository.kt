@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class ExpenseRepository(
-    private val recurringExpenseDao: ExpenseTrackerDao,
+    private val recurringExpenseDao: RecurringExpenseDao,
 ) {
     val allRecurringExpenses: Flow<List<RecurringExpense>> = recurringExpenseDao.getAll()
     val allRecurringExpensesByPrice: Flow<List<RecurringExpense>> =

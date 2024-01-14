@@ -7,8 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.jonathan_russ.expense_tracker.data.ExpenseTrackerData
 import com.jonathan_russ.expense_tracker.data.Recurrence
+import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
 import com.jonathan_russ.expense_tracker.toCurrencyString
 import com.jonathan_russ.expense_tracker.viewmodel.database.ExpenseRepository
 import com.jonathan_russ.expense_tracker.viewmodel.database.RecurringExpense
@@ -28,9 +28,9 @@ private enum class RecurrenceDatabase(
 class MainActivityViewModel(
     private val expenseRepository: ExpenseRepository,
 ) : ViewModel() {
-    private val _ExpenseTrackerData = mutableStateListOf<ExpenseTrackerData>()
-    val expenseTrackerData: ImmutableList<ExpenseTrackerData>
-        get() = _ExpenseTrackerData.toImmutableList()
+    private val _recurringExpenseData = mutableStateListOf<RecurringExpenseData>()
+    val recurringExpenseData: ImmutableList<RecurringExpenseData>
+        get() = _recurringExpenseData.toImmutableList()
 
     private var _weeklyExpense by mutableStateOf("")
     private var _monthlyExpense by mutableStateOf("")
@@ -45,10 +45,10 @@ class MainActivityViewModel(
     init {
         viewModelScope.launch {
             expenseRepository.allRecurringExpensesByPrice.collect { recurringExpenses ->
-                _ExpenseTrackerData.clear()
+                _recurringExpenseData.clear()
                 recurringExpenses.forEach {
-                    _ExpenseTrackerData.add(
-                        ExpenseTrackerData(
+                    _recurringExpenseData.add(
+                        RecurringExpenseData(
                             id = it.id,
                             name = it.name!!,
                             description = it.description!!,
@@ -64,7 +64,7 @@ class MainActivityViewModel(
         }
     }
 
-    fun addRecurringExpense(recurringExpense: ExpenseTrackerData) {
+    fun addRecurringExpense(recurringExpense: RecurringExpenseData) {
         viewModelScope.launch {
             expenseRepository.insert(
                 RecurringExpense(
@@ -79,7 +79,7 @@ class MainActivityViewModel(
         }
     }
 
-    fun editRecurringExpense(recurringExpense: ExpenseTrackerData) {
+    fun editRecurringExpense(recurringExpense: RecurringExpenseData) {
         viewModelScope.launch {
             expenseRepository.update(
                 RecurringExpense(
@@ -94,7 +94,7 @@ class MainActivityViewModel(
         }
     }
 
-    fun deleteRecurringExpense(recurringExpense: ExpenseTrackerData) {
+    fun deleteRecurringExpense(recurringExpense: RecurringExpenseData) {
         viewModelScope.launch {
             expenseRepository.delete(
                 RecurringExpense(
@@ -130,7 +130,7 @@ class MainActivityViewModel(
 
     private fun updateExpenseSummary() {
         var price = 0f
-        _ExpenseTrackerData.forEach {
+        _recurringExpenseData.forEach {
             price += it.monthlyPrice
         }
         _weeklyExpense = (price / 30f).toCurrencyString()
@@ -153,7 +153,7 @@ class MainActivityViewModel(
             }
 
             RecurrenceDatabase.Yearly.value -> {
-                everyXRecurrence!! * price!! / 12f
+                price!! / (everyXRecurrence!! * 12f)
             }
 
             else -> 0f
