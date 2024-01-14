@@ -52,7 +52,7 @@ import com.jonathan_russ.expense_tracker.ui.SettingsScreen
 import com.jonathan_russ.expense_tracker.ui.editexpense.EditRecurringExpense
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 import com.jonathan_russ.expense_tracker.ui.upcomingexpenses.UpcomingPaymentsScreen
-import com.jonathan_russ.expense_tracker.viewmodel.MainActivityViewModel
+import com.jonathan_russ.expense_tracker.viewmodel.RecurringExpenseViewModel
 import com.jonathan_russ.expense_tracker.viewmodel.SettingsViewModel
 import com.jonathan_russ.expense_tracker.viewmodel.UpcomingPaymentsViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -60,8 +60,8 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    private val mainActivityViewModel: MainActivityViewModel by viewModels {
-        MainActivityViewModel.create((application as ExpenseTrackerApplication).repository)
+    private val recurringExpenseViewModel: RecurringExpenseViewModel by viewModels {
+        RecurringExpenseViewModel.create((application as ExpenseTrackerApplication).repository)
     }
     private val upcomingPaymentsViewModel: UpcomingPaymentsViewModel by viewModels {
         UpcomingPaymentsViewModel.create((application as ExpenseTrackerApplication).repository)
@@ -77,18 +77,18 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainActivityContent(
-                weeklyExpense = mainActivityViewModel.weeklyExpense,
-                monthlyExpense = mainActivityViewModel.monthlyExpense,
-                yearlyExpense = mainActivityViewModel.yearlyExpense,
-                recurringExpenseData = mainActivityViewModel.recurringExpenseData,
+                weeklyExpense = recurringExpenseViewModel.weeklyExpense,
+                monthlyExpense = recurringExpenseViewModel.monthlyExpense,
+                yearlyExpense = recurringExpenseViewModel.yearlyExpense,
+                recurringExpenseData = recurringExpenseViewModel.recurringExpenseData,
                 onRecurringExpenseAdded = {
-                    mainActivityViewModel.addRecurringExpense(it)
+                    recurringExpenseViewModel.addRecurringExpense(it)
                 },
                 onRecurringExpenseEdited = {
-                    mainActivityViewModel.editRecurringExpense(it)
+                    recurringExpenseViewModel.editRecurringExpense(it)
                 },
                 onRecurringExpenseDeleted = {
-                    mainActivityViewModel.deleteRecurringExpense(it)
+                    recurringExpenseViewModel.deleteRecurringExpense(it)
                 },
                 onSelectBackupPath = {
                     val takeFlags: Int =
@@ -113,7 +113,8 @@ class MainActivity : ComponentActivity() {
                             settingsViewModel.restoreDatabase(it, applicationContext)
                         val toastStringRes =
                             if (backupRestored) {
-                                mainActivityViewModel.onDatabaseRestored()
+                                recurringExpenseViewModel.onDatabaseRestored()
+                                upcomingPaymentsViewModel.onDatabaseRestored()
                                 R.string.settings_backup_restored_toast
                             } else {
                                 R.string.settings_backup_not_restored_toast
@@ -236,7 +237,9 @@ fun MainActivityContent(
                     }
                 },
                 floatingActionButton = {
-                    if (BottomNavigation.Home.route == backStackEntry.value?.destination?.route) {
+                    if (BottomNavigation.Home.route == backStackEntry.value?.destination?.route ||
+                        BottomNavigation.Upcoming.route == backStackEntry.value?.destination?.route
+                    ) {
                         FloatingActionButton(onClick = {
                             addRecurringExpenseVisible = true
                         }) {
@@ -281,6 +284,9 @@ fun MainActivityContent(
                         composable(BottomNavigation.Upcoming.route) {
                             UpcomingPaymentsScreen(
                                 upcomingPaymentsViewModel = upcomingPaymentsViewModel,
+                                onItemClicked = {
+                                    selectedRecurringExpense = it
+                                },
                                 modifier =
                                 Modifier
                                     .nestedScroll(scrollBehavior.nestedScrollConnection),
