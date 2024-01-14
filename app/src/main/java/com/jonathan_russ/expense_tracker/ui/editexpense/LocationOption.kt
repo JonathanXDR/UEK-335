@@ -8,17 +8,20 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActionScope
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,15 +32,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import com.jonathan_russ.expense_tracker.R
+import com.jonathan_russ.expense_tracker.ui.editexpense.ExpenseTextField
 import kotlinx.coroutines.launch
 
 @Composable
-fun LocationOption(onLocationSelected: (String) -> Unit) {
+fun LocationOption(
+    location: Location?,
+    onLocationSelected: (String) -> Unit,
+    onLocationChanged: (TextFieldValue) -> Unit,
+    locationInputError: Boolean,
+    onNext: KeyboardActionScope.() -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val fusedLocationClient = rememberFusedLocationProviderClient(context)
     var locationText by remember { mutableStateOf("") }
@@ -58,7 +70,6 @@ fun LocationOption(onLocationSelected: (String) -> Unit) {
         }
     )
 
-
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -66,13 +77,24 @@ fun LocationOption(onLocationSelected: (String) -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        TextField(
-            value = locationText,
-            onValueChange = { locationText = it },
-            label = { Text(text = stringResource(R.string.edit_expense_location)) },
-            modifier = Modifier
-                .padding(vertical = 8.dp),
-        )
+        Column(modifier = modifier.padding(top = 16.dp)) {
+            Text(
+                text = stringResource(R.string.edit_expense_location),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            ExpenseTextField(
+                value = TextFieldValue(locationText),
+                onValueChange = onLocationChanged,
+                placeholder = stringResource(R.string.edit_expense_location_placeholder),
+                keyboardActions =
+                KeyboardActions(onNext = onNext),
+                singleLine = true,
+                isError = locationInputError,
+                modifier =
+                Modifier
+                    .padding(vertical = 8.dp),
+            )
+        }
 
         IconButton(onClick = {
             scope.launch {
@@ -112,6 +134,7 @@ fun LocationOption(onLocationSelected: (String) -> Unit) {
         }
     }
 }
+
 
 @Composable
 fun rememberFusedLocationProviderClient(context: Context): FusedLocationProviderClient {
