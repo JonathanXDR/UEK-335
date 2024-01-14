@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,7 +16,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.List
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,6 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.R
+import com.jonathan_russ.expense_tracker.data.Recurrence
 import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
 import com.jonathan_russ.expense_tracker.data.UpcomingPaymentData
 import com.jonathan_russ.expense_tracker.toCurrencyString
@@ -104,45 +109,64 @@ private fun UpcomingPayment(
                 )
         }
 
+    val progress =
+        (upcomingPaymentData.nextPaymentRemainingDays.toFloat() / 30) // Assuming a 30-day month
+
     Card(
-        modifier = modifier.clickable { onItemClicked() },
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onItemClicked() }
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp),
-        ) {
-            Column(
-                modifier =
-                Modifier
-                    .padding(end = 16.dp)
-                    .weight(1f),
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = upcomingPaymentData.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    text = upcomingPaymentData.nextPaymentDate,
-                    style = MaterialTheme.typography.bodyLarge,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-            Column(horizontalAlignment = Alignment.End) {
+                Column(modifier = modifier.fillMaxSize()) {
+                    Text(
+                        text = upcomingPaymentData.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    if (upcomingPaymentData.description.isNotBlank()) {
+                        Text(
+                            text = upcomingPaymentData.description,
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
                 Text(
                     text = upcomingPaymentData.price.toCurrencyString(),
-                    style = MaterialTheme.typography.headlineSmall,
-                )
-                Text(
-                    text = inDaysString,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(start = 16.dp)
                 )
             }
+            Spacer(modifier = Modifier.height(4.dp))
+            LinearProgressIndicator(
+                progress = 1 - progress,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(4.dp),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+            )
+            Text(
+                text = inDaysString,
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+            )
         }
     }
 }
+
 
 @Composable
 fun UpcomingPaymentsOverviewPlaceholder(modifier: Modifier = Modifier) {
@@ -192,21 +216,37 @@ private fun UpcomingPaymentsOverviewPreview() {
                     UpcomingPaymentData(
                         id = 0,
                         name = "Netflix",
+                        description = "Streaming service",
                         price = 9.99f,
+                        monthlyPrice = 9.99f,
+                        everyXRecurrence = 1,
+                        recurrence = Recurrence.Monthly,
+                        0L,
                         nextPaymentRemainingDays = nextPaymentDays1,
                         nextPaymentDate = nextPaymentDate1String,
                     ),
                     UpcomingPaymentData(
                         id = 1,
                         name = "Disney Plus",
+                        description =
+                        "Streaming service",
                         price = 5f,
+                        monthlyPrice = 5f,
+                        everyXRecurrence = 1,
+                        recurrence = Recurrence.Monthly,
+                        1L,
                         nextPaymentRemainingDays = nextPaymentDays2,
                         nextPaymentDate = nextPaymentDate2String,
                     ),
                     UpcomingPaymentData(
                         id = 2,
                         name = "Amazon Prime with a long name",
+                        description = "Streaming service",
                         price = 7.95f,
+                        monthlyPrice = 7.95f,
+                        everyXRecurrence = 1,
+                        recurrence = Recurrence.Monthly,
+                        2L,
                         nextPaymentRemainingDays = nextPaymentDays3,
                         nextPaymentDate = nextPaymentDate3String,
                     ),

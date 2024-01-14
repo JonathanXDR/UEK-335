@@ -81,7 +81,12 @@ class UpcomingPaymentsViewModel(
                     UpcomingPaymentData(
                         id = it.id,
                         name = it.name!!,
+                        description = it.description!!,
                         price = it.price!!,
+                        monthlyPrice = it.getMonthlyPrice(),
+                        everyXRecurrence = it.everyXRecurrence,
+                        recurrence = getRecurrenceFromDatabaseInt(it.recurrence),
+                        firstPayment = it.firstPayment,
                         nextPaymentRemainingDays = nextPaymentRemainingDays,
                         nextPaymentDate = nextPaymentDate,
                     ),
