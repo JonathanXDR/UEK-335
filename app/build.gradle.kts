@@ -83,8 +83,8 @@ dependencies {
     implementation("androidx.room:room-paging:2.6.1")
     //noinspection GradleDependency
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.21-1.0.16")
-    implementation("com.google.android.gms:play-services-maps:latest-version")
-    implementation("com.google.android.gms:play-services-location:latest-version")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.room:room-testing:2.6.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
