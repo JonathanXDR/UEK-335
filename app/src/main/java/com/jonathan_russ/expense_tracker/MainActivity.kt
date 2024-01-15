@@ -1,14 +1,9 @@
 package com.jonathan_russ.expense_tracker
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -54,7 +48,6 @@ import com.jonathan_russ.expense_tracker.viewmodel.RecurringExpenseViewModel
 import com.jonathan_russ.expense_tracker.viewmodel.SettingsViewModel
 import com.jonathan_russ.expense_tracker.viewmodel.UpcomingPaymentsViewModel
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private val recurringExpenseViewModel: RecurringExpenseViewModel by viewModels {
@@ -63,10 +56,7 @@ class MainActivity : ComponentActivity() {
     private val upcomingPaymentsViewModel: UpcomingPaymentsViewModel by viewModels {
         UpcomingPaymentsViewModel.create((application as ExpenseTrackerApplication).repository)
     }
-    private val settingsViewModel: SettingsViewModel by viewModels {
-        SettingsViewModel.create(getDatabasePath(Constants.DATABASE_NAME).path)
-    }
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -87,38 +77,6 @@ class MainActivity : ComponentActivity() {
                 onRecurringExpenseDeleted = {
                     recurringExpenseViewModel.deleteRecurringExpense(it)
                 },
-                onSelectBackupPath = {
-                    val takeFlags: Int =
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    applicationContext.contentResolver.takePersistableUriPermission(it, takeFlags)
-
-                    lifecycleScope.launch {
-                        val backupSuccessful =
-                            settingsViewModel.backupDatabase(it, applicationContext)
-                        val toastStringRes =
-                            if (backupSuccessful) {
-                                R.string.settings_backup_created_toast
-                            } else {
-                                R.string.settings_backup_not_created_toast
-                            }
-                        Toast.makeText(this@MainActivity, toastStringRes, Toast.LENGTH_LONG).show()
-                    }
-                },
-                onSelectImportFile = {
-                    lifecycleScope.launch {
-                        val backupRestored =
-                            settingsViewModel.restoreDatabase(it, applicationContext)
-                        val toastStringRes =
-                            if (backupRestored) {
-                                recurringExpenseViewModel.onDatabaseRestored()
-                                upcomingPaymentsViewModel.onDatabaseRestored()
-                                R.string.settings_backup_restored_toast
-                            } else {
-                                R.string.settings_backup_not_restored_toast
-                            }
-                        Toast.makeText(this@MainActivity, toastStringRes, Toast.LENGTH_LONG).show()
-                    }
-                },
                 upcomingPaymentsViewModel = upcomingPaymentsViewModel,
             )
         }
@@ -136,8 +94,6 @@ fun MainActivityContent(
     onRecurringExpenseAdded: (RecurringExpenseData) -> Unit,
     onRecurringExpenseEdited: (RecurringExpenseData) -> Unit,
     onRecurringExpenseDeleted: (RecurringExpenseData) -> Unit,
-    onSelectBackupPath: (backupPath: Uri) -> Unit,
-    onSelectImportFile: (importPath: Uri) -> Unit,
     upcomingPaymentsViewModel: UpcomingPaymentsViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -167,19 +123,6 @@ fun MainActivityContent(
             BottomNavigation.Upcoming,
             BottomNavigation.Settings,
         )
-
-    val backupPathLauncher =
-        rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.CreateDocument(Constants.BACKUP_MIME_TYPE),
-        ) {
-            if (it == null) return@rememberLauncherForActivityResult
-            onSelectBackupPath(it)
-        }
-    val importPathLauncher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) {
-            if (it == null) return@rememberLauncherForActivityResult
-            onSelectImportFile(it)
-        }
 
     ExpenseTrackerTheme {
         Surface(
@@ -291,14 +234,7 @@ fun MainActivityContent(
                             )
                         }
                         composable(BottomNavigation.Settings.route) {
-                            SettingsScreen(
-                                onBackupClicked = {
-                                    backupPathLauncher.launch(Constants.DEFAULT_BACKUP_NAME)
-                                },
-                                onRestoreClicked = {
-                                    importPathLauncher.launch(arrayOf(Constants.BACKUP_MIME_TYPE))
-                                },
-                            )
+                            SettingsScreen()
                         }
                     }
                     if (addRecurringExpenseVisible) {

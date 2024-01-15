@@ -15,7 +15,6 @@ import com.jonathan_russ.expense_tracker.viewmodel.database.RecurrenceDatabase
 import com.jonathan_russ.expense_tracker.viewmodel.database.RecurringExpense
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.util.Calendar
@@ -32,14 +31,6 @@ class UpcomingPaymentsViewModel(
     init {
         viewModelScope.launch {
             expenseRepository?.allRecurringExpensesByPrice?.collect { recurringExpenses ->
-                onDatabaseUpdated(recurringExpenses)
-            }
-        }
-    }
-
-    fun onDatabaseRestored() {
-        viewModelScope.launch {
-            expenseRepository?.allRecurringExpensesByPrice?.first()?.let { recurringExpenses ->
                 onDatabaseUpdated(recurringExpenses)
             }
         }

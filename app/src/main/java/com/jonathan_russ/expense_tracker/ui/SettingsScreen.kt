@@ -1,47 +1,18 @@
 package com.jonathan_russ.expense_tracker.ui
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.jonathan_russ.expense_tracker.R
 
 @Composable
-fun SettingsScreen(
-    onBackupClicked: () -> Unit,
-    onRestoreClicked: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier =
-        modifier
-            .verticalScroll(rememberScrollState())
-            .fillMaxSize(),
-    ) {
-        SettingsHeaderElement(
-            header = R.string.settings_backup,
-        )
-        SettingsClickableElement(
-            name = R.string.settings_backup_create,
-            onClick = onBackupClicked,
-        )
-        SettingsClickableElement(
-            name = R.string.settings_backup_restore,
-            onClick = onRestoreClicked,
-        )
-    }
+fun SettingsScreen() {
 }
 
 @Composable
@@ -61,26 +32,4 @@ private fun SettingsHeaderElement(
     )
 }
 
-@Composable
-private fun SettingsClickableElement(
-    @StringRes name: Int,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    Surface(
-        color = Color.Transparent,
-        modifier =
-        modifier
-            .fillMaxWidth(),
-        onClick = onClick,
-    ) {
-        Text(
-            text = stringResource(id = name),
-            style = MaterialTheme.typography.bodyLarge,
-            modifier =
-            Modifier
-                .padding(16.dp),
-            overflow = TextOverflow.Ellipsis,
-        )
-    }
-}
+

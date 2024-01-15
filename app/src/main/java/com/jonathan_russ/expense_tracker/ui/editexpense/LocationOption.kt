@@ -12,7 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
@@ -75,7 +75,7 @@ fun LocationOption(
 
     Row(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -99,11 +99,16 @@ fun LocationOption(
             )
         }
 
-        IconButton(onClick = {
-            scope.launch {
-                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
-        }) {
+        IconButton(
+            modifier = Modifier.padding(
+                horizontal = 16.dp,
+            ),
+            onClick = {
+                scope.launch {
+                    requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                }
+            },
+        ) {
             Icon(
                 Icons.Filled.MyLocation,
                 contentDescription = stringResource(R.string.edit_expense_location_get_current)

@@ -2,8 +2,6 @@ package com.jonathan_russ.expense_tracker
 
 import java.text.NumberFormat
 import java.util.Calendar
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
 
 fun Float.toCurrencyString(): String {
     return NumberFormat.getCurrencyInstance().format(this)
@@ -19,21 +17,6 @@ fun Float.toLocalString(): String {
 fun String.toFloatIgnoreSeparator(): Float {
     val converted = replace(",", ".")
     return converted.toFloat()
-}
-
-fun ZipInputStream.forEachEntry(block: (entry: ZipEntry) -> Unit) {
-    var entry: ZipEntry?
-    while (run {
-            entry = nextEntry
-            entry
-        } != null
-    ) {
-        try {
-            block(entry as ZipEntry)
-        } finally {
-            this.closeEntry()
-        }
-    }
 }
 
 fun Calendar.isSameDay(other: Calendar): Boolean {
