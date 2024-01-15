@@ -1,13 +1,13 @@
 package com.jonathan_russ.expense_tracker.data
 
-data class Payment(
+data class PaymentData(
     val id: Int,
     val name: String,
     val description: String = "",
     val price: Float,
     val monthlyPrice: Float,
     val everyXRecurrence: Int,
-    val recurrence: Recurrence,
+    val recurrence: RecurrenceEnum,
     val firstPayment: Long = 0L,
     val nextPaymentRemainingDays: Int = 0,
     val nextPaymentDate: String = "",

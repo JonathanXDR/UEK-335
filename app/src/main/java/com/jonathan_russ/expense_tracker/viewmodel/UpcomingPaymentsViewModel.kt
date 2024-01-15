@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jonathan_russ.expense_tracker.data.Payment
-import com.jonathan_russ.expense_tracker.data.Recurrence
+import com.jonathan_russ.expense_tracker.data.PaymentData
+import com.jonathan_russ.expense_tracker.data.RecurrenceEnum
 import com.jonathan_russ.expense_tracker.isSameDay
 import com.jonathan_russ.expense_tracker.viewmodel.database.ExpenseRepository
+import com.jonathan_russ.expense_tracker.viewmodel.database.Payment
 import com.jonathan_russ.expense_tracker.viewmodel.database.RecurrenceDatabase
-import com.jonathan_russ.expense_tracker.viewmodel.database.RecurringExpense
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
@@ -23,26 +23,26 @@ import java.util.concurrent.TimeUnit
 class DebtsViewModel(
     private val expenseRepository: ExpenseRepository?,
 ) : ViewModel() {
-    private val _upcomingPaymentsData = mutableStateListOf<Payment>()
-    val upcomingPaymentsData: ImmutableList<Payment>
+    private val _upcomingPaymentsData = mutableStateListOf<PaymentData>()
+    val upcomingPaymentsData: ImmutableList<PaymentData>
         get() = _upcomingPaymentsData.toImmutableList()
 
     init {
         viewModelScope.launch {
-            expenseRepository?.allRecurringExpensesByPrice?.collect { recurringExpenses ->
-                onDatabaseUpdated(recurringExpenses)
+            expenseRepository?.allPaymentsByPrice?.collect { payments ->
+                onDatabaseUpdated(payments)
             }
         }
     }
 
     fun onExpenseWithIdClicked(
         expenceId: Int,
-        onItemClicked: (Payment) -> Unit,
+        onItemClicked: (PaymentData) -> Unit,
     ) {
         viewModelScope.launch {
-            expenseRepository?.getRecurringExpenseById(expenceId)?.let {
-                val recurringExpenseData =
-                    Payment(
+            expenseRepository?.getPaymentById(expenceId)?.let {
+                val paymentData =
+                    PaymentData(
                         id = it.id,
                         name = it.name!!,
                         description = it.description!!,
@@ -52,14 +52,14 @@ class DebtsViewModel(
                         recurrence = getRecurrenceFromDatabaseInt(it.recurrence!!),
                         firstPayment = it.firstPayment!!,
                     )
-                onItemClicked(recurringExpenseData)
+                onItemClicked(paymentData)
             }
         }
     }
 
-    private fun onDatabaseUpdated(recurringExpenses: List<RecurringExpense>) {
+    private fun onDatabaseUpdated(payments: List<Payment>) {
         _upcomingPaymentsData.clear()
-        recurringExpenses.forEach {
+        payments.forEach {
             val firstPayment = it.firstPayment!!
             val nextPaymentInMilliseconds =
                 getNextPaymentInMilliseconds(firstPayment, it.everyXRecurrence!!, it.recurrence!!)
@@ -68,7 +68,7 @@ class DebtsViewModel(
                 DateFormat.getDateInstance().format(Date(nextPaymentInMilliseconds))
             if (firstPayment > 0L) {
                 _upcomingPaymentsData.add(
-                    Payment(
+                    PaymentData(
                         id = it.id,
                         name = it.name!!,
                         description = it.description!!,
@@ -120,13 +120,13 @@ class DebtsViewModel(
         return TimeUnit.MILLISECONDS.toDays(difference).toInt()
     }
 
-    private fun getRecurrenceFromDatabaseInt(recurrenceInt: Int): Recurrence {
+    private fun getRecurrenceFromDatabaseInt(recurrenceInt: Int): RecurrenceEnum {
         return when (recurrenceInt) {
-            RecurrenceDatabase.Daily.value -> Recurrence.Daily
-            RecurrenceDatabase.Weekly.value -> Recurrence.Weekly
-            RecurrenceDatabase.Monthly.value -> Recurrence.Monthly
-            RecurrenceDatabase.Yearly.value -> Recurrence.Yearly
-            else -> Recurrence.Monthly
+            RecurrenceDatabase.Daily.value -> RecurrenceEnum.Daily
+            RecurrenceDatabase.Weekly.value -> RecurrenceEnum.Weekly
+            RecurrenceDatabase.Monthly.value -> RecurrenceEnum.Monthly
+            RecurrenceDatabase.Yearly.value -> RecurrenceEnum.Yearly
+            else -> RecurrenceEnum.Monthly
         }
     }
 

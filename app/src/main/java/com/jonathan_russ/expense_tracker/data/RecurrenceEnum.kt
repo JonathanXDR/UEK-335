@@ -3,7 +3,7 @@ package com.jonathan_russ.expense_tracker.data
 import androidx.annotation.StringRes
 import com.jonathan_russ.expense_tracker.R
 
-enum class Recurrence(
+enum class RecurrenceEnum(
     @StringRes val fullStringRes: Int,
     @StringRes val shortStringRes: Int,
 ) {

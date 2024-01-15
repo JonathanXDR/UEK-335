@@ -7,9 +7,9 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [RecurringExpense::class], version = 3)
+@Database(entities = [Payment::class], version = 3)
 abstract class Paymentbase : RoomDatabase() {
-    abstract fun recurringExpenseDao(): RecurringExpenseDao
+    abstract fun paymentDao(): PaymentDao
 
     companion object {
         @Volatile

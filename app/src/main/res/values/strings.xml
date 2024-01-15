@@ -23,7 +23,7 @@
     <string name="edit_expense_name">Name</string>
     <string name="edit_expense_name_placeholder">Netflix</string>
     <string name="edit_expense_price">Price</string>
-    <string name="edit_expense_recurrence">Recurrence</string>
+    <string name="edit_expense_recurrence">RecurrenceEnum</string>
     <string name="edit_expense_recurrence_day">Day(s)</string>
     <string name="edit_expense_recurrence_day_short">D</string>
     <string name="edit_expense_recurrence_week">Week(s)</string>
@@ -32,7 +32,7 @@
     <string name="edit_expense_recurrence_month_short">M</string>
     <string name="edit_expense_recurrence_year">Year(s)</string>
     <string name="edit_expense_recurrence_year_short">Y</string>
-    <string name="edit_expense_first_payment">First Payment (optional)</string>
+    <string name="edit_expense_first_payment">First PaymentData (optional)</string>
     <string name="edit_expense_first_payment_placeholder">Today</string>
     <string name="edit_expense_location">Location (optional)</string>
     <string name="edit_expense_location_placeholder">Zürich</string>

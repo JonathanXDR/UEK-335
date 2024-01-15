@@ -26,7 +26,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.R
-import com.jonathan_russ.expense_tracker.data.Recurrence
+import com.jonathan_russ.expense_tracker.data.RecurrenceEnum
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,8 +34,8 @@ fun RecurrenceOption(
     everyXRecurrence: TextFieldValue,
     onEveryXRecurrenceChanged: (TextFieldValue) -> Unit,
     everyXRecurrenceInputError: Boolean,
-    selectedRecurrence: Recurrence,
-    onSelectRecurrence: (Recurrence) -> Unit,
+    selectedRecurrence: RecurrenceEnum,
+    onSelectRecurrence: (RecurrenceEnum) -> Unit,
     onNext: KeyboardActionScope.() -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -85,7 +85,7 @@ fun RecurrenceOption(
                     expanded = recurrenceExpanded,
                     onDismissRequest = { recurrenceExpanded = false },
                 ) {
-                    Recurrence.entries.forEach {
+                    RecurrenceEnum.entries.forEach {
                         DropdownMenuItem(
                             text = { Text(text = stringResource(id = it.fullStringRes)) },
                             onClick = {
