@@ -9,8 +9,8 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jonathan_russ.expense_tracker.data.PaymentData
 import com.jonathan_russ.expense_tracker.data.RecurrenceEnum
 import com.jonathan_russ.expense_tracker.isSameDay
-import com.jonathan_russ.expense_tracker.viewmodel.database.ExpenseRepository
 import com.jonathan_russ.expense_tracker.viewmodel.database.Payment
+import com.jonathan_russ.expense_tracker.viewmodel.database.PaymentRepository
 import com.jonathan_russ.expense_tracker.viewmodel.database.RecurrenceDatabase
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -21,7 +21,7 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class DebtsViewModel(
-    private val expenseRepository: ExpenseRepository?,
+    private val paymentRepository: PaymentRepository?,
 ) : ViewModel() {
     private val _upcomingPaymentsData = mutableStateListOf<PaymentData>()
     val upcomingPaymentsData: ImmutableList<PaymentData>
@@ -29,7 +29,7 @@ class DebtsViewModel(
 
     init {
         viewModelScope.launch {
-            expenseRepository?.allPaymentsByPrice?.collect { payments ->
+            paymentRepository?.allPaymentsByPrice?.collect { payments ->
                 onDatabaseUpdated(payments)
             }
         }
@@ -40,7 +40,7 @@ class DebtsViewModel(
         onItemClicked: (PaymentData) -> Unit,
     ) {
         viewModelScope.launch {
-            expenseRepository?.getPaymentById(expenceId)?.let {
+            paymentRepository?.getPaymentById(expenceId)?.let {
                 val paymentData =
                     PaymentData(
                         id = it.id,
@@ -131,10 +131,10 @@ class DebtsViewModel(
     }
 
     companion object {
-        fun create(expenseRepository: ExpenseRepository): ViewModelProvider.Factory {
+        fun create(paymentRepository: PaymentRepository): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    DebtsViewModel(expenseRepository)
+                    DebtsViewModel(paymentRepository)
                 }
             }
         }

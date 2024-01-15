@@ -12,15 +12,15 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jonathan_russ.expense_tracker.data.PaymentData
 import com.jonathan_russ.expense_tracker.data.RecurrenceEnum
 import com.jonathan_russ.expense_tracker.toCurrencyString
-import com.jonathan_russ.expense_tracker.viewmodel.database.ExpenseRepository
 import com.jonathan_russ.expense_tracker.viewmodel.database.Payment
+import com.jonathan_russ.expense_tracker.viewmodel.database.PaymentRepository
 import com.jonathan_russ.expense_tracker.viewmodel.database.RecurrenceDatabase
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 class PaymentViewModel(
-    private val expenseRepository: ExpenseRepository,
+    private val paymentRepository: PaymentRepository,
 ) : ViewModel() {
     private val _paymentData = mutableStateListOf<PaymentData>()
     val paymentData: ImmutableList<PaymentData>
@@ -38,7 +38,7 @@ class PaymentViewModel(
 
     init {
         viewModelScope.launch {
-            expenseRepository.allPaymentsByPrice.collect { payments ->
+            paymentRepository.allPaymentsByPrice.collect { payments ->
                 onDatabaseUpdated(payments)
             }
         }
@@ -46,7 +46,7 @@ class PaymentViewModel(
 
     fun addPayment(payment: PaymentData) {
         viewModelScope.launch {
-            expenseRepository.insert(
+            paymentRepository.insert(
                 Payment(
                     id = 0,
                     name = payment.name,
@@ -68,7 +68,7 @@ class PaymentViewModel(
 
     fun editPayment(payment: PaymentData) {
         viewModelScope.launch {
-            expenseRepository.update(
+            paymentRepository.update(
                 Payment(
                     id = payment.id,
                     name = payment.name,
@@ -90,7 +90,7 @@ class PaymentViewModel(
 
     fun deletePayment(payment: PaymentData) {
         viewModelScope.launch {
-            expenseRepository.delete(
+            paymentRepository.delete(
                 Payment(
                     id = payment.id,
                     name = payment.name,
@@ -167,10 +167,10 @@ class PaymentViewModel(
     }
 
     companion object {
-        fun create(expenseRepository: ExpenseRepository): ViewModelProvider.Factory {
+        fun create(paymentRepository: PaymentRepository): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    PaymentViewModel(expenseRepository)
+                    PaymentViewModel(paymentRepository)
                 }
             }
         }

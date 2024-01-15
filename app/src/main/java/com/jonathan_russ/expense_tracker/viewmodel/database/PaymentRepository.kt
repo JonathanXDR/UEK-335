@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class ExpenseRepository(
+class PaymentRepository(
     private val paymentDao: PaymentDao,
 ) {
     val allPayments: Flow<List<Payment>> = paymentDao.getAll()
