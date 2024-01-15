@@ -5,11 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -28,9 +33,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -38,7 +45,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jonathan_russ.expense_tracker.data.BottomNavigation
-import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
+import com.jonathan_russ.expense_tracker.data.Payment
 import com.jonathan_russ.expense_tracker.ui.OverviewScreen
 import com.jonathan_russ.expense_tracker.ui.RecurringExpenseOverview
 import com.jonathan_russ.expense_tracker.ui.editexpense.EditRecurringExpense
@@ -89,10 +96,10 @@ fun MainActivityContent(
     weeklyExpense: String,
     monthlyExpense: String,
     yearlyExpense: String,
-    recurringExpenseData: ImmutableList<RecurringExpenseData>,
-    onRecurringExpenseAdded: (RecurringExpenseData) -> Unit,
-    onRecurringExpenseEdited: (RecurringExpenseData) -> Unit,
-    onRecurringExpenseDeleted: (RecurringExpenseData) -> Unit,
+    recurringExpenseData: ImmutableList<Payment>,
+    onRecurringExpenseAdded: (Payment) -> Unit,
+    onRecurringExpenseEdited: (Payment) -> Unit,
+    onRecurringExpenseDeleted: (Payment) -> Unit,
     upcomingPaymentsViewModel: DebtsViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -112,7 +119,7 @@ fun MainActivityContent(
 
     var addRecurringExpenseVisible by rememberSaveable { mutableStateOf(false) }
 
-    var selectedRecurringExpense by rememberSaveable { mutableStateOf<RecurringExpenseData?>(null) }
+    var selectedRecurringExpense by rememberSaveable { mutableStateOf<Payment?>(null) }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -263,4 +270,97 @@ fun MainActivityContent(
             )
         }
     }
+
+    @Composable
+    fun BalanceOverview(
+        totalBalance: String,
+        income: String,
+        expense: String,
+        modifier: Modifier = Modifier
+    ) {
+        Card(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Total Balance",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = totalBalance,
+                    style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Text(
+                            text = "Income",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = income,
+                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Medium)
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = "Expense",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = expense,
+                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Medium)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun MonthlySummary(income: String, expense: String, modifier: Modifier = Modifier) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // SummaryCard("Income", income)
+            // SummaryCard("Expense", expense)
+        }
+    }
+
+    @Composable
+    fun SummaryCard(label: String, amount: String) {
+        Card {
+            Column(
+                modifier =
+
+                Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = amount,
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
+    }
 }
+
+
+

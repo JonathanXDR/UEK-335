@@ -28,8 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.R
-import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
-import com.jonathan_russ.expense_tracker.data.UpcomingPaymentData
+import com.jonathan_russ.expense_tracker.data.Payment
 import com.jonathan_russ.expense_tracker.toCurrencyString
 import com.jonathan_russ.expense_tracker.viewmodel.DebtsViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -37,7 +36,7 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun DebtsScreen(
     upcomingPaymentsViewModel: DebtsViewModel,
-    onItemClicked: (RecurringExpenseData) -> Unit,
+    onItemClicked: (Payment) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -62,7 +61,7 @@ fun DebtsScreen(
 
 @Composable
 private fun DebtsOverview(
-    upcomingPaymentsData: ImmutableList<UpcomingPaymentData>,
+    upcomingPaymentsData: ImmutableList<Payment>,
     onItemClicked: (Int) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -85,7 +84,7 @@ private fun DebtsOverview(
 
 @Composable
 private fun UpcomingPayment(
-    upcomingPaymentData: UpcomingPaymentData,
+    upcomingPaymentData: Payment,
     onItemClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

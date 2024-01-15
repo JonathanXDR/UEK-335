@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.jonathan_russ.expense_tracker.data.Payment
 import com.jonathan_russ.expense_tracker.data.Recurrence
-import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
 import com.jonathan_russ.expense_tracker.toCurrencyString
 import com.jonathan_russ.expense_tracker.viewmodel.database.ExpenseRepository
 import com.jonathan_russ.expense_tracker.viewmodel.database.RecurrenceDatabase
@@ -23,8 +23,8 @@ import kotlinx.coroutines.launch
 class RecurringExpenseViewModel(
     private val expenseRepository: ExpenseRepository,
 ) : ViewModel() {
-    private val _recurringExpenseData = mutableStateListOf<RecurringExpenseData>()
-    val recurringExpenseData: ImmutableList<RecurringExpenseData>
+    private val _recurringExpenseData = mutableStateListOf<Payment>()
+    val recurringExpenseData: ImmutableList<Payment>
         get() = _recurringExpenseData.toImmutableList()
 
     private var _weeklyExpense by mutableStateOf("")
@@ -45,7 +45,7 @@ class RecurringExpenseViewModel(
         }
     }
 
-    fun addRecurringExpense(recurringExpense: RecurringExpenseData) {
+    fun addRecurringExpense(recurringExpense: Payment) {
         viewModelScope.launch {
             expenseRepository.insert(
                 RecurringExpense(
@@ -61,7 +61,7 @@ class RecurringExpenseViewModel(
         }
     }
 
-    fun editRecurringExpense(recurringExpense: RecurringExpenseData) {
+    fun editRecurringExpense(recurringExpense: Payment) {
         viewModelScope.launch {
             expenseRepository.update(
                 RecurringExpense(
@@ -77,7 +77,7 @@ class RecurringExpenseViewModel(
         }
     }
 
-    fun deleteRecurringExpense(recurringExpense: RecurringExpenseData) {
+    fun deleteRecurringExpense(recurringExpense: Payment) {
         viewModelScope.launch {
             expenseRepository.delete(
                 RecurringExpense(
@@ -104,7 +104,7 @@ class RecurringExpenseViewModel(
         _recurringExpenseData.clear()
         recurringExpenses.forEach {
             _recurringExpenseData.add(
-                RecurringExpenseData(
+                Payment(
                     id = it.id,
                     name = it.name!!,
                     description = it.description!!,

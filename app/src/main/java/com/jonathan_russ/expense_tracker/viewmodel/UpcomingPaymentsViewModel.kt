@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.jonathan_russ.expense_tracker.data.Payment
 import com.jonathan_russ.expense_tracker.data.Recurrence
-import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
-import com.jonathan_russ.expense_tracker.data.UpcomingPaymentData
 import com.jonathan_russ.expense_tracker.isSameDay
 import com.jonathan_russ.expense_tracker.viewmodel.database.ExpenseRepository
 import com.jonathan_russ.expense_tracker.viewmodel.database.RecurrenceDatabase
@@ -24,8 +23,8 @@ import java.util.concurrent.TimeUnit
 class DebtsViewModel(
     private val expenseRepository: ExpenseRepository?,
 ) : ViewModel() {
-    private val _upcomingPaymentsData = mutableStateListOf<UpcomingPaymentData>()
-    val upcomingPaymentsData: ImmutableList<UpcomingPaymentData>
+    private val _upcomingPaymentsData = mutableStateListOf<Payment>()
+    val upcomingPaymentsData: ImmutableList<Payment>
         get() = _upcomingPaymentsData.toImmutableList()
 
     init {
@@ -38,12 +37,12 @@ class DebtsViewModel(
 
     fun onExpenseWithIdClicked(
         expenceId: Int,
-        onItemClicked: (RecurringExpenseData) -> Unit,
+        onItemClicked: (Payment) -> Unit,
     ) {
         viewModelScope.launch {
             expenseRepository?.getRecurringExpenseById(expenceId)?.let {
                 val recurringExpenseData =
-                    RecurringExpenseData(
+                    Payment(
                         id = it.id,
                         name = it.name!!,
                         description = it.description!!,
@@ -69,7 +68,7 @@ class DebtsViewModel(
                 DateFormat.getDateInstance().format(Date(nextPaymentInMilliseconds))
             if (firstPayment > 0L) {
                 _upcomingPaymentsData.add(
-                    UpcomingPaymentData(
+                    Payment(
                         id = it.id,
                         name = it.name!!,
                         description = it.description!!,

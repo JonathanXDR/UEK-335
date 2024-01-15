@@ -8,19 +8,19 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(entities = [RecurringExpense::class], version = 3)
-abstract class RecurringExpenseDatabase : RoomDatabase() {
+abstract class Paymentbase : RoomDatabase() {
     abstract fun recurringExpenseDao(): RecurringExpenseDao
 
     companion object {
         @Volatile
-        private var instance: RecurringExpenseDatabase? = null
+        private var instance: Paymentbase? = null
 
-        fun getDatabase(context: Context): RecurringExpenseDatabase {
+        fun getDatabase(context: Context): Paymentbase {
             return instance ?: synchronized(this) {
                 val tmpInstance =
                     Room.databaseBuilder(
                         context.applicationContext,
-                        RecurringExpenseDatabase::class.java,
+                        Paymentbase::class.java,
                         "recurring-expenses",
                     )
                         .addMigrations(migration_1_2)

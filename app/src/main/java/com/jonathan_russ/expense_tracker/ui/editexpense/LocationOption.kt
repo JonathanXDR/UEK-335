@@ -87,7 +87,10 @@ fun LocationOption(
             )
             ExpenseTextField(
                 value = TextFieldValue(locationText),
-                onValueChange = onLocationChanged,
+                onValueChange = {
+                    locationText = it.text
+                    onLocationChanged(it)
+                },
                 placeholder = stringResource(R.string.edit_expense_location_placeholder),
                 keyboardActions =
                 KeyboardActions(onNext = onNext),
