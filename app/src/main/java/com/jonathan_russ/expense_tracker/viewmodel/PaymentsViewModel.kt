@@ -23,9 +23,9 @@ import kotlinx.coroutines.launch
 class PaymentsViewModel(
     private val expenseRepository: PaymentRepository,
 ) : ViewModel() {
-    private val _recurringExpenseData = mutableStateListOf<RecurringPaymentData>()
-    val recurringExpenseData: ImmutableList<RecurringPaymentData>
-        get() = _recurringExpenseData.toImmutableList()
+    private val _recurringPaymentData = mutableStateListOf<RecurringPaymentData>()
+    val recurringPaymentData: ImmutableList<RecurringPaymentData>
+        get() = _recurringPaymentData.toImmutableList()
 
     private var _weeklyExpense by mutableStateOf("")
     private var _monthlyExpense by mutableStateOf("")
@@ -101,9 +101,9 @@ class PaymentsViewModel(
     }
 
     private fun onDatabaseUpdated(recurringExpenses: List<RecurringPayment>) {
-        _recurringExpenseData.clear()
+        _recurringPaymentData.clear()
         recurringExpenses.forEach {
-            _recurringExpenseData.add(
+            _recurringPaymentData.add(
                 RecurringPaymentData(
                     id = it.id,
                     name = it.name!!,
@@ -116,7 +116,7 @@ class PaymentsViewModel(
                 ),
             )
         }
-        _recurringExpenseData.sortByDescending { it.monthlyPrice }
+        _recurringPaymentData.sortByDescending { it.monthlyPrice }
         updateExpenseSummary()
     }
 
@@ -141,7 +141,7 @@ class PaymentsViewModel(
 
     private fun updateExpenseSummary() {
         var price = 0f
-        _recurringExpenseData.forEach {
+        _recurringPaymentData.forEach {
             price += it.monthlyPrice
         }
         _weeklyExpense = (price / (52 / 12f)).toCurrencyString()

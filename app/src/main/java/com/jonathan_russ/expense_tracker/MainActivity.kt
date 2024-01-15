@@ -39,7 +39,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jonathan_russ.expense_tracker.data.BottomNavigation
 import com.jonathan_russ.expense_tracker.data.RecurringPaymentData
-import com.jonathan_russ.expense_tracker.ui.editexpense.EditRecurringExpense
+import com.jonathan_russ.expense_tracker.ui.editexpense.EditPaymentSheet
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 import com.jonathan_russ.expense_tracker.ui.view.DebtsView
 import com.jonathan_russ.expense_tracker.ui.view.PaymentsView
@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                 weeklyExpense = paymentsViewModel.weeklyExpense,
                 monthlyExpense = paymentsViewModel.monthlyExpense,
                 yearlyExpense = paymentsViewModel.yearlyExpense,
-                recurringExpenseData = paymentsViewModel.recurringExpenseData,
+                recurringPaymentData = paymentsViewModel.recurringPaymentData,
                 onRecurringExpenseAdded = {
                     paymentsViewModel.addRecurringExpense(it)
                 },
@@ -88,7 +88,7 @@ fun MainActivityContent(
     weeklyExpense: String,
     monthlyExpense: String,
     yearlyExpense: String,
-    recurringExpenseData: ImmutableList<RecurringPaymentData>,
+    recurringPaymentData: ImmutableList<RecurringPaymentData>,
     onRecurringExpenseAdded: (RecurringPaymentData) -> Unit,
     onRecurringExpenseEdited: (RecurringPaymentData) -> Unit,
     onRecurringExpenseDeleted: (RecurringPaymentData) -> Unit,
@@ -101,9 +101,8 @@ fun MainActivityContent(
     val titleRes by remember {
         derivedStateOf {
             when (backStackEntry.value?.destination?.route) {
-                BottomNavigation.Home.route -> R.string.home_title
+                BottomNavigation.Payments.route -> R.string.home_title
                 BottomNavigation.Debts.route -> R.string.upcoming_title
-                BottomNavigation.Overview.route -> R.string.overview_title
                 else -> R.string.home_title
             }
         }
@@ -117,9 +116,8 @@ fun MainActivityContent(
 
     val bottomNavigationItems =
         listOf(
-            BottomNavigation.Home,
+            BottomNavigation.Payments,
             BottomNavigation.Debts,
-            BottomNavigation.Overview,
         )
 
     ExpenseTrackerTheme {
@@ -175,7 +173,7 @@ fun MainActivityContent(
                     }
                 },
                 floatingActionButton = {
-                    if (BottomNavigation.Home.route == backStackEntry.value?.destination?.route ||
+                    if (BottomNavigation.Payments.route == backStackEntry.value?.destination?.route ||
                         BottomNavigation.Debts.route == backStackEntry.value?.destination?.route
                     ) {
                         FloatingActionButton(onClick = {
@@ -192,18 +190,18 @@ fun MainActivityContent(
                 content = { paddingValues ->
                     NavHost(
                         navController = navController,
-                        startDestination = BottomNavigation.Home.route,
+                        startDestination = BottomNavigation.Payments.route,
                         modifier =
                         Modifier
                             .fillMaxSize()
                             .padding(paddingValues),
                     ) {
-                        composable(BottomNavigation.Home.route) {
+                        composable(BottomNavigation.Payments.route) {
                             PaymentsView(
                                 weeklyExpense = weeklyExpense,
                                 monthlyExpense = monthlyExpense,
                                 yearlyExpense = yearlyExpense,
-                                recurringExpenseData = recurringExpenseData,
+                                recurringPaymentData = recurringPaymentData,
                                 onItemClicked = {
                                     selectedRecurringExpense = it
                                 },
@@ -233,7 +231,7 @@ fun MainActivityContent(
                         }
                     }
                     if (addRecurringExpenseVisible) {
-                        EditRecurringExpense(
+                        EditPaymentSheet(
                             onUpdateExpense = {
                                 onRecurringExpenseAdded(it)
                                 addRecurringExpenseVisible = false
@@ -242,7 +240,7 @@ fun MainActivityContent(
                         )
                     }
                     if (selectedRecurringExpense != null) {
-                        EditRecurringExpense(
+                        EditPaymentSheet(
                             onUpdateExpense = {
                                 onRecurringExpenseEdited(it)
                                 selectedRecurringExpense = null

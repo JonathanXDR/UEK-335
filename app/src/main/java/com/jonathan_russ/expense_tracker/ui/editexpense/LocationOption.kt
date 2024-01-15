@@ -46,7 +46,7 @@ import java.util.Locale
 
 @Composable
 fun LocationOption(
-    location: Location?,
+    location: String?,
     onLocationSelected: (String) -> Unit,
     onLocationChanged: (TextFieldValue) -> Unit,
     locationInputError: Boolean,
@@ -55,7 +55,8 @@ fun LocationOption(
 ) {
     val context = LocalContext.current
     val fusedLocationClient = rememberFusedLocationProviderClient(context)
-    var locationText by remember { mutableStateOf("") }
+    var locationText by remember { mutableStateOf(TextFieldValue("")) }
+    var autoLocationAcquired by remember { mutableStateOf(false) }
     var showPermissionDeniedDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
@@ -63,9 +64,11 @@ fun LocationOption(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted: Boolean ->
             if (isGranted) {
+                autoLocationAcquired = true
                 getCurrentLocation(context, fusedLocationClient) { location ->
-                    locationText = location
+                    locationText = TextFieldValue(location)
                     onLocationSelected(location)
+                    autoLocationAcquired = false
                 }
             } else {
                 showPermissionDeniedDialog = true
@@ -77,42 +80,51 @@ fun LocationOption(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Column(modifier = modifier.padding(top = 16.dp)) {
+        Column(modifier = Modifier.padding(top = 16.dp)) {
             Text(
                 text = stringResource(R.string.edit_expense_location),
                 style = MaterialTheme.typography.bodyLarge,
             )
-            ExpenseTextField(
-                value = TextFieldValue(locationText),
-                onValueChange = onLocationChanged,
-                placeholder = stringResource(R.string.edit_expense_location_placeholder),
-                keyboardActions =
-                KeyboardActions(onNext = onNext),
-                singleLine = true,
-                isError = locationInputError,
-                modifier =
-                Modifier
-                    .padding(vertical = 8.dp),
-            )
-        }
 
-        IconButton(
-            modifier = Modifier.padding(
-                horizontal = 16.dp,
-            ),
-            onClick = {
-                scope.launch {
-                    requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            Row(
+
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                ExpenseTextField(
+                    value = locationText,
+                    onValueChange = {
+                        locationText = it
+                        onLocationChanged(it)
+                        autoLocationAcquired = false
+                    },
+                    placeholder = stringResource(R.string.edit_expense_location_placeholder),
+                    keyboardActions = KeyboardActions(onNext = onNext),
+                    singleLine = true,
+                    isError = locationInputError,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = 8.dp),
+                )
+
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        }
+                    },
+                ) {
+                    Icon(
+                        Icons.Filled.MyLocation,
+                        contentDescription = stringResource(R.string.edit_expense_location_get_current)
+                    )
                 }
-            },
-        ) {
-            Icon(
-                Icons.Filled.MyLocation,
-                contentDescription = stringResource(R.string.edit_expense_location_get_current)
-            )
+            }
         }
 
         if (showPermissionDeniedDialog) {
@@ -142,7 +154,6 @@ fun LocationOption(
         }
     }
 }
-
 
 @Composable
 fun rememberFusedLocationProviderClient(context: Context): FusedLocationProviderClient {

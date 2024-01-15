@@ -1,14 +1,14 @@
 package com.jonathan_russ.expense_tracker.ui.editexpense
 
+
 import LocationOption
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -27,7 +27,6 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -42,7 +41,7 @@ import com.jonathan_russ.expense_tracker.toLocalString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditRecurringExpense(
+fun EditPaymentSheet(
     onUpdateExpense: (RecurringPaymentData) -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
@@ -59,7 +58,7 @@ fun EditRecurringExpense(
         windowInsets = WindowInsets.statusBars,
         modifier = modifier,
     ) {
-        EditRecurringExpenseInternal(
+        EditPaymentInternal(
             onUpdateExpense = onUpdateExpense,
             confirmButtonString =
             if (currentData == null) {
@@ -76,7 +75,7 @@ fun EditRecurringExpense(
 }
 
 @Composable
-private fun EditRecurringExpenseInternal(
+private fun EditPaymentInternal(
     onUpdateExpense: (RecurringPaymentData) -> Unit,
     confirmButtonString: String,
     modifier: Modifier = Modifier,
@@ -172,14 +171,18 @@ private fun EditRecurringExpenseInternal(
         ) { selectedCategory ->
             handleCategorySelected(selectedCategory)
         }
-
+        ReminderOption(
+            reminder = reminder.value,
+            onReminderToggled = { reminderState ->
+                reminder.value = reminderState
+            },
+        )
         Row(
             modifier =
             Modifier
                 .fillMaxWidth()
-                .wrapContentWidth(align = Alignment.CenterHorizontally)
-                .navigationBarsPadding()
                 .padding(top = 8.dp, bottom = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             if (currentData != null) {
                 OutlinedButton(
@@ -193,11 +196,9 @@ private fun EditRecurringExpenseInternal(
                     modifier =
                     Modifier
                         .weight(1f)
-                        .wrapContentWidth(),
                 ) {
                     Text(
                         text = stringResource(R.string.edit_expense_button_delete),
-                        modifier = Modifier.padding(vertical = 4.dp),
                     )
                 }
             }
@@ -213,6 +214,11 @@ private fun EditRecurringExpenseInternal(
                         everyXRecurrenceState,
                         selectedRecurrence,
                         firstPaymentDate,
+                        nextPaymentRemainingDays,
+                        nextPaymentDate,
+                        location,
+                        category,
+                        reminder,
                         onUpdateExpense,
                         currentData,
                     )
@@ -220,7 +226,6 @@ private fun EditRecurringExpenseInternal(
                 modifier =
                 Modifier
                     .weight(1f)
-                    .wrapContentWidth(),
             ) {
                 Text(
                     text = confirmButtonString,
@@ -241,8 +246,13 @@ private fun onConfirmClicked(
     everyXRecurrenceState: TextFieldValue,
     selectedRecurrence: RecurrenceEnum,
     firstPayment: Long,
+    nextPaymentRemainingDays: MutableState<Int>,
+    nextPaymentDate: MutableState<String>,
+    location: MutableState<String>,
+    category: MutableState<String>,
+    reminder: MutableState<Boolean>,
     onUpdateExpense: (RecurringPaymentData) -> Unit,
-    currentData: RecurringPaymentData?,
+    currentData: RecurringPaymentData?
 ) {
     nameInputError.value = false
     priceInputError.value = false
@@ -250,14 +260,23 @@ private fun onConfirmClicked(
 
     val name = nameState.text
     val description = descriptionState.text
-    val price = priceState.text
-    val everyXRecurrence = everyXRecurrenceState.text
+    val price =
+        priceState.text.toFloatIgnoreSeparator()
+    val everyXRecurrence = everyXRecurrenceState.text.toIntOrNull()
+        ?: 1
+    val nextPaymentRemainingDaysValue =
+        nextPaymentRemainingDays.value
+    val nextPaymentDateValue = nextPaymentDate.value
+    val locationValue = location.value
+    val categoryValue = category.value
+    val reminderValue = reminder.value
+
     if (verifyUserInput(
             name = name,
             onNameInputError = { nameInputError.value = true },
-            price = price,
+            price = price.toString(),
             onPriceInputError = { priceInputError.value = true },
-            everyXRecurrence = everyXRecurrence,
+            everyXRecurrence = everyXRecurrence.toString(),
             onEveryXRecurrenceError = { everyXRecurrenceInputError.value = true },
         )
     ) {
@@ -266,14 +285,15 @@ private fun onConfirmClicked(
                 id = currentData?.id ?: 0,
                 name = name,
                 description = description,
-                price = price.toFloatIgnoreSeparator(),
-                monthlyPrice = price.toFloatIgnoreSeparator(),
-                everyXRecurrence = everyXRecurrence.toIntOrNull() ?: 1,
+                price = price,
+                monthlyPrice = price,
+                everyXRecurrence = everyXRecurrence,
                 recurrence = selectedRecurrence,
                 firstPayment = firstPayment,
             ),
         )
     }
+
 }
 
 private fun verifyUserInput(

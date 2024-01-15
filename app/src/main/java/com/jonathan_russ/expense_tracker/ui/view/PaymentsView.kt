@@ -32,7 +32,7 @@ fun PaymentsView(
     weeklyExpense: String,
     monthlyExpense: String,
     yearlyExpense: String,
-    recurringExpenseData: ImmutableList<RecurringPaymentData>,
+    recurringPaymentData: ImmutableList<RecurringPaymentData>,
     onItemClicked: (RecurringPaymentData) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -50,11 +50,11 @@ fun PaymentsView(
                 modifier = Modifier.padding(bottom = 8.dp),
             )
         }
-        items(items = recurringExpenseData) { recurringExpenseData ->
+        items(items = recurringPaymentData) { recurringPaymentData ->
             RecurringPayment(
-                recurringExpenseData = recurringExpenseData,
+                recurringPaymentData = recurringPaymentData,
                 onItemClicked = {
-                    onItemClicked(recurringExpenseData)
+                    onItemClicked(recurringPaymentData)
                 },
             )
         }
@@ -117,7 +117,7 @@ private fun PaymentSummary(
 
 @Composable
 private fun RecurringPayment(
-    recurringExpenseData: RecurringPaymentData,
+    recurringPaymentData: RecurringPaymentData,
     onItemClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -135,14 +135,14 @@ private fun RecurringPayment(
                     .weight(1f),
             ) {
                 Text(
-                    text = recurringExpenseData.name,
+                    text = recurringPaymentData.name,
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                if (recurringExpenseData.description.isNotBlank()) {
+                if (recurringPaymentData.description.isNotBlank()) {
                     Text(
-                        text = recurringExpenseData.description,
+                        text = recurringPaymentData.description,
                         style = MaterialTheme.typography.bodyLarge,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
@@ -151,17 +151,17 @@ private fun RecurringPayment(
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = recurringExpenseData.monthlyPrice.toCurrencyString(),
+                    text = recurringPaymentData.monthlyPrice.toCurrencyString(),
                     style = MaterialTheme.typography.headlineSmall,
                 )
-                if (recurringExpenseData.recurrence != RecurrenceEnum.Monthly ||
-                    recurringExpenseData.everyXRecurrence != 1
+                if (recurringPaymentData.recurrence != RecurrenceEnum.Monthly ||
+                    recurringPaymentData.everyXRecurrence != 1
                 ) {
                     Text(
                         text =
-                        "${recurringExpenseData.price.toCurrencyString()} / " +
-                                "${recurringExpenseData.everyXRecurrence} " +
-                                stringResource(id = recurringExpenseData.recurrence.shortStringRes),
+                        "${recurringPaymentData.price.toCurrencyString()} / " +
+                                "${recurringPaymentData.everyXRecurrence} " +
+                                stringResource(id = recurringPaymentData.recurrence.shortStringRes),
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.End,
                     )

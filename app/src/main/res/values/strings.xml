@@ -2,11 +2,11 @@
     <string name="app_name">Expense Tracker</string>
 
     <!-- Bottom Navigation -->
-    <string name="bottom_nav_home">Home</string>
+    <string name="bottom_nav_home">Payments</string>
     <string name="bottom_nav_upcoming">Debts</string>
     <string name="bottom_nav_overview">Overview</string>
 
-    <!-- Home Tab -->
+    <!-- Payments Tab -->
     <string name="home_title">Expense Tracker</string>
     <string name="home_summary_monthly">Monthly</string>
     <string name="home_summary_weekly">Weekly</string>
@@ -32,7 +32,7 @@
     <string name="edit_expense_recurrence_month_short">M</string>
     <string name="edit_expense_recurrence_year">Year(s)</string>
     <string name="edit_expense_recurrence_year_short">Y</string>
-    <string name="edit_expense_first_payment">First PaymentData (optional)</string>
+    <string name="edit_expense_first_payment">First RecurringPaymentData (optional)</string>
     <string name="edit_expense_first_payment_placeholder">Today</string>
     <string name="edit_expense_location">Location (optional)</string>
     <string name="edit_expense_location_placeholder">Zürich</string>
@@ -49,9 +49,6 @@
     <string name="upcoming_time_remaining_today">today</string>
     <string name="upcoming_time_remaining_tomorrow">tomorrow</string>
     <string name="upcoming_time_remaining_days">in %1$d days</string>
-
-    <!-- Overview Tab -->
-    <string name="overview_title">Overview</string>
 
     <!-- General -->
     <string name="dialog_ok">OK</string>

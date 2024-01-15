@@ -42,7 +42,7 @@ class DebtsViewModel(
     ) {
         viewModelScope.launch {
             expenseRepository?.getRecurringExpenseById(expenceId)?.let {
-                val recurringExpenseData =
+                val recurringPaymentData =
                     RecurringPaymentData(
                         id = it.id,
                         name = it.name!!,
@@ -53,7 +53,7 @@ class DebtsViewModel(
                         recurrence = getRecurrenceFromDatabaseInt(it.recurrence!!),
                         firstPayment = it.firstPayment!!,
                     )
-                onItemClicked(recurringExpenseData)
+                onItemClicked(recurringPaymentData)
             }
         }
     }
