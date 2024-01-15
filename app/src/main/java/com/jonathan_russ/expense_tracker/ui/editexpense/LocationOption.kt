@@ -55,7 +55,8 @@ fun LocationOption(
 ) {
     val context = LocalContext.current
     val fusedLocationClient = rememberFusedLocationProviderClient(context)
-    var locationText by remember { mutableStateOf("") }
+    var locationText by remember { mutableStateOf(TextFieldValue("")) }
+    var autoLocationAcquired by remember { mutableStateOf(false) }
     var showPermissionDeniedDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
@@ -64,8 +65,10 @@ fun LocationOption(
         onResult = { isGranted: Boolean ->
             if (isGranted) {
                 getCurrentLocation(context, fusedLocationClient) { location ->
-                    locationText = location
-                    onLocationSelected(location)
+                    if (!autoLocationAcquired) {
+                        locationText = TextFieldValue(location)
+                        onLocationSelected(location)
+                    }
                 }
             } else {
                 showPermissionDeniedDialog = true
@@ -86,28 +89,27 @@ fun LocationOption(
                 style = MaterialTheme.typography.bodyLarge,
             )
             ExpenseTextField(
-                value = TextFieldValue(locationText),
+                value = locationText,
                 onValueChange = {
-                    locationText = it.text
+                    locationText = it
                     onLocationChanged(it)
+                    autoLocationAcquired = false
                 },
                 placeholder = stringResource(R.string.edit_expense_location_placeholder),
-                keyboardActions =
-                KeyboardActions(onNext = onNext),
+                keyboardActions = KeyboardActions(onNext = onNext),
                 singleLine = true,
                 isError = locationInputError,
-                modifier =
-                Modifier
+                modifier = Modifier
                     .padding(vertical = 8.dp),
             )
         }
 
+
         IconButton(
-            modifier = Modifier.padding(
-                horizontal = 16.dp,
-            ),
+            modifier = Modifier.padding(horizontal = 16.dp),
             onClick = {
                 scope.launch {
+                    autoLocationAcquired = true
                     requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                 }
             },
@@ -145,7 +147,6 @@ fun LocationOption(
         }
     }
 }
-
 
 @Composable
 fun rememberFusedLocationProviderClient(context: Context): FusedLocationProviderClient {
