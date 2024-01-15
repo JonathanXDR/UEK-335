@@ -4,7 +4,6 @@ package com.jonathan_russ.expense_tracker.ui.editexpense
 import LocationOption
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
@@ -193,8 +192,10 @@ private fun EditPaymentInternal(
             handleCategorySelected(selectedCategory)
         }
         ReminderOption(
-            reminder = reminder,
-            onReminderToggled = { reminder.value = it },
+            reminder = reminder.value,
+            onReminderToggled = { reminderState ->
+                reminder.value = reminderState
+            },
         )
         Row(
             modifier =
@@ -359,9 +360,9 @@ private fun isEveryXRecurrenceValid(everyXRecurrence: String): Boolean {
 
 fun MainActivity.scheduleNotification(timeInMillis: Long) {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val intent = Intent(this, BroadcastReceiver::class.java)
+    val intent = Intent(this, android.content.BroadcastReceiver::class.java)
+    // Make sure to properly configure the intent as needed for the BroadcastReceiver
     val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
-
 
     alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
 }

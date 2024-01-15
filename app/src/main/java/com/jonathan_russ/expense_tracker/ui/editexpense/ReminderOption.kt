@@ -16,9 +16,11 @@ import com.jonathan_russ.expense_tracker.R
 
 @Composable
 fun ReminderOption(
-    reminder: Reminder?,
-    onReminderToggled: (String) -> Unit,
+    reminder: Boolean,
+    onReminderToggled: (Boolean) -> Unit,
 ) {
+    val context = LocalContext.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -29,23 +31,21 @@ fun ReminderOption(
             text = stringResource(R.string.edit_expense_set_reminder),
             modifier = Modifier.weight(1f)
         )
-        Switch(
-            checked = reminder.value,
-            onCheckedChange = {
-                reminder.value = it
-                if (it) {
 
-                    val timeForNotification =
-                        // random time for testing
-                        System.currentTimeMillis() + 5000L
-                    (LocalContext.current as? MainActivity)?.scheduleNotification(
+        Switch(
+            checked = reminder,
+            onCheckedChange = { newValue ->
+                onReminderToggled(newValue)
+                if (newValue) {
+                    val timeForNotification = System.currentTimeMillis() + 5000L
+                    (context as? MainActivity)?.scheduleNotification(
                         timeForNotification
                     )
                 }
             },
         )
-
     }
 }
+
 
 
