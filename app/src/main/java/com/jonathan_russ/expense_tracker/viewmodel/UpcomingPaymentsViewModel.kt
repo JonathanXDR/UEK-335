@@ -21,7 +21,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
-class UpcomingPaymentsViewModel(
+class DebtsViewModel(
     private val expenseRepository: ExpenseRepository?,
 ) : ViewModel() {
     private val _upcomingPaymentsData = mutableStateListOf<UpcomingPaymentData>()
@@ -135,7 +135,7 @@ class UpcomingPaymentsViewModel(
         fun create(expenseRepository: ExpenseRepository): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    UpcomingPaymentsViewModel(expenseRepository)
+                    DebtsViewModel(expenseRepository)
                 }
             }
         }

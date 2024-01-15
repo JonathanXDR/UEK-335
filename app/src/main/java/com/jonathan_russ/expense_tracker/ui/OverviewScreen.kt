@@ -12,11 +12,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SettingsScreen() {
+fun OverviewScreen() {
 }
 
 @Composable
-private fun SettingsHeaderElement(
+private fun OverviewHeaderElement(
     @StringRes header: Int,
     modifier: Modifier = Modifier,
 ) {

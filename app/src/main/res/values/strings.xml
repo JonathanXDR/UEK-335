@@ -3,8 +3,8 @@
 
     <!-- Bottom Navigation -->
     <string name="bottom_nav_home">Home</string>
-    <string name="bottom_nav_upcoming">Upcoming</string>
-    <string name="bottom_nav_settings">Settings</string>
+    <string name="bottom_nav_upcoming">Debts</string>
+    <string name="bottom_nav_overview">Overview</string>
 
     <!-- Home Tab -->
     <string name="home_title">Expense Tracker</string>
@@ -42,22 +42,15 @@
     <string name="edit_expense_category">Category</string>
     <string name="edit_expense_category_chip_description">Selected</string>
 
-    <!-- Upcoming Payments Tab -->
-    <string name="upcoming_title">Upcoming Payments</string>
+    <!-- Debts Tab -->
+    <string name="upcoming_title">Debts</string>
     <string name="upcoming_placeholder_title">Define a first payment date for expenses to see an overview of upcoming payments</string>
     <string name="upcoming_time_remaining_today">today</string>
     <string name="upcoming_time_remaining_tomorrow">tomorrow</string>
     <string name="upcoming_time_remaining_days">in %1$d days</string>
 
-    <!-- Settings Tab -->
-    <string name="settings_title">Settings</string>
-    <string name="settings_backup">Backup</string>
-    <string name="settings_backup_create">Create backup</string>
-    <string name="settings_backup_restore">Restore backup</string>
-    <string name="settings_backup_created_toast">Backup successful</string>
-    <string name="settings_backup_not_created_toast">Backup failed</string>
-    <string name="settings_backup_restored_toast">Backup restored</string>
-    <string name="settings_backup_not_restored_toast">Backup could not be restored</string>
+    <!-- Overview Tab -->
+    <string name="overview_title">Overview</string>
 
     <!-- General -->
     <string name="dialog_ok">OK</string>

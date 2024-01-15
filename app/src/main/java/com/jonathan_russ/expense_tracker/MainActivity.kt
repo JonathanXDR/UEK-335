@@ -39,24 +39,23 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jonathan_russ.expense_tracker.data.BottomNavigation
 import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
+import com.jonathan_russ.expense_tracker.ui.OverviewScreen
 import com.jonathan_russ.expense_tracker.ui.RecurringExpenseOverview
-import com.jonathan_russ.expense_tracker.ui.SettingsScreen
 import com.jonathan_russ.expense_tracker.ui.editexpense.EditRecurringExpense
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
-import com.jonathan_russ.expense_tracker.ui.upcomingexpenses.UpcomingPaymentsScreen
+import com.jonathan_russ.expense_tracker.ui.upcomingexpenses.DebtsScreen
+import com.jonathan_russ.expense_tracker.viewmodel.DebtsViewModel
 import com.jonathan_russ.expense_tracker.viewmodel.RecurringExpenseViewModel
-import com.jonathan_russ.expense_tracker.viewmodel.SettingsViewModel
-import com.jonathan_russ.expense_tracker.viewmodel.UpcomingPaymentsViewModel
 import kotlinx.collections.immutable.ImmutableList
 
 class MainActivity : ComponentActivity() {
     private val recurringExpenseViewModel: RecurringExpenseViewModel by viewModels {
         RecurringExpenseViewModel.create((application as ExpenseTrackerApplication).repository)
     }
-    private val upcomingPaymentsViewModel: UpcomingPaymentsViewModel by viewModels {
-        UpcomingPaymentsViewModel.create((application as ExpenseTrackerApplication).repository)
+    private val upcomingPaymentsViewModel: DebtsViewModel by viewModels {
+        DebtsViewModel.create((application as ExpenseTrackerApplication).repository)
     }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -94,7 +93,7 @@ fun MainActivityContent(
     onRecurringExpenseAdded: (RecurringExpenseData) -> Unit,
     onRecurringExpenseEdited: (RecurringExpenseData) -> Unit,
     onRecurringExpenseDeleted: (RecurringExpenseData) -> Unit,
-    upcomingPaymentsViewModel: UpcomingPaymentsViewModel,
+    upcomingPaymentsViewModel: DebtsViewModel,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -104,8 +103,8 @@ fun MainActivityContent(
         derivedStateOf {
             when (backStackEntry.value?.destination?.route) {
                 BottomNavigation.Home.route -> R.string.home_title
-                BottomNavigation.Upcoming.route -> R.string.upcoming_title
-                BottomNavigation.Settings.route -> R.string.settings_title
+                BottomNavigation.Debts.route -> R.string.upcoming_title
+                BottomNavigation.Overview.route -> R.string.overview_title
                 else -> R.string.home_title
             }
         }
@@ -120,8 +119,8 @@ fun MainActivityContent(
     val bottomNavigationItems =
         listOf(
             BottomNavigation.Home,
-            BottomNavigation.Upcoming,
-            BottomNavigation.Settings,
+            BottomNavigation.Debts,
+            BottomNavigation.Overview,
         )
 
     ExpenseTrackerTheme {
@@ -178,7 +177,7 @@ fun MainActivityContent(
                 },
                 floatingActionButton = {
                     if (BottomNavigation.Home.route == backStackEntry.value?.destination?.route ||
-                        BottomNavigation.Upcoming.route == backStackEntry.value?.destination?.route
+                        BottomNavigation.Debts.route == backStackEntry.value?.destination?.route
                     ) {
                         FloatingActionButton(onClick = {
                             addRecurringExpenseVisible = true
@@ -221,8 +220,8 @@ fun MainActivityContent(
                                     .nestedScroll(scrollBehavior.nestedScrollConnection),
                             )
                         }
-                        composable(BottomNavigation.Upcoming.route) {
-                            UpcomingPaymentsScreen(
+                        composable(BottomNavigation.Debts.route) {
+                            DebtsScreen(
                                 upcomingPaymentsViewModel = upcomingPaymentsViewModel,
                                 onItemClicked = {
                                     selectedRecurringExpense = it
@@ -233,8 +232,8 @@ fun MainActivityContent(
                                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                             )
                         }
-                        composable(BottomNavigation.Settings.route) {
-                            SettingsScreen()
+                        composable(BottomNavigation.Overview.route) {
+                            OverviewScreen()
                         }
                     }
                     if (addRecurringExpenseVisible) {
