@@ -1,24 +1,15 @@
 package com.jonathan_russ.expense_tracker
 
-
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -37,11 +28,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -49,18 +38,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jonathan_russ.expense_tracker.data.BottomNavigation
-import com.jonathan_russ.expense_tracker.data.PaymentData
-import com.jonathan_russ.expense_tracker.ui.editexpense.EditPayment
+import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
+import com.jonathan_russ.expense_tracker.ui.OverviewScreen
+import com.jonathan_russ.expense_tracker.ui.RecurringExpenseOverview
+import com.jonathan_russ.expense_tracker.ui.editexpense.EditRecurringExpense
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
-import com.jonathan_russ.expense_tracker.view.DebtsView
-import com.jonathan_russ.expense_tracker.view.PaymentsView
+import com.jonathan_russ.expense_tracker.ui.upcomingexpenses.DebtsScreen
 import com.jonathan_russ.expense_tracker.viewmodel.DebtsViewModel
-import com.jonathan_russ.expense_tracker.viewmodel.PaymentsViewModel
+import com.jonathan_russ.expense_tracker.viewmodel.RecurringExpenseViewModel
 import kotlinx.collections.immutable.ImmutableList
 
 class MainActivity : ComponentActivity() {
-    private val paymentViewModel: PaymentsViewModel by viewModels {
-        PaymentsViewModel.create((application as ExpenseTrackerApplication).repository)
+    private val recurringExpenseViewModel: RecurringExpenseViewModel by viewModels {
+        RecurringExpenseViewModel.create((application as ExpenseTrackerApplication).repository)
     }
     private val upcomingPaymentsViewModel: DebtsViewModel by viewModels {
         DebtsViewModel.create((application as ExpenseTrackerApplication).repository)
@@ -68,24 +58,23 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        createNotificationChannel()
 
         enableEdgeToEdge()
 
         setContent {
             MainActivityContent(
-                weeklyExpense = paymentViewModel.weeklyExpense,
-                monthlyExpense = paymentViewModel.monthlyExpense,
-                yearlyExpense = paymentViewModel.yearlyExpense,
-                paymentData = paymentViewModel.paymentData,
-                onPaymentAdded = {
-                    paymentViewModel.addPayment(it)
+                weeklyExpense = recurringExpenseViewModel.weeklyExpense,
+                monthlyExpense = recurringExpenseViewModel.monthlyExpense,
+                yearlyExpense = recurringExpenseViewModel.yearlyExpense,
+                recurringExpenseData = recurringExpenseViewModel.recurringExpenseData,
+                onRecurringExpenseAdded = {
+                    recurringExpenseViewModel.addRecurringExpense(it)
                 },
-                onPaymentEdited = {
-                    paymentViewModel.editPayment(it)
+                onRecurringExpenseEdited = {
+                    recurringExpenseViewModel.editRecurringExpense(it)
                 },
-                onPaymentDeleted = {
-                    paymentViewModel.deletePayment(it)
+                onRecurringExpenseDeleted = {
+                    recurringExpenseViewModel.deleteRecurringExpense(it)
                 },
                 upcomingPaymentsViewModel = upcomingPaymentsViewModel,
             )
@@ -100,10 +89,10 @@ fun MainActivityContent(
     weeklyExpense: String,
     monthlyExpense: String,
     yearlyExpense: String,
-    paymentData: ImmutableList<PaymentData>,
-    onPaymentAdded: (PaymentData) -> Unit,
-    onPaymentEdited: (PaymentData) -> Unit,
-    onPaymentDeleted: (PaymentData) -> Unit,
+    recurringExpenseData: ImmutableList<RecurringExpenseData>,
+    onRecurringExpenseAdded: (RecurringExpenseData) -> Unit,
+    onRecurringExpenseEdited: (RecurringExpenseData) -> Unit,
+    onRecurringExpenseDeleted: (RecurringExpenseData) -> Unit,
     upcomingPaymentsViewModel: DebtsViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -115,14 +104,15 @@ fun MainActivityContent(
             when (backStackEntry.value?.destination?.route) {
                 BottomNavigation.Home.route -> R.string.home_title
                 BottomNavigation.Debts.route -> R.string.upcoming_title
+                BottomNavigation.Overview.route -> R.string.overview_title
                 else -> R.string.home_title
             }
         }
     }
 
-    var addPaymentVisible by rememberSaveable { mutableStateOf(false) }
+    var addRecurringExpenseVisible by rememberSaveable { mutableStateOf(false) }
 
-    var selectedPayment by rememberSaveable { mutableStateOf<PaymentData?>(null) }
+    var selectedRecurringExpense by rememberSaveable { mutableStateOf<RecurringExpenseData?>(null) }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -130,6 +120,7 @@ fun MainActivityContent(
         listOf(
             BottomNavigation.Home,
             BottomNavigation.Debts,
+            BottomNavigation.Overview,
         )
 
     ExpenseTrackerTheme {
@@ -158,10 +149,16 @@ fun MainActivityContent(
                                 selected = selected,
                                 onClick = {
                                     navController.navigate(item.route) {
+                                        // Pop up to the start destination of the graph to
+                                        // avoid building up a large stack of destinations
+                                        // on the back stack as users select items
                                         popUpTo(navController.graph.findStartDestination().id) {
                                             saveState = true
                                         }
+                                        // Avoid multiple copies of the same destination when
+                                        // reselecting the same item
                                         launchSingleTop = true
+                                        // Restore state when reselecting a previously selected item
                                         restoreState = true
                                     }
                                 },
@@ -183,7 +180,7 @@ fun MainActivityContent(
                         BottomNavigation.Debts.route == backStackEntry.value?.destination?.route
                     ) {
                         FloatingActionButton(onClick = {
-                            addPaymentVisible = true
+                            addRecurringExpenseVisible = true
                         }) {
                             Icon(
                                 imageVector = Icons.Rounded.Add,
@@ -203,13 +200,13 @@ fun MainActivityContent(
                             .padding(paddingValues),
                     ) {
                         composable(BottomNavigation.Home.route) {
-                            PaymentsView(
+                            RecurringExpenseOverview(
                                 weeklyExpense = weeklyExpense,
                                 monthlyExpense = monthlyExpense,
                                 yearlyExpense = yearlyExpense,
-                                paymentData = paymentData,
+                                recurringExpenseData = recurringExpenseData,
                                 onItemClicked = {
-                                    selectedPayment = it
+                                    selectedRecurringExpense = it
                                 },
                                 contentPadding =
                                 PaddingValues(
@@ -224,10 +221,10 @@ fun MainActivityContent(
                             )
                         }
                         composable(BottomNavigation.Debts.route) {
-                            DebtsView(
+                            DebtsScreen(
                                 upcomingPaymentsViewModel = upcomingPaymentsViewModel,
                                 onItemClicked = {
-                                    selectedPayment = it
+                                    selectedRecurringExpense = it
                                 },
                                 modifier =
                                 Modifier
@@ -235,27 +232,30 @@ fun MainActivityContent(
                                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                             )
                         }
+                        composable(BottomNavigation.Overview.route) {
+                            OverviewScreen()
+                        }
                     }
-                    if (addPaymentVisible) {
-                        EditPayment(
+                    if (addRecurringExpenseVisible) {
+                        EditRecurringExpense(
                             onUpdateExpense = {
-                                onPaymentAdded(it)
-                                addPaymentVisible = false
+                                onRecurringExpenseAdded(it)
+                                addRecurringExpenseVisible = false
                             },
-                            onDismissRequest = { addPaymentVisible = false },
+                            onDismissRequest = { addRecurringExpenseVisible = false },
                         )
                     }
-                    if (selectedPayment != null) {
-                        EditPayment(
+                    if (selectedRecurringExpense != null) {
+                        EditRecurringExpense(
                             onUpdateExpense = {
-                                onPaymentEdited(it)
-                                selectedPayment = null
+                                onRecurringExpenseEdited(it)
+                                selectedRecurringExpense = null
                             },
-                            onDismissRequest = { selectedPayment = null },
-                            currentData = selectedPayment,
+                            onDismissRequest = { selectedRecurringExpense = null },
+                            currentData = selectedRecurringExpense,
                             onDeleteExpense = {
-                                onPaymentDeleted(it)
-                                selectedPayment = null
+                                onRecurringExpenseDeleted(it)
+                                selectedRecurringExpense = null
                             },
                         )
                     }
@@ -263,111 +263,4 @@ fun MainActivityContent(
             )
         }
     }
-
-    @Composable
-    fun BalanceOverview(
-        totalBalance: String,
-        income: String,
-        expense: String,
-        modifier: Modifier = Modifier
-    ) {
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Total Balance",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                Text(
-                    text = totalBalance,
-                    style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(bottom = 24.dp)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column {
-                        Text(
-                            text = "Income",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Text(
-                            text = income,
-                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Medium)
-                        )
-                    }
-                    Column {
-                        Text(
-                            text = "Expense",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Text(
-                            text = expense,
-                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Medium)
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun MonthlySummary(income: String, expense: String, modifier: Modifier = Modifier) {
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            // SummaryCard("Income", income)
-            // SummaryCard("Expense", expense)
-        }
-    }
-
-    @Composable
-    fun SummaryCard(label: String, amount: String) {
-        Card {
-            Column(
-                modifier =
-
-                Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Text(
-                    text = amount,
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-        }
-    }
 }
-
-private fun createNotificationChannel() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val name = "Test"
-        val descriptionText = "Test"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel =
-            NotificationChannel(BroadcastReceiver.CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-        // val notificationManager: NotificationManager =  getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        // notificationManager.createNotificationChannel(channel)
-    }
-}
-
-
-

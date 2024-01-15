@@ -1,18 +1,14 @@
 package com.jonathan_russ.expense_tracker.ui.editexpense
 
-
 import LocationOption
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -31,27 +27,27 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.jonathan_russ.expense_tracker.MainActivity
 import com.jonathan_russ.expense_tracker.R
-import com.jonathan_russ.expense_tracker.data.PaymentData
-import com.jonathan_russ.expense_tracker.data.RecurrenceEnum
+import com.jonathan_russ.expense_tracker.data.Recurrence
+import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
 import com.jonathan_russ.expense_tracker.toFloatIgnoreSeparator
 import com.jonathan_russ.expense_tracker.toLocalString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditPayment(
-    onUpdateExpense: (PaymentData) -> Unit,
+fun EditRecurringExpense(
+    onUpdateExpense: (RecurringExpenseData) -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    currentData: PaymentData? = null,
-    onDeleteExpense: ((PaymentData) -> Unit)? = null,
+    currentData: RecurringExpenseData? = null,
+    onDeleteExpense: ((RecurringExpenseData) -> Unit)? = null,
 ) {
     val sheetState: SheetState =
         rememberModalBottomSheetState(
@@ -63,7 +59,7 @@ fun EditPayment(
         windowInsets = WindowInsets.statusBars,
         modifier = modifier,
     ) {
-        EditPaymentInternal(
+        EditRecurringExpenseInternal(
             onUpdateExpense = onUpdateExpense,
             confirmButtonString =
             if (currentData == null) {
@@ -80,12 +76,12 @@ fun EditPayment(
 }
 
 @Composable
-private fun EditPaymentInternal(
-    onUpdateExpense: (PaymentData) -> Unit,
+private fun EditRecurringExpenseInternal(
+    onUpdateExpense: (RecurringExpenseData) -> Unit,
     confirmButtonString: String,
     modifier: Modifier = Modifier,
-    currentData: PaymentData? = null,
-    onDeleteExpense: ((PaymentData) -> Unit)? = null,
+    currentData: RecurringExpenseData? = null,
+    onDeleteExpense: ((RecurringExpenseData) -> Unit)? = null,
 ) {
     var nameState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(currentData?.name ?: ""))
@@ -106,25 +102,10 @@ private fun EditPaymentInternal(
     }
     val everyXRecurrenceInputError = rememberSaveable { mutableStateOf(false) }
     var selectedRecurrence by rememberSaveable {
-        mutableStateOf(currentData?.recurrence ?: RecurrenceEnum.Monthly)
+        mutableStateOf(currentData?.recurrence ?: Recurrence.Monthly)
     }
     var firstPaymentDate by rememberSaveable {
         mutableLongStateOf(currentData?.firstPayment ?: 0L)
-    }
-    val nextPaymentRemainingDays = rememberSaveable {
-        mutableStateOf(currentData?.nextPaymentRemainingDays ?: 0)
-    }
-    val nextPaymentDate = rememberSaveable {
-        mutableStateOf(currentData?.nextPaymentDate ?: "")
-    }
-    val location = rememberSaveable {
-        mutableStateOf(currentData?.location ?: "")
-    }
-    val category = rememberSaveable {
-        mutableStateOf(currentData?.category ?: "")
-    }
-    val reminder = rememberSaveable {
-        mutableStateOf(currentData?.reminder ?: false)
     }
 
     val scrollState = rememberScrollState()
@@ -191,18 +172,14 @@ private fun EditPaymentInternal(
         ) { selectedCategory ->
             handleCategorySelected(selectedCategory)
         }
-        ReminderOption(
-            reminder = reminder.value,
-            onReminderToggled = { reminderState ->
-                reminder.value = reminderState
-            },
-        )
+
         Row(
             modifier =
             Modifier
                 .fillMaxWidth()
+                .wrapContentWidth(align = Alignment.CenterHorizontally)
+                .navigationBarsPadding()
                 .padding(top = 8.dp, bottom = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             if (currentData != null) {
                 OutlinedButton(
@@ -216,9 +193,11 @@ private fun EditPaymentInternal(
                     modifier =
                     Modifier
                         .weight(1f)
+                        .wrapContentWidth(),
                 ) {
                     Text(
                         text = stringResource(R.string.edit_expense_button_delete),
+                        modifier = Modifier.padding(vertical = 4.dp),
                     )
                 }
             }
@@ -234,11 +213,6 @@ private fun EditPaymentInternal(
                         everyXRecurrenceState,
                         selectedRecurrence,
                         firstPaymentDate,
-                        nextPaymentRemainingDays,
-                        nextPaymentDate,
-                        location,
-                        category,
-                        reminder,
                         onUpdateExpense,
                         currentData,
                     )
@@ -246,6 +220,7 @@ private fun EditPaymentInternal(
                 modifier =
                 Modifier
                     .weight(1f)
+                    .wrapContentWidth(),
             ) {
                 Text(
                     text = confirmButtonString,
@@ -264,15 +239,10 @@ private fun onConfirmClicked(
     descriptionState: TextFieldValue,
     priceState: TextFieldValue,
     everyXRecurrenceState: TextFieldValue,
-    selectedRecurrence: RecurrenceEnum,
+    selectedRecurrence: Recurrence,
     firstPayment: Long,
-    nextPaymentRemainingDays: MutableState<Int>,
-    nextPaymentDate: MutableState<String>,
-    location: MutableState<String>,
-    category: MutableState<String>,
-    reminder: MutableState<Boolean>,
-    onUpdateExpense: (PaymentData) -> Unit,
-    currentData: PaymentData?
+    onUpdateExpense: (RecurringExpenseData) -> Unit,
+    currentData: RecurringExpenseData?,
 ) {
     nameInputError.value = false
     priceInputError.value = false
@@ -280,45 +250,30 @@ private fun onConfirmClicked(
 
     val name = nameState.text
     val description = descriptionState.text
-    val price =
-        priceState.text.toFloatIgnoreSeparator()
-    val everyXRecurrence = everyXRecurrenceState.text.toIntOrNull()
-        ?: 1
-    val nextPaymentRemainingDaysValue =
-        nextPaymentRemainingDays.value
-    val nextPaymentDateValue = nextPaymentDate.value
-    val locationValue = location.value
-    val categoryValue = category.value
-    val reminderValue = reminder.value
-
+    val price = priceState.text
+    val everyXRecurrence = everyXRecurrenceState.text
     if (verifyUserInput(
             name = name,
             onNameInputError = { nameInputError.value = true },
-            price = price.toString(),
+            price = price,
             onPriceInputError = { priceInputError.value = true },
-            everyXRecurrence = everyXRecurrence.toString(),
+            everyXRecurrence = everyXRecurrence,
             onEveryXRecurrenceError = { everyXRecurrenceInputError.value = true },
         )
     ) {
         onUpdateExpense(
-            PaymentData(
+            RecurringExpenseData(
                 id = currentData?.id ?: 0,
                 name = name,
                 description = description,
-                price = price,
-                monthlyPrice = price,
-                everyXRecurrence = everyXRecurrence,
+                price = price.toFloatIgnoreSeparator(),
+                monthlyPrice = price.toFloatIgnoreSeparator(),
+                everyXRecurrence = everyXRecurrence.toIntOrNull() ?: 1,
                 recurrence = selectedRecurrence,
                 firstPayment = firstPayment,
-                nextPaymentRemainingDays = nextPaymentRemainingDaysValue,
-                nextPaymentDate = nextPaymentDateValue,
-                location = locationValue,
-                category = categoryValue,
-                reminder = reminderValue,
             ),
         )
     }
-
 }
 
 private fun verifyUserInput(
@@ -356,13 +311,4 @@ private fun isPriceValid(price: String): Boolean {
 
 private fun isEveryXRecurrenceValid(everyXRecurrence: String): Boolean {
     return everyXRecurrence.isBlank() || everyXRecurrence.toIntOrNull() != null
-}
-
-fun MainActivity.scheduleNotification(timeInMillis: Long) {
-    val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val intent = Intent(this, android.content.BroadcastReceiver::class.java)
-    // Make sure to properly configure the intent as needed for the BroadcastReceiver
-    val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
-
-    alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
 }

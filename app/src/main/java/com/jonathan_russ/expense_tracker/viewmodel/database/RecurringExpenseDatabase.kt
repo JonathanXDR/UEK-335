@@ -7,25 +7,24 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Payment::class], version = 4)
-abstract class Paymentbase : RoomDatabase() {
-    abstract fun paymentDao(): PaymentDao
+@Database(entities = [RecurringExpense::class], version = 3)
+abstract class RecurringExpenseDatabase : RoomDatabase() {
+    abstract fun recurringExpenseDao(): RecurringExpenseDao
 
     companion object {
         @Volatile
-        private var instance: Paymentbase? = null
+        private var instance: RecurringExpenseDatabase? = null
 
-        fun getDatabase(context: Context): Paymentbase {
+        fun getDatabase(context: Context): RecurringExpenseDatabase {
             return instance ?: synchronized(this) {
                 val tmpInstance =
                     Room.databaseBuilder(
                         context.applicationContext,
-                        Paymentbase::class.java,
+                        RecurringExpenseDatabase::class.java,
                         "recurring-expenses",
                     )
                         .addMigrations(migration_1_2)
                         .addMigrations(migration_2_3)
-                        .addMigrations(migration_3_4)
                         .build()
                 instance = tmpInstance
                 tmpInstance
@@ -48,17 +47,5 @@ abstract class Paymentbase : RoomDatabase() {
                     db.execSQL("ALTER TABLE recurring_expenses ADD COLUMN firstPayment INTEGER DEFAULT 0")
                 }
             }
-
-        private val migration_3_4 = object : Migration(3, 4) {
-            override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE payments ADD COLUMN monthlyPrice REAL NOT NULL DEFAULT 0.0")
-                db.execSQL("ALTER TABLE payments ADD COLUMN nextPaymentRemainingDays INTEGER NOT NULL DEFAULT 0")
-                db.execSQL("ALTER TABLE payments ADD COLUMN nextPaymentDate TEXT NOT NULL DEFAULT ''")
-                db.execSQL("ALTER TABLE payments ADD COLUMN location TEXT NOT NULL DEFAULT ''")
-                db.execSQL("ALTER TABLE payments ADD COLUMN category TEXT NOT NULL DEFAULT ''")
-                db.execSQL("ALTER TABLE payments ADD COLUMN reminder INTEGER NOT NULL DEFAULT 0")
-            }
-        }
-
     }
 }

@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.view
+package com.jonathan_russ.expense_tracker.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,20 +21,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.R
-import com.jonathan_russ.expense_tracker.data.PaymentData
-import com.jonathan_russ.expense_tracker.data.RecurrenceEnum
+import com.jonathan_russ.expense_tracker.data.Recurrence
+import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
 import com.jonathan_russ.expense_tracker.toCurrencyString
+import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
-fun PaymentsView(
+fun RecurringExpenseOverview(
     weeklyExpense: String,
     monthlyExpense: String,
     yearlyExpense: String,
-    paymentData: ImmutableList<PaymentData>,
-    onItemClicked: (PaymentData) -> Unit,
+    recurringExpenseData: ImmutableList<RecurringExpenseData>,
+    onItemClicked: (RecurringExpenseData) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -43,18 +47,18 @@ fun PaymentsView(
         modifier = modifier.fillMaxWidth(),
     ) {
         item {
-            PaymentSummary(
+            RecurringExpenseSummary(
                 weeklyExpense = weeklyExpense,
                 monthlyExpense = monthlyExpense,
                 yearlyExpense = yearlyExpense,
                 modifier = Modifier.padding(bottom = 8.dp),
             )
         }
-        items(items = paymentData) { paymentData ->
-            Payment(
-                paymentData = paymentData,
+        items(items = recurringExpenseData) { recurringExpenseData ->
+            RecurringExpense(
+                recurringExpenseData = recurringExpenseData,
                 onItemClicked = {
-                    onItemClicked(paymentData)
+                    onItemClicked(recurringExpenseData)
                 },
             )
         }
@@ -62,7 +66,7 @@ fun PaymentsView(
 }
 
 @Composable
-private fun PaymentSummary(
+private fun RecurringExpenseSummary(
     weeklyExpense: String,
     monthlyExpense: String,
     yearlyExpense: String,
@@ -116,8 +120,8 @@ private fun PaymentSummary(
 }
 
 @Composable
-private fun Payment(
-    paymentData: PaymentData,
+private fun RecurringExpense(
+    recurringExpenseData: RecurringExpenseData,
     onItemClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -135,14 +139,14 @@ private fun Payment(
                     .weight(1f),
             ) {
                 Text(
-                    text = paymentData.name,
+                    text = recurringExpenseData.name,
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                if (paymentData.description.isNotBlank()) {
+                if (recurringExpenseData.description.isNotBlank()) {
                     Text(
-                        text = paymentData.description,
+                        text = recurringExpenseData.description,
                         style = MaterialTheme.typography.bodyLarge,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
@@ -151,17 +155,17 @@ private fun Payment(
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = paymentData.monthlyPrice.toCurrencyString(),
+                    text = recurringExpenseData.monthlyPrice.toCurrencyString(),
                     style = MaterialTheme.typography.headlineSmall,
                 )
-                if (paymentData.recurrence != RecurrenceEnum.Monthly ||
-                    paymentData.everyXRecurrence != 1
+                if (recurringExpenseData.recurrence != Recurrence.Monthly ||
+                    recurringExpenseData.everyXRecurrence != 1
                 ) {
                     Text(
                         text =
-                        "${paymentData.price.toCurrencyString()} / " +
-                                "${paymentData.everyXRecurrence} " +
-                                stringResource(id = paymentData.recurrence.shortStringRes),
+                        "${recurringExpenseData.price.toCurrencyString()} / " +
+                                "${recurringExpenseData.everyXRecurrence} " +
+                                stringResource(id = recurringExpenseData.recurrence.shortStringRes),
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.End,
                     )
