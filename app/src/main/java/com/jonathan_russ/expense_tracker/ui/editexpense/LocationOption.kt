@@ -46,7 +46,7 @@ import java.util.Locale
 
 @Composable
 fun LocationOption(
-    location: Location?,
+    location: String?,
     onLocationSelected: (String) -> Unit,
     onLocationChanged: (TextFieldValue) -> Unit,
     locationInputError: Boolean,
@@ -125,11 +125,7 @@ fun LocationOption(
                     )
                 }
             }
-
         }
-
-
-
 
         if (showPermissionDeniedDialog) {
             AlertDialog(

@@ -1,6 +1,12 @@
 package com.jonathan_russ.expense_tracker.ui.editexpense
 
+
 import LocationOption
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,8 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -28,13 +32,13 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.jonathan_russ.expense_tracker.MainActivity
 import com.jonathan_russ.expense_tracker.R
 import com.jonathan_russ.expense_tracker.data.PaymentData
 import com.jonathan_russ.expense_tracker.data.RecurrenceEnum
@@ -188,24 +192,10 @@ private fun EditPaymentInternal(
         ) { selectedCategory ->
             handleCategorySelected(selectedCategory)
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.edit_expense_set_reminder),
-                modifier = Modifier.weight(1f)
-            )
-            Switch(
-                checked = reminder.value,
-                onCheckedChange = { reminder.value = it },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colorScheme.primary
-                )
-            )
-        }
+        ReminderOption(
+            reminder = reminder,
+            onReminderToggled = { reminder.value = it },
+        )
         Row(
             modifier =
             Modifier
@@ -365,4 +355,13 @@ private fun isPriceValid(price: String): Boolean {
 
 private fun isEveryXRecurrenceValid(everyXRecurrence: String): Boolean {
     return everyXRecurrence.isBlank() || everyXRecurrence.toIntOrNull() != null
+}
+
+fun MainActivity.scheduleNotification(timeInMillis: Long) {
+    val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val intent = Intent(this, BroadcastReceiver::class.java)
+    val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+
+
+    alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
 }
