@@ -64,11 +64,11 @@ fun LocationOption(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted: Boolean ->
             if (isGranted) {
+                autoLocationAcquired = true
                 getCurrentLocation(context, fusedLocationClient) { location ->
-                    if (!autoLocationAcquired) {
-                        locationText = TextFieldValue(location)
-                        onLocationSelected(location)
-                    }
+                    locationText = TextFieldValue(location)
+                    onLocationSelected(location)
+                    autoLocationAcquired = false
                 }
             } else {
                 showPermissionDeniedDialog = true
@@ -109,7 +109,6 @@ fun LocationOption(
             modifier = Modifier.padding(horizontal = 16.dp),
             onClick = {
                 scope.launch {
-                    autoLocationAcquired = true
                     requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                 }
             },
