@@ -3,7 +3,7 @@
 
     <!-- Bottom Navigation -->
     <string name="bottom_nav_home">Payments</string>
-    <string name="bottom_nav_upcoming">Debts</string>
+    <string name="bottom_nav_upcoming">Upcoming</string>
     <string name="bottom_nav_overview">Overview</string>
 
     <!-- Payments Tab -->
@@ -43,8 +43,8 @@
     <string name="edit_expense_category_chip_description">Selected</string>
     <string name="edit_expense_set_reminder">Set reminder</string>
 
-    <!-- Debts Tab -->
-    <string name="upcoming_title">Debts</string>
+    <!-- Upcoming Tab -->
+    <string name="upcoming_title">Upcoming</string>
     <string name="upcoming_placeholder_title">Define a first payment date for expenses to see an overview of upcoming payments</string>
     <string name="upcoming_time_remaining_today">today</string>
     <string name="upcoming_time_remaining_tomorrow">tomorrow</string>

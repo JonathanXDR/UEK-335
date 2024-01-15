@@ -41,18 +41,18 @@ import com.jonathan_russ.expense_tracker.data.BottomNavigation
 import com.jonathan_russ.expense_tracker.data.RecurringPaymentData
 import com.jonathan_russ.expense_tracker.ui.editexpense.EditPaymentSheet
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
-import com.jonathan_russ.expense_tracker.ui.view.DebtsView
 import com.jonathan_russ.expense_tracker.ui.view.PaymentsView
-import com.jonathan_russ.expense_tracker.viewmodel.DebtsViewModel
+import com.jonathan_russ.expense_tracker.ui.view.UpcomingView
 import com.jonathan_russ.expense_tracker.viewmodel.PaymentsViewModel
+import com.jonathan_russ.expense_tracker.viewmodel.UpcomingViewModel
 import kotlinx.collections.immutable.ImmutableList
 
 class MainActivity : ComponentActivity() {
     private val paymentsViewModel: PaymentsViewModel by viewModels {
         PaymentsViewModel.create((application as ExpenseTrackerApplication).repository)
     }
-    private val upcomingPaymentsViewModel: DebtsViewModel by viewModels {
-        DebtsViewModel.create((application as ExpenseTrackerApplication).repository)
+    private val upcomingPaymentsViewModel: UpcomingViewModel by viewModels {
+        UpcomingViewModel.create((application as ExpenseTrackerApplication).repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +92,7 @@ fun MainActivityContent(
     onRecurringExpenseAdded: (RecurringPaymentData) -> Unit,
     onRecurringExpenseEdited: (RecurringPaymentData) -> Unit,
     onRecurringExpenseDeleted: (RecurringPaymentData) -> Unit,
-    upcomingPaymentsViewModel: DebtsViewModel,
+    upcomingPaymentsViewModel: UpcomingViewModel,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -102,7 +102,7 @@ fun MainActivityContent(
         derivedStateOf {
             when (backStackEntry.value?.destination?.route) {
                 BottomNavigation.Payments.route -> R.string.home_title
-                BottomNavigation.Debts.route -> R.string.upcoming_title
+                BottomNavigation.Upcoming.route -> R.string.upcoming_title
                 else -> R.string.home_title
             }
         }
@@ -117,7 +117,7 @@ fun MainActivityContent(
     val bottomNavigationItems =
         listOf(
             BottomNavigation.Payments,
-            BottomNavigation.Debts,
+            BottomNavigation.Upcoming,
         )
 
     ExpenseTrackerTheme {
@@ -174,7 +174,7 @@ fun MainActivityContent(
                 },
                 floatingActionButton = {
                     if (BottomNavigation.Payments.route == backStackEntry.value?.destination?.route ||
-                        BottomNavigation.Debts.route == backStackEntry.value?.destination?.route
+                        BottomNavigation.Upcoming.route == backStackEntry.value?.destination?.route
                     ) {
                         FloatingActionButton(onClick = {
                             addRecurringExpenseVisible = true
@@ -217,8 +217,8 @@ fun MainActivityContent(
                                     .nestedScroll(scrollBehavior.nestedScrollConnection),
                             )
                         }
-                        composable(BottomNavigation.Debts.route) {
-                            DebtsView(
+                        composable(BottomNavigation.Upcoming.route) {
+                            UpcomingView(
                                 upcomingPaymentsViewModel = upcomingPaymentsViewModel,
                                 onItemClicked = {
                                     selectedRecurringExpense = it

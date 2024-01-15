@@ -15,6 +15,6 @@ sealed class BottomNavigation(
     data object Payments :
         BottomNavigation("payments", R.string.bottom_nav_home, Icons.Rounded.Payments)
 
-    data object Debts :
-        BottomNavigation("debts", R.string.bottom_nav_upcoming, Icons.Rounded.Payment)
+    data object Upcoming :
+        BottomNavigation("upcoming", R.string.bottom_nav_upcoming, Icons.Rounded.Payment)
 }

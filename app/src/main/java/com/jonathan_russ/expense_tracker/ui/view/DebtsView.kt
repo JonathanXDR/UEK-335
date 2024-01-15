@@ -31,18 +31,18 @@ import com.jonathan_russ.expense_tracker.R
 import com.jonathan_russ.expense_tracker.data.RecurringPaymentData
 import com.jonathan_russ.expense_tracker.data.UpcomingPaymentData
 import com.jonathan_russ.expense_tracker.toCurrencyString
-import com.jonathan_russ.expense_tracker.viewmodel.DebtsViewModel
+import com.jonathan_russ.expense_tracker.viewmodel.UpcomingViewModel
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun DebtsView(
-    upcomingPaymentsViewModel: DebtsViewModel,
+fun UpcomingView(
+    upcomingPaymentsViewModel: UpcomingViewModel,
     onItemClicked: (RecurringPaymentData) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     if (upcomingPaymentsViewModel.upcomingPaymentsData.size > 0) {
-        DebtsSummary(
+        UpcomingSummary(
             upcomingPaymentsData = upcomingPaymentsViewModel.upcomingPaymentsData,
             onItemClicked = {
                 upcomingPaymentsViewModel.onExpenseWithIdClicked(it, onItemClicked)
@@ -51,7 +51,7 @@ fun DebtsView(
             contentPadding = contentPadding,
         )
     } else {
-        DebtsSummaryPlaceholder(
+        UpcomingSummaryPlaceholder(
             modifier =
             modifier
                 .fillMaxSize()
@@ -61,7 +61,7 @@ fun DebtsView(
 }
 
 @Composable
-private fun DebtsSummary(
+private fun UpcomingSummary(
     upcomingPaymentsData: ImmutableList<UpcomingPaymentData>,
     onItemClicked: (Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -164,7 +164,7 @@ private fun Payment(
 
 
 @Composable
-fun DebtsSummaryPlaceholder(modifier: Modifier = Modifier) {
+fun UpcomingSummaryPlaceholder(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
