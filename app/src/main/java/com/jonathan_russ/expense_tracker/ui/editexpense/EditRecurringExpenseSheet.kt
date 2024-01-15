@@ -301,7 +301,7 @@ private fun onConfirmClicked(
                 name = name,
                 description = description,
                 price = price,
-                monthlyPrice = price, // Assuming this is correct. Adjust if needed.
+                monthlyPrice = price,
                 everyXRecurrence = everyXRecurrence,
                 recurrence = selectedRecurrence,
                 firstPayment = firstPayment,

@@ -136,7 +136,6 @@ private fun UpcomingPayment(
                 Text(
                     text = upcomingPaymentData.price.toCurrencyString(),
                     style = MaterialTheme.typography.headlineSmall,
-                    // fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .padding(start = 16.dp)
 

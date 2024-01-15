@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Payment::class], version = 3)
+@Database(entities = [Payment::class], version = 4)
 abstract class Paymentbase : RoomDatabase() {
     abstract fun paymentDao(): PaymentDao
 
@@ -25,6 +25,7 @@ abstract class Paymentbase : RoomDatabase() {
                     )
                         .addMigrations(migration_1_2)
                         .addMigrations(migration_2_3)
+                        .addMigrations(migration_3_4)
                         .build()
                 instance = tmpInstance
                 tmpInstance
@@ -47,5 +48,17 @@ abstract class Paymentbase : RoomDatabase() {
                     db.execSQL("ALTER TABLE recurring_expenses ADD COLUMN firstPayment INTEGER DEFAULT 0")
                 }
             }
+
+        private val migration_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE payments ADD COLUMN monthlyPrice REAL NOT NULL DEFAULT 0.0")
+                db.execSQL("ALTER TABLE payments ADD COLUMN nextPaymentRemainingDays INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE payments ADD COLUMN nextPaymentDate TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE payments ADD COLUMN location TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE payments ADD COLUMN category TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE payments ADD COLUMN reminder INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
     }
 }

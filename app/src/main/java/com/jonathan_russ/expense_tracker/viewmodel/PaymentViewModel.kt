@@ -17,7 +17,6 @@ import com.jonathan_russ.expense_tracker.viewmodel.database.Payment
 import com.jonathan_russ.expense_tracker.viewmodel.database.RecurrenceDatabase
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class PaymentViewModel(
@@ -53,9 +52,15 @@ class PaymentViewModel(
                     name = payment.name,
                     description = payment.description,
                     price = payment.price,
+                    monthlyPrice = payment.monthlyPrice,
                     everyXRecurrence = payment.everyXRecurrence,
                     recurrence = getRecurrenceIntFromUIRecurrence(payment.recurrence),
                     firstPayment = payment.firstPayment,
+                    nextPaymentRemainingDays = payment.nextPaymentRemainingDays,
+                    nextPaymentDate = payment.nextPaymentDate,
+                    location = payment.location,
+                    category = payment.category,
+                    reminder = payment.reminder,
                 ),
             )
         }
@@ -69,9 +74,15 @@ class PaymentViewModel(
                     name = payment.name,
                     description = payment.description,
                     price = payment.price,
+                    monthlyPrice = payment.monthlyPrice,
                     everyXRecurrence = payment.everyXRecurrence,
                     recurrence = getRecurrenceIntFromUIRecurrence(payment.recurrence),
                     firstPayment = payment.firstPayment,
+                    nextPaymentRemainingDays = payment.nextPaymentRemainingDays,
+                    nextPaymentDate = payment.nextPaymentDate,
+                    location = payment.location,
+                    category = payment.category,
+                    reminder = payment.reminder,
                 ),
             )
         }
@@ -85,18 +96,17 @@ class PaymentViewModel(
                     name = payment.name,
                     description = payment.description,
                     price = payment.price,
+                    monthlyPrice = payment.monthlyPrice,
                     everyXRecurrence = payment.everyXRecurrence,
                     recurrence = getRecurrenceIntFromUIRecurrence(payment.recurrence),
                     firstPayment = payment.firstPayment,
+                    nextPaymentRemainingDays = payment.nextPaymentRemainingDays,
+                    nextPaymentDate = payment.nextPaymentDate,
+                    location = payment.location,
+                    category = payment.category,
+                    reminder = payment.reminder,
                 ),
             )
-        }
-    }
-
-    fun onDatabaseRestored() {
-        viewModelScope.launch {
-            val payments = expenseRepository.allPaymentsByPrice.first()
-            onDatabaseUpdated(payments)
         }
     }
 
@@ -106,13 +116,20 @@ class PaymentViewModel(
             _paymentData.add(
                 PaymentData(
                     id = it.id,
-                    name = it.name!!,
-                    description = it.description!!,
-                    price = it.price!!,
-                    monthlyPrice = it.getMonthlyPrice(),
-                    everyXRecurrence = it.everyXRecurrence!!,
-                    recurrence = getRecurrenceFromDatabaseInt(it.recurrence!!),
-                    firstPayment = it.firstPayment!!,
+                    name = it.name,
+                    description = it.description,
+                    price = it.price,
+                    monthlyPrice = it.monthlyPrice,
+                    everyXRecurrence = it.everyXRecurrence,
+                    recurrence = getRecurrenceFromDatabaseInt(
+                        it.recurrence
+                    ),
+                    firstPayment = it.firstPayment,
+                    nextPaymentRemainingDays = it.nextPaymentRemainingDays,
+                    nextPaymentDate = it.nextPaymentDate,
+                    location = it.location,
+                    category = it.category,
+                    reminder = it.reminder
                 ),
             )
         }

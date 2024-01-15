@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PaymentDao {
-    @Query("SELECT * FROM recurring_expenses")
+    @Query("SELECT * FROM payments")
     fun getAll(): Flow<List<Payment>>
 
-    @Query("SELECT * FROM recurring_expenses ORDER BY price DESC")
+    @Query("SELECT * FROM payments ORDER BY price DESC")
     fun getAllByPrice(): Flow<List<Payment>>
 
-    @Query("SELECT * FROM recurring_expenses WHERE id = :id")
+    @Query("SELECT * FROM payments WHERE id = :id")
     fun getById(id: Int): Payment?
 
     @Insert

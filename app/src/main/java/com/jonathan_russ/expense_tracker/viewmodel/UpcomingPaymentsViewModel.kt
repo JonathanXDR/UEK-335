@@ -44,13 +44,13 @@ class DebtsViewModel(
                 val paymentData =
                     PaymentData(
                         id = it.id,
-                        name = it.name!!,
-                        description = it.description!!,
-                        price = it.price!!,
-                        monthlyPrice = it.getMonthlyPrice(),
-                        everyXRecurrence = it.everyXRecurrence!!,
-                        recurrence = getRecurrenceFromDatabaseInt(it.recurrence!!),
-                        firstPayment = it.firstPayment!!,
+                        name = it.name,
+                        description = it.description,
+                        price = it.price,
+                        monthlyPrice = it.calculateMonthlyPrice(),
+                        everyXRecurrence = it.everyXRecurrence,
+                        recurrence = getRecurrenceFromDatabaseInt(it.recurrence),
+                        firstPayment = it.firstPayment,
                     )
                 onItemClicked(paymentData)
             }
@@ -60,9 +60,9 @@ class DebtsViewModel(
     private fun onDatabaseUpdated(payments: List<Payment>) {
         _upcomingPaymentsData.clear()
         payments.forEach {
-            val firstPayment = it.firstPayment!!
+            val firstPayment = it.firstPayment
             val nextPaymentInMilliseconds =
-                getNextPaymentInMilliseconds(firstPayment, it.everyXRecurrence!!, it.recurrence!!)
+                getNextPaymentInMilliseconds(firstPayment, it.everyXRecurrence, it.recurrence)
             val nextPaymentRemainingDays = getNextPaymentDays(nextPaymentInMilliseconds)
             val nextPaymentDate =
                 DateFormat.getDateInstance().format(Date(nextPaymentInMilliseconds))
@@ -70,10 +70,10 @@ class DebtsViewModel(
                 _upcomingPaymentsData.add(
                     PaymentData(
                         id = it.id,
-                        name = it.name!!,
-                        description = it.description!!,
-                        price = it.price!!,
-                        monthlyPrice = it.getMonthlyPrice(),
+                        name = it.name,
+                        description = it.description,
+                        price = it.price,
+                        monthlyPrice = it.calculateMonthlyPrice(),
                         everyXRecurrence = it.everyXRecurrence,
                         recurrence = getRecurrenceFromDatabaseInt(it.recurrence),
                         firstPayment = it.firstPayment,
