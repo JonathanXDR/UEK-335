@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -111,23 +110,25 @@ private fun UpcomingPayment(
             .padding(8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp)
             ) {
                 Column {
                     Text(
                         text = upcomingPaymentData.name,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                     if (upcomingPaymentData.description.isNotBlank()) {
                         Text(
                             text = upcomingPaymentData.description,
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodyLarge,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
@@ -135,13 +136,13 @@ private fun UpcomingPayment(
                 }
                 Text(
                     text = upcomingPaymentData.price.toCurrencyString(),
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.headlineSmall,
                     // fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .padding(start = 16.dp)
+
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
             LinearProgressIndicator(
                 progress = 1 - progress,
                 modifier = Modifier
@@ -152,11 +153,10 @@ private fun UpcomingPayment(
             )
             Text(
                 text = inDaysString,
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.End,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp)
+                    .padding(top = 12.dp)
             )
         }
     }
