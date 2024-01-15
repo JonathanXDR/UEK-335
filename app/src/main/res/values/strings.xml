@@ -32,7 +32,7 @@
     <string name="edit_expense_recurrence_month_short">M</string>
     <string name="edit_expense_recurrence_year">Year(s)</string>
     <string name="edit_expense_recurrence_year_short">Y</string>
-    <string name="edit_expense_first_payment">First RecurringPaymentData (optional)</string>
+    <string name="edit_expense_first_payment">First Payment (optional)</string>
     <string name="edit_expense_first_payment_placeholder">Today</string>
     <string name="edit_expense_location">Location (optional)</string>
     <string name="edit_expense_location_placeholder">Zürich</string>

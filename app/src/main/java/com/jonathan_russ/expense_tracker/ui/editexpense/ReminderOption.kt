@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.jonathan_russ.expense_tracker.MainActivity
 import com.jonathan_russ.expense_tracker.R
 
 @Composable
@@ -38,9 +37,9 @@ fun ReminderOption(
                 onReminderToggled(newValue)
                 if (newValue) {
                     val timeForNotification = System.currentTimeMillis() + 5000L
-                    (context as? MainActivity)?.scheduleNotification(
-                        timeForNotification
-                    )
+                    // (context as? MainActivity)?.scheduleNotification(
+                    //    timeForNotification
+                    // )
                 }
             },
         )

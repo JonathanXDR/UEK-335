@@ -106,6 +106,21 @@ private fun EditPaymentInternal(
     var firstPaymentDate by rememberSaveable {
         mutableLongStateOf(currentData?.firstPayment ?: 0L)
     }
+    val nextPaymentRemainingDays = rememberSaveable {
+        mutableStateOf(0)
+    }
+    val nextPaymentDate = rememberSaveable {
+        mutableStateOf("")
+    }
+    val location = rememberSaveable {
+        mutableStateOf("")
+    }
+    val category = rememberSaveable {
+        mutableStateOf("")
+    }
+    val reminder = rememberSaveable {
+        mutableStateOf(false)
+    }
 
     val scrollState = rememberScrollState()
     val localFocusManager = LocalFocusManager.current
