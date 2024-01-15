@@ -18,6 +18,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -187,7 +189,24 @@ private fun EditPaymentInternal(
         ) { selectedCategory ->
             handleCategorySelected(selectedCategory)
         }
-
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.edit_expense_set_reminder),
+                modifier = Modifier.weight(1f)
+            )
+            Switch(
+                checked = reminder.value,
+                onCheckedChange = { reminder.value = it },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.primary
+                )
+            )
+        }
         Row(
             modifier =
             Modifier
