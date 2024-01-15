@@ -9,22 +9,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jonathan_russ.expense_tracker.data.Recurrence
-import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
+import com.jonathan_russ.expense_tracker.data.RecurrenceEnum
+import com.jonathan_russ.expense_tracker.data.RecurringPaymentData
 import com.jonathan_russ.expense_tracker.toCurrencyString
-import com.jonathan_russ.expense_tracker.viewmodel.database.ExpenseRepository
+import com.jonathan_russ.expense_tracker.viewmodel.database.PaymentRepository
 import com.jonathan_russ.expense_tracker.viewmodel.database.RecurrenceDatabase
-import com.jonathan_russ.expense_tracker.viewmodel.database.RecurringExpense
+import com.jonathan_russ.expense_tracker.viewmodel.database.RecurringPayment
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class RecurringExpenseViewModel(
-    private val expenseRepository: ExpenseRepository,
+class PaymentsViewModel(
+    private val expenseRepository: PaymentRepository,
 ) : ViewModel() {
-    private val _recurringExpenseData = mutableStateListOf<RecurringExpenseData>()
-    val recurringExpenseData: ImmutableList<RecurringExpenseData>
+    private val _recurringExpenseData = mutableStateListOf<RecurringPaymentData>()
+    val recurringExpenseData: ImmutableList<RecurringPaymentData>
         get() = _recurringExpenseData.toImmutableList()
 
     private var _weeklyExpense by mutableStateOf("")
@@ -45,10 +45,10 @@ class RecurringExpenseViewModel(
         }
     }
 
-    fun addRecurringExpense(recurringExpense: RecurringExpenseData) {
+    fun addRecurringExpense(recurringExpense: RecurringPaymentData) {
         viewModelScope.launch {
             expenseRepository.insert(
-                RecurringExpense(
+                RecurringPayment(
                     id = 0,
                     name = recurringExpense.name,
                     description = recurringExpense.description,
@@ -61,10 +61,10 @@ class RecurringExpenseViewModel(
         }
     }
 
-    fun editRecurringExpense(recurringExpense: RecurringExpenseData) {
+    fun editRecurringExpense(recurringExpense: RecurringPaymentData) {
         viewModelScope.launch {
             expenseRepository.update(
-                RecurringExpense(
+                RecurringPayment(
                     id = recurringExpense.id,
                     name = recurringExpense.name,
                     description = recurringExpense.description,
@@ -77,10 +77,10 @@ class RecurringExpenseViewModel(
         }
     }
 
-    fun deleteRecurringExpense(recurringExpense: RecurringExpenseData) {
+    fun deleteRecurringExpense(recurringExpense: RecurringPaymentData) {
         viewModelScope.launch {
             expenseRepository.delete(
-                RecurringExpense(
+                RecurringPayment(
                     id = recurringExpense.id,
                     name = recurringExpense.name,
                     description = recurringExpense.description,
@@ -100,11 +100,11 @@ class RecurringExpenseViewModel(
         }
     }
 
-    private fun onDatabaseUpdated(recurringExpenses: List<RecurringExpense>) {
+    private fun onDatabaseUpdated(recurringExpenses: List<RecurringPayment>) {
         _recurringExpenseData.clear()
         recurringExpenses.forEach {
             _recurringExpenseData.add(
-                RecurringExpenseData(
+                RecurringPaymentData(
                     id = it.id,
                     name = it.name!!,
                     description = it.description!!,
@@ -120,22 +120,22 @@ class RecurringExpenseViewModel(
         updateExpenseSummary()
     }
 
-    private fun getRecurrenceFromDatabaseInt(recurrenceInt: Int): Recurrence {
+    private fun getRecurrenceFromDatabaseInt(recurrenceInt: Int): RecurrenceEnum {
         return when (recurrenceInt) {
-            RecurrenceDatabase.Daily.value -> Recurrence.Daily
-            RecurrenceDatabase.Weekly.value -> Recurrence.Weekly
-            RecurrenceDatabase.Monthly.value -> Recurrence.Monthly
-            RecurrenceDatabase.Yearly.value -> Recurrence.Yearly
-            else -> Recurrence.Monthly
+            RecurrenceDatabase.Daily.value -> RecurrenceEnum.Daily
+            RecurrenceDatabase.Weekly.value -> RecurrenceEnum.Weekly
+            RecurrenceDatabase.Monthly.value -> RecurrenceEnum.Monthly
+            RecurrenceDatabase.Yearly.value -> RecurrenceEnum.Yearly
+            else -> RecurrenceEnum.Monthly
         }
     }
 
-    private fun getRecurrenceIntFromUIRecurrence(recurrence: Recurrence): Int {
+    private fun getRecurrenceIntFromUIRecurrence(recurrence: RecurrenceEnum): Int {
         return when (recurrence) {
-            Recurrence.Daily -> RecurrenceDatabase.Daily.value
-            Recurrence.Weekly -> RecurrenceDatabase.Weekly.value
-            Recurrence.Monthly -> RecurrenceDatabase.Monthly.value
-            Recurrence.Yearly -> RecurrenceDatabase.Yearly.value
+            RecurrenceEnum.Daily -> RecurrenceDatabase.Daily.value
+            RecurrenceEnum.Weekly -> RecurrenceDatabase.Weekly.value
+            RecurrenceEnum.Monthly -> RecurrenceDatabase.Monthly.value
+            RecurrenceEnum.Yearly -> RecurrenceDatabase.Yearly.value
         }
     }
 
@@ -150,10 +150,10 @@ class RecurringExpenseViewModel(
     }
 
     companion object {
-        fun create(expenseRepository: ExpenseRepository): ViewModelProvider.Factory {
+        fun create(expenseRepository: PaymentRepository): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    RecurringExpenseViewModel(expenseRepository)
+                    PaymentsViewModel(expenseRepository)
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.jonathan_russ.expense_tracker.data
 
-data class UpcomingPaymentData(
+
+data class RecurringPaymentData(
     val id: Int,
     val name: String,
     val description: String,
@@ -9,6 +10,4 @@ data class UpcomingPaymentData(
     val everyXRecurrence: Int,
     val recurrence: RecurrenceEnum,
     val firstPayment: Long,
-    val nextPaymentRemainingDays: Int,
-    val nextPaymentDate: String,
 )

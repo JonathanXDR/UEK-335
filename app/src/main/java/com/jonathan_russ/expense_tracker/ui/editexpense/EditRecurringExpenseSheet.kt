@@ -35,19 +35,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.R
-import com.jonathan_russ.expense_tracker.data.Recurrence
-import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
+import com.jonathan_russ.expense_tracker.data.RecurrenceEnum
+import com.jonathan_russ.expense_tracker.data.RecurringPaymentData
 import com.jonathan_russ.expense_tracker.toFloatIgnoreSeparator
 import com.jonathan_russ.expense_tracker.toLocalString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditRecurringExpense(
-    onUpdateExpense: (RecurringExpenseData) -> Unit,
+    onUpdateExpense: (RecurringPaymentData) -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    currentData: RecurringExpenseData? = null,
-    onDeleteExpense: ((RecurringExpenseData) -> Unit)? = null,
+    currentData: RecurringPaymentData? = null,
+    onDeleteExpense: ((RecurringPaymentData) -> Unit)? = null,
 ) {
     val sheetState: SheetState =
         rememberModalBottomSheetState(
@@ -77,11 +77,11 @@ fun EditRecurringExpense(
 
 @Composable
 private fun EditRecurringExpenseInternal(
-    onUpdateExpense: (RecurringExpenseData) -> Unit,
+    onUpdateExpense: (RecurringPaymentData) -> Unit,
     confirmButtonString: String,
     modifier: Modifier = Modifier,
-    currentData: RecurringExpenseData? = null,
-    onDeleteExpense: ((RecurringExpenseData) -> Unit)? = null,
+    currentData: RecurringPaymentData? = null,
+    onDeleteExpense: ((RecurringPaymentData) -> Unit)? = null,
 ) {
     var nameState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(currentData?.name ?: ""))
@@ -102,7 +102,7 @@ private fun EditRecurringExpenseInternal(
     }
     val everyXRecurrenceInputError = rememberSaveable { mutableStateOf(false) }
     var selectedRecurrence by rememberSaveable {
-        mutableStateOf(currentData?.recurrence ?: Recurrence.Monthly)
+        mutableStateOf(currentData?.recurrence ?: RecurrenceEnum.Monthly)
     }
     var firstPaymentDate by rememberSaveable {
         mutableLongStateOf(currentData?.firstPayment ?: 0L)
@@ -239,10 +239,10 @@ private fun onConfirmClicked(
     descriptionState: TextFieldValue,
     priceState: TextFieldValue,
     everyXRecurrenceState: TextFieldValue,
-    selectedRecurrence: Recurrence,
+    selectedRecurrence: RecurrenceEnum,
     firstPayment: Long,
-    onUpdateExpense: (RecurringExpenseData) -> Unit,
-    currentData: RecurringExpenseData?,
+    onUpdateExpense: (RecurringPaymentData) -> Unit,
+    currentData: RecurringPaymentData?,
 ) {
     nameInputError.value = false
     priceInputError.value = false
@@ -262,7 +262,7 @@ private fun onConfirmClicked(
         )
     ) {
         onUpdateExpense(
-            RecurringExpenseData(
+            RecurringPaymentData(
                 id = currentData?.id ?: 0,
                 name = name,
                 description = description,

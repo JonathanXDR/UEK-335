@@ -38,19 +38,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jonathan_russ.expense_tracker.data.BottomNavigation
-import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
-import com.jonathan_russ.expense_tracker.ui.OverviewScreen
-import com.jonathan_russ.expense_tracker.ui.RecurringExpenseOverview
+import com.jonathan_russ.expense_tracker.data.RecurringPaymentData
 import com.jonathan_russ.expense_tracker.ui.editexpense.EditRecurringExpense
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
-import com.jonathan_russ.expense_tracker.ui.upcomingexpenses.DebtsScreen
+import com.jonathan_russ.expense_tracker.ui.view.DebtsView
+import com.jonathan_russ.expense_tracker.ui.view.PaymentsView
 import com.jonathan_russ.expense_tracker.viewmodel.DebtsViewModel
-import com.jonathan_russ.expense_tracker.viewmodel.RecurringExpenseViewModel
+import com.jonathan_russ.expense_tracker.viewmodel.PaymentsViewModel
 import kotlinx.collections.immutable.ImmutableList
 
 class MainActivity : ComponentActivity() {
-    private val recurringExpenseViewModel: RecurringExpenseViewModel by viewModels {
-        RecurringExpenseViewModel.create((application as ExpenseTrackerApplication).repository)
+    private val paymentsViewModel: PaymentsViewModel by viewModels {
+        PaymentsViewModel.create((application as ExpenseTrackerApplication).repository)
     }
     private val upcomingPaymentsViewModel: DebtsViewModel by viewModels {
         DebtsViewModel.create((application as ExpenseTrackerApplication).repository)
@@ -63,18 +62,18 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainActivityContent(
-                weeklyExpense = recurringExpenseViewModel.weeklyExpense,
-                monthlyExpense = recurringExpenseViewModel.monthlyExpense,
-                yearlyExpense = recurringExpenseViewModel.yearlyExpense,
-                recurringExpenseData = recurringExpenseViewModel.recurringExpenseData,
+                weeklyExpense = paymentsViewModel.weeklyExpense,
+                monthlyExpense = paymentsViewModel.monthlyExpense,
+                yearlyExpense = paymentsViewModel.yearlyExpense,
+                recurringExpenseData = paymentsViewModel.recurringExpenseData,
                 onRecurringExpenseAdded = {
-                    recurringExpenseViewModel.addRecurringExpense(it)
+                    paymentsViewModel.addRecurringExpense(it)
                 },
                 onRecurringExpenseEdited = {
-                    recurringExpenseViewModel.editRecurringExpense(it)
+                    paymentsViewModel.editRecurringExpense(it)
                 },
                 onRecurringExpenseDeleted = {
-                    recurringExpenseViewModel.deleteRecurringExpense(it)
+                    paymentsViewModel.deleteRecurringExpense(it)
                 },
                 upcomingPaymentsViewModel = upcomingPaymentsViewModel,
             )
@@ -89,10 +88,10 @@ fun MainActivityContent(
     weeklyExpense: String,
     monthlyExpense: String,
     yearlyExpense: String,
-    recurringExpenseData: ImmutableList<RecurringExpenseData>,
-    onRecurringExpenseAdded: (RecurringExpenseData) -> Unit,
-    onRecurringExpenseEdited: (RecurringExpenseData) -> Unit,
-    onRecurringExpenseDeleted: (RecurringExpenseData) -> Unit,
+    recurringExpenseData: ImmutableList<RecurringPaymentData>,
+    onRecurringExpenseAdded: (RecurringPaymentData) -> Unit,
+    onRecurringExpenseEdited: (RecurringPaymentData) -> Unit,
+    onRecurringExpenseDeleted: (RecurringPaymentData) -> Unit,
     upcomingPaymentsViewModel: DebtsViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -112,7 +111,7 @@ fun MainActivityContent(
 
     var addRecurringExpenseVisible by rememberSaveable { mutableStateOf(false) }
 
-    var selectedRecurringExpense by rememberSaveable { mutableStateOf<RecurringExpenseData?>(null) }
+    var selectedRecurringExpense by rememberSaveable { mutableStateOf<RecurringPaymentData?>(null) }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -200,7 +199,7 @@ fun MainActivityContent(
                             .padding(paddingValues),
                     ) {
                         composable(BottomNavigation.Home.route) {
-                            RecurringExpenseOverview(
+                            PaymentsView(
                                 weeklyExpense = weeklyExpense,
                                 monthlyExpense = monthlyExpense,
                                 yearlyExpense = yearlyExpense,
@@ -221,7 +220,7 @@ fun MainActivityContent(
                             )
                         }
                         composable(BottomNavigation.Debts.route) {
-                            DebtsScreen(
+                            DebtsView(
                                 upcomingPaymentsViewModel = upcomingPaymentsViewModel,
                                 onItemClicked = {
                                     selectedRecurringExpense = it
@@ -231,9 +230,6 @@ fun MainActivityContent(
                                     .nestedScroll(scrollBehavior.nestedScrollConnection),
                                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                             )
-                        }
-                        composable(BottomNavigation.Overview.route) {
-                            OverviewScreen()
                         }
                     }
                     if (addRecurringExpenseVisible) {

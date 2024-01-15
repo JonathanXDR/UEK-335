@@ -8,22 +8,22 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface RecurringExpenseDao {
+interface RecurringPaymentDao {
     @Query("SELECT * FROM recurring_expenses")
-    fun getAll(): Flow<List<RecurringExpense>>
+    fun getAll(): Flow<List<RecurringPayment>>
 
     @Query("SELECT * FROM recurring_expenses ORDER BY price DESC")
-    fun getAllByPrice(): Flow<List<RecurringExpense>>
+    fun getAllByPrice(): Flow<List<RecurringPayment>>
 
     @Query("SELECT * FROM recurring_expenses WHERE id = :id")
-    fun getById(id: Int): RecurringExpense?
+    fun getById(id: Int): RecurringPayment?
 
     @Insert
-    fun insert(recurringExpense: RecurringExpense)
+    fun insert(recurringExpense: RecurringPayment)
 
     @Update
-    fun update(recurringExpense: RecurringExpense)
+    fun update(recurringExpense: RecurringPayment)
 
     @Delete
-    fun delete(recurringExpense: RecurringExpense)
+    fun delete(recurringExpense: RecurringPayment)
 }

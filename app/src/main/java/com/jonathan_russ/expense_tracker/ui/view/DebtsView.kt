@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui.upcomingexpenses
+package com.jonathan_russ.expense_tracker.ui.view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,21 +28,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.jonathan_russ.expense_tracker.R
-import com.jonathan_russ.expense_tracker.data.RecurringExpenseData
+import com.jonathan_russ.expense_tracker.data.RecurringPaymentData
 import com.jonathan_russ.expense_tracker.data.UpcomingPaymentData
 import com.jonathan_russ.expense_tracker.toCurrencyString
 import com.jonathan_russ.expense_tracker.viewmodel.DebtsViewModel
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun DebtsScreen(
+fun DebtsView(
     upcomingPaymentsViewModel: DebtsViewModel,
-    onItemClicked: (RecurringExpenseData) -> Unit,
+    onItemClicked: (RecurringPaymentData) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     if (upcomingPaymentsViewModel.upcomingPaymentsData.size > 0) {
-        DebtsOverview(
+        DebtsSummary(
             upcomingPaymentsData = upcomingPaymentsViewModel.upcomingPaymentsData,
             onItemClicked = {
                 upcomingPaymentsViewModel.onExpenseWithIdClicked(it, onItemClicked)
@@ -51,7 +51,7 @@ fun DebtsScreen(
             contentPadding = contentPadding,
         )
     } else {
-        DebtsOverviewPlaceholder(
+        DebtsSummaryPlaceholder(
             modifier =
             modifier
                 .fillMaxSize()
@@ -61,7 +61,7 @@ fun DebtsScreen(
 }
 
 @Composable
-private fun DebtsOverview(
+private fun DebtsSummary(
     upcomingPaymentsData: ImmutableList<UpcomingPaymentData>,
     onItemClicked: (Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -73,7 +73,7 @@ private fun DebtsOverview(
         modifier = modifier.fillMaxWidth(),
     ) {
         items(items = upcomingPaymentsData) { upcomingPaymentData ->
-            UpcomingPayment(
+            Payment(
                 upcomingPaymentData = upcomingPaymentData,
                 onItemClicked = {
                     onItemClicked(upcomingPaymentData.id)
@@ -84,7 +84,7 @@ private fun DebtsOverview(
 }
 
 @Composable
-private fun UpcomingPayment(
+private fun Payment(
     upcomingPaymentData: UpcomingPaymentData,
     onItemClicked: () -> Unit,
     modifier: Modifier = Modifier,
@@ -164,7 +164,7 @@ private fun UpcomingPayment(
 
 
 @Composable
-fun DebtsOverviewPlaceholder(modifier: Modifier = Modifier) {
+fun DebtsSummaryPlaceholder(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
