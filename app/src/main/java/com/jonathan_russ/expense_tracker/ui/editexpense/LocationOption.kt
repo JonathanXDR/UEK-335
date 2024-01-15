@@ -80,44 +80,56 @@ fun LocationOption(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Column(modifier = modifier.padding(top = 16.dp)) {
+        Column(modifier = Modifier.padding(top = 16.dp)) {
             Text(
                 text = stringResource(R.string.edit_expense_location),
                 style = MaterialTheme.typography.bodyLarge,
             )
-            ExpenseTextField(
-                value = locationText,
-                onValueChange = {
-                    locationText = it
-                    onLocationChanged(it)
-                    autoLocationAcquired = false
-                },
-                placeholder = stringResource(R.string.edit_expense_location_placeholder),
-                keyboardActions = KeyboardActions(onNext = onNext),
-                singleLine = true,
-                isError = locationInputError,
+
+            Row(
+
                 modifier = Modifier
-                    .padding(vertical = 8.dp),
-            )
-        }
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                ExpenseTextField(
+                    value = locationText,
+                    onValueChange = {
+                        locationText = it
+                        onLocationChanged(it)
+                        autoLocationAcquired = false
+                    },
+                    placeholder = stringResource(R.string.edit_expense_location_placeholder),
+                    keyboardActions = KeyboardActions(onNext = onNext),
+                    singleLine = true,
+                    isError = locationInputError,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = 8.dp),
+                )
 
-
-        IconButton(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            onClick = {
-                scope.launch {
-                    requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        }
+                    },
+                ) {
+                    Icon(
+                        Icons.Filled.MyLocation,
+                        contentDescription = stringResource(R.string.edit_expense_location_get_current)
+                    )
                 }
-            },
-        ) {
-            Icon(
-                Icons.Filled.MyLocation,
-                contentDescription = stringResource(R.string.edit_expense_location_get_current)
-            )
+            }
+
         }
+
+
+
 
         if (showPermissionDeniedDialog) {
             AlertDialog(
