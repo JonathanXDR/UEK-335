@@ -50,18 +50,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jonathan_russ.expense_tracker.data.BottomNavigation
 import com.jonathan_russ.expense_tracker.data.PaymentData
-import com.jonathan_russ.expense_tracker.ui.OverviewScreen
-import com.jonathan_russ.expense_tracker.ui.PaymentOverview
 import com.jonathan_russ.expense_tracker.ui.editexpense.EditPayment
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
-import com.jonathan_russ.expense_tracker.ui.upcomingexpenses.DebtsScreen
+import com.jonathan_russ.expense_tracker.view.DebtsView
+import com.jonathan_russ.expense_tracker.view.PaymentsView
 import com.jonathan_russ.expense_tracker.viewmodel.DebtsViewModel
-import com.jonathan_russ.expense_tracker.viewmodel.PaymentViewModel
+import com.jonathan_russ.expense_tracker.viewmodel.PaymentsViewModel
 import kotlinx.collections.immutable.ImmutableList
 
 class MainActivity : ComponentActivity() {
-    private val paymentViewModel: PaymentViewModel by viewModels {
-        PaymentViewModel.create((application as ExpenseTrackerApplication).repository)
+    private val paymentViewModel: PaymentsViewModel by viewModels {
+        PaymentsViewModel.create((application as ExpenseTrackerApplication).repository)
     }
     private val upcomingPaymentsViewModel: DebtsViewModel by viewModels {
         DebtsViewModel.create((application as ExpenseTrackerApplication).repository)
@@ -116,7 +115,6 @@ fun MainActivityContent(
             when (backStackEntry.value?.destination?.route) {
                 BottomNavigation.Home.route -> R.string.home_title
                 BottomNavigation.Debts.route -> R.string.upcoming_title
-                BottomNavigation.Overview.route -> R.string.overview_title
                 else -> R.string.home_title
             }
         }
@@ -132,7 +130,6 @@ fun MainActivityContent(
         listOf(
             BottomNavigation.Home,
             BottomNavigation.Debts,
-            BottomNavigation.Overview,
         )
 
     ExpenseTrackerTheme {
@@ -206,7 +203,7 @@ fun MainActivityContent(
                             .padding(paddingValues),
                     ) {
                         composable(BottomNavigation.Home.route) {
-                            PaymentOverview(
+                            PaymentsView(
                                 weeklyExpense = weeklyExpense,
                                 monthlyExpense = monthlyExpense,
                                 yearlyExpense = yearlyExpense,
@@ -227,7 +224,7 @@ fun MainActivityContent(
                             )
                         }
                         composable(BottomNavigation.Debts.route) {
-                            DebtsScreen(
+                            DebtsView(
                                 upcomingPaymentsViewModel = upcomingPaymentsViewModel,
                                 onItemClicked = {
                                     selectedPayment = it
@@ -237,9 +234,6 @@ fun MainActivityContent(
                                     .nestedScroll(scrollBehavior.nestedScrollConnection),
                                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                             )
-                        }
-                        composable(BottomNavigation.Overview.route) {
-                            OverviewScreen()
                         }
                     }
                     if (addPaymentVisible) {

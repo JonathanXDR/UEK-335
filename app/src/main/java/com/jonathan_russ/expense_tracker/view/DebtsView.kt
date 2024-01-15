@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui.upcomingexpenses
+package com.jonathan_russ.expense_tracker.view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,15 +34,15 @@ import com.jonathan_russ.expense_tracker.viewmodel.DebtsViewModel
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun DebtsScreen(
+fun DebtsView(
     upcomingPaymentsViewModel: DebtsViewModel,
     onItemClicked: (PaymentData) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
-    if (upcomingPaymentsViewModel.upcomingPaymentsData.size > 0) {
+    if (upcomingPaymentsViewModel.paymentsData.size > 0) {
         DebtsOverview(
-            upcomingPaymentsData = upcomingPaymentsViewModel.upcomingPaymentsData,
+            paymentsData = upcomingPaymentsViewModel.paymentsData,
             onItemClicked = {
                 upcomingPaymentsViewModel.onExpenseWithIdClicked(it, onItemClicked)
             },
@@ -61,7 +61,7 @@ fun DebtsScreen(
 
 @Composable
 private fun DebtsOverview(
-    upcomingPaymentsData: ImmutableList<PaymentData>,
+    paymentsData: ImmutableList<PaymentData>,
     onItemClicked: (Int) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -71,7 +71,7 @@ private fun DebtsOverview(
         contentPadding = contentPadding,
         modifier = modifier.fillMaxWidth(),
     ) {
-        items(items = upcomingPaymentsData) { upcomingPaymentData ->
+        items(items = paymentsData) { upcomingPaymentData ->
             UpcomingPayment(
                 upcomingPaymentData = upcomingPaymentData,
                 onItemClicked = {

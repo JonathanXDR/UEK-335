@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Payment
-import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.jonathan_russ.expense_tracker.R
 
@@ -17,6 +16,4 @@ sealed class BottomNavigation(
     data object Debts :
         BottomNavigation("upcoming", R.string.bottom_nav_upcoming, Icons.Rounded.Payment)
 
-    data object Overview :
-        BottomNavigation("overview", R.string.bottom_nav_overview, Icons.Rounded.Sort)
 }

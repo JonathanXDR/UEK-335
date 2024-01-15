@@ -19,7 +19,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
-class PaymentViewModel(
+class PaymentsViewModel(
     private val paymentRepository: PaymentRepository,
 ) : ViewModel() {
     private val _paymentData = mutableStateListOf<PaymentData>()
@@ -170,7 +170,7 @@ class PaymentViewModel(
         fun create(paymentRepository: PaymentRepository): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    PaymentViewModel(paymentRepository)
+                    PaymentsViewModel(paymentRepository)
                 }
             }
         }

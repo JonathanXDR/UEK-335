@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui
+package com.jonathan_russ.expense_tracker.view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +28,7 @@ import com.jonathan_russ.expense_tracker.toCurrencyString
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun PaymentOverview(
+fun PaymentsView(
     weeklyExpense: String,
     monthlyExpense: String,
     yearlyExpense: String,

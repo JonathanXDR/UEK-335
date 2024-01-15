@@ -23,9 +23,9 @@ import java.util.concurrent.TimeUnit
 class DebtsViewModel(
     private val paymentRepository: PaymentRepository?,
 ) : ViewModel() {
-    private val _upcomingPaymentsData = mutableStateListOf<PaymentData>()
-    val upcomingPaymentsData: ImmutableList<PaymentData>
-        get() = _upcomingPaymentsData.toImmutableList()
+    private val _paymentsData = mutableStateListOf<PaymentData>()
+    val paymentsData: ImmutableList<PaymentData>
+        get() = _paymentsData.toImmutableList()
 
     init {
         viewModelScope.launch {
@@ -58,7 +58,7 @@ class DebtsViewModel(
     }
 
     private fun onDatabaseUpdated(payments: List<Payment>) {
-        _upcomingPaymentsData.clear()
+        _paymentsData.clear()
         payments.forEach {
             val firstPayment = it.firstPayment
             val nextPaymentInMilliseconds =
@@ -67,7 +67,7 @@ class DebtsViewModel(
             val nextPaymentDate =
                 DateFormat.getDateInstance().format(Date(nextPaymentInMilliseconds))
             if (firstPayment > 0L) {
-                _upcomingPaymentsData.add(
+                _paymentsData.add(
                     PaymentData(
                         id = it.id,
                         name = it.name,
@@ -83,7 +83,7 @@ class DebtsViewModel(
                 )
             }
         }
-        _upcomingPaymentsData.sortBy { it.nextPaymentRemainingDays }
+        _paymentsData.sortBy { it.nextPaymentRemainingDays }
     }
 
     private fun getNextPaymentInMilliseconds(
