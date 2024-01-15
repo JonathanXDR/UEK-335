@@ -1,14 +1,13 @@
 package com.jonathan_russ.expense_tracker.ui.editexpense
 
 import LocationOption
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -211,9 +210,8 @@ private fun EditPaymentInternal(
             modifier =
             Modifier
                 .fillMaxWidth()
-                .wrapContentWidth(align = Alignment.CenterHorizontally)
-                .navigationBarsPadding()
                 .padding(top = 8.dp, bottom = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             if (currentData != null) {
                 OutlinedButton(
@@ -227,11 +225,9 @@ private fun EditPaymentInternal(
                     modifier =
                     Modifier
                         .weight(1f)
-                        .wrapContentWidth(),
                 ) {
                     Text(
                         text = stringResource(R.string.edit_expense_button_delete),
-                        modifier = Modifier.padding(vertical = 4.dp),
                     )
                 }
             }
@@ -259,7 +255,6 @@ private fun EditPaymentInternal(
                 modifier =
                 Modifier
                     .weight(1f)
-                    .wrapContentWidth(),
             ) {
                 Text(
                     text = confirmButtonString,
