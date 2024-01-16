@@ -1,5 +1,9 @@
 package com.jonathan_russ.expense_tracker
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -47,6 +51,7 @@ import com.jonathan_russ.expense_tracker.viewmodel.HomeViewModel
 import com.jonathan_russ.expense_tracker.viewmodel.UpcomingViewModel
 import kotlinx.collections.immutable.ImmutableList
 
+
 class MainActivity : ComponentActivity() {
     private val homeViewModel: HomeViewModel by viewModels {
         HomeViewModel.create((application as ExpenseTrackerApplication).repository)
@@ -55,9 +60,28 @@ class MainActivity : ComponentActivity() {
         UpcomingViewModel.create((application as ExpenseTrackerApplication).repository)
     }
 
+    companion object {
+        private const val CHANNEL_ID = "com.jonathan_russ.expense_tracker.payment_reminders"
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.notification_channel_name)
+            val descriptionText = getString(R.string.notification_channel_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        createNotificationChannel()
         enableEdgeToEdge()
 
         setContent {
@@ -237,6 +261,7 @@ fun MainActivityContent(
                                 addRecurringPaymentVisible = false
                             },
                             onDismissRequest = { addRecurringPaymentVisible = false },
+                            currentData = null // Explicitly passing null for adding new payment
                         )
                     }
                     if (selectedRecurringPayment != null) {
@@ -257,4 +282,7 @@ fun MainActivityContent(
             )
         }
     }
+
 }
+
+

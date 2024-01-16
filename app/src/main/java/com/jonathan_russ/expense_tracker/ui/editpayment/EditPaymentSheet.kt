@@ -45,13 +45,13 @@ fun EditPaymentSheet(
     onUpdatePayment: (RecurringPaymentData) -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    currentData: RecurringPaymentData? = null,
-    onDeletePayment: ((RecurringPaymentData) -> Unit)? = null,
+    currentData: RecurringPaymentData?,
+    onDeletePayment: ((RecurringPaymentData) -> Unit)? = null
 ) {
-    val sheetState: SheetState =
-        rememberModalBottomSheetState(
-            skipPartiallyExpanded = true,
-        )
+    val sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val firstPaymentDate = currentData?.firstPayment ?: 0L
+    val selectedRecurrence = currentData?.recurrence
+        ?: RecurrenceEnum.Monthly
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
@@ -60,16 +60,15 @@ fun EditPaymentSheet(
     ) {
         EditPaymentInternal(
             onUpdatePayment = onUpdatePayment,
-            confirmButtonString =
-            if (currentData == null) {
+            confirmButtonString = if (currentData == null) {
                 stringResource(R.string.edit_payment_button_add)
             } else {
-                stringResource(
-                    R.string.edit_payment_button_update,
-                )
+                stringResource(R.string.edit_payment_button_update)
             },
             currentData = currentData,
             onDeletePayment = onDeletePayment,
+            firstPaymentDate = firstPaymentDate,
+            selectedRecurrence = selectedRecurrence
         )
     }
 }
@@ -78,8 +77,10 @@ fun EditPaymentSheet(
 private fun EditPaymentInternal(
     onUpdatePayment: (RecurringPaymentData) -> Unit,
     confirmButtonString: String,
-    currentData: RecurringPaymentData? = null,
-    onDeletePayment: ((RecurringPaymentData) -> Unit)? = null,
+    currentData: RecurringPaymentData?,
+    onDeletePayment: ((RecurringPaymentData) -> Unit)?,
+    firstPaymentDate: Long,
+    selectedRecurrence: RecurrenceEnum
 ) {
     var nameState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(currentData?.name ?: ""))
@@ -193,6 +194,8 @@ private fun EditPaymentInternal(
         ReminderOption(
             reminder = reminderState,
             onReminderToggled = { reminderState = it },
+            firstPaymentDate = firstPaymentDate,
+            selectedRecurrence = selectedRecurrence
         )
         Row(
             modifier =
