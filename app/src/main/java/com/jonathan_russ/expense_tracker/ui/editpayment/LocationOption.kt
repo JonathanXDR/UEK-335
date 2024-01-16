@@ -55,7 +55,7 @@ fun LocationOption(
 ) {
     val context = LocalContext.current
     val fusedLocationClient = rememberFusedLocationProviderClient(context)
-    var locationText by remember { mutableStateOf(TextFieldValue("")) }
+    var locationText by remember { mutableStateOf(TextFieldValue(location ?: "")) }
     var autoLocationAcquired by remember { mutableStateOf(false) }
     var showPermissionDeniedDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -65,10 +65,9 @@ fun LocationOption(
         onResult = { isGranted: Boolean ->
             if (isGranted) {
                 autoLocationAcquired = true
-                getCurrentLocation(context, fusedLocationClient) { location ->
-                    locationText = TextFieldValue(location)
-                    onLocationSelected(location)
-                    autoLocationAcquired = false
+                getCurrentLocation(context, fusedLocationClient) { newLocation ->
+                    locationText = TextFieldValue(newLocation)
+                    onLocationSelected(newLocation)
                 }
             } else {
                 showPermissionDeniedDialog = true
@@ -166,15 +165,18 @@ fun rememberFusedLocationProviderClient(context: Context): FusedLocationProvider
 private fun getCurrentLocation(
     context: Context,
     fusedLocationClient: FusedLocationProviderClient,
-    onLocationFound: (String) -> Unit
+    updateLocationText: (String) -> Unit
 ) {
     val locationResult: Task<Location> = fusedLocationClient.lastLocation
     locationResult.addOnSuccessListener { location: Location? ->
         location?.let {
-            getCityNameAsync(context, it.latitude, it.longitude, onLocationFound)
+            getCityNameAsync(context, it.latitude, it.longitude) { cityName ->
+                updateLocationText(cityName)
+            }
         }
     }
 }
+
 
 private fun getCityNameAsync(
     context: Context,
