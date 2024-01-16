@@ -100,7 +100,7 @@ private fun Payment(
         }
 
     val progress =
-        (upcomingPaymentData.nextPaymentRemainingDays.toFloat() / 30) // Assuming a 30-day month
+        (upcomingPaymentData.nextPaymentRemainingDays.toFloat() / 30)
 
     Card(
         modifier = Modifier
@@ -136,7 +136,6 @@ private fun Payment(
                 Text(
                     text = upcomingPaymentData.price.toCurrencyString(),
                     style = MaterialTheme.typography.headlineSmall,
-                    // fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .padding(start = 16.dp)
 
