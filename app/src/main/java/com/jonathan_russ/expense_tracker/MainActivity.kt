@@ -1,5 +1,7 @@
 package com.jonathan_russ.expense_tracker
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,8 +32,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,17 +45,17 @@ import com.jonathan_russ.expense_tracker.data.BottomNavigation
 import com.jonathan_russ.expense_tracker.data.RecurringPaymentData
 import com.jonathan_russ.expense_tracker.ui.editpayment.EditPaymentSheet
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
-import com.jonathan_russ.expense_tracker.ui.view.PaymentsView
+import com.jonathan_russ.expense_tracker.ui.view.HomeView
 import com.jonathan_russ.expense_tracker.ui.view.UpcomingView
-import com.jonathan_russ.expense_tracker.viewmodel.PaymentsViewModel
+import com.jonathan_russ.expense_tracker.viewmodel.HomeViewModel
 import com.jonathan_russ.expense_tracker.viewmodel.UpcomingViewModel
 import kotlinx.collections.immutable.ImmutableList
 
 class MainActivity : ComponentActivity() {
-    private val paymentsViewModel: PaymentsViewModel by viewModels {
-        PaymentsViewModel.create((application as ExpenseTrackerApplication).repository)
+    private val homeViewModel: HomeViewModel by viewModels {
+        HomeViewModel.create((application as ExpenseTrackerApplication).repository)
     }
-    private val upcomingPaymentsViewModel: UpcomingViewModel by viewModels {
+    private val upcomingHomeViewModel: UpcomingViewModel by viewModels {
         UpcomingViewModel.create((application as ExpenseTrackerApplication).repository)
     }
 
@@ -62,20 +66,20 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainActivityContent(
-                weeklyPayment = paymentsViewModel.weeklyPayment,
-                monthlyPayment = paymentsViewModel.monthlyPayment,
-                yearlyPayment = paymentsViewModel.yearlyPayment,
-                recurringPaymentData = paymentsViewModel.recurringPaymentData,
+                weeklyPayment = homeViewModel.weeklyPayment,
+                monthlyPayment = homeViewModel.monthlyPayment,
+                yearlyPayment = homeViewModel.yearlyPayment,
+                recurringPaymentData = homeViewModel.recurringPaymentData,
                 onRecurringPaymentAdded = {
-                    paymentsViewModel.addRecurringPayment(it)
+                    homeViewModel.addRecurringPayment(it)
                 },
                 onRecurringPaymentEdited = {
-                    paymentsViewModel.editRecurringPayment(it)
+                    homeViewModel.editRecurringPayment(it)
                 },
                 onRecurringPaymentDeleted = {
-                    paymentsViewModel.deleteRecurringPayment(it)
+                    homeViewModel.deleteRecurringPayment(it)
                 },
-                upcomingPaymentsViewModel = upcomingPaymentsViewModel,
+                upcomingHomeViewModel = upcomingHomeViewModel,
             )
         }
     }
@@ -92,7 +96,7 @@ fun MainActivityContent(
     onRecurringPaymentAdded: (RecurringPaymentData) -> Unit,
     onRecurringPaymentEdited: (RecurringPaymentData) -> Unit,
     onRecurringPaymentDeleted: (RecurringPaymentData) -> Unit,
-    upcomingPaymentsViewModel: UpcomingViewModel,
+    upcomingHomeViewModel: UpcomingViewModel,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -101,7 +105,7 @@ fun MainActivityContent(
     val titleRes by remember {
         derivedStateOf {
             when (backStackEntry.value?.destination?.route) {
-                BottomNavigation.Payments.route -> R.string.home_title
+                BottomNavigation.Home.route -> R.string.home_title
                 BottomNavigation.Upcoming.route -> R.string.upcoming_title
                 else -> R.string.home_title
             }
@@ -116,11 +120,23 @@ fun MainActivityContent(
 
     val bottomNavigationItems =
         listOf(
-            BottomNavigation.Payments,
+            BottomNavigation.Home,
             BottomNavigation.Upcoming,
         )
 
     ExpenseTrackerTheme {
+        val context = LocalContext.current
+        var hasNotificationPermission by remember {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                mutableStateOf(
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        android.Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
+                )
+            } else mutableStateOf(true)
+        }
+
         Surface(
             modifier = modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
@@ -173,7 +189,7 @@ fun MainActivityContent(
                     }
                 },
                 floatingActionButton = {
-                    if (BottomNavigation.Payments.route == backStackEntry.value?.destination?.route ||
+                    if (BottomNavigation.Home.route == backStackEntry.value?.destination?.route ||
                         BottomNavigation.Upcoming.route == backStackEntry.value?.destination?.route
                     ) {
                         FloatingActionButton(onClick = {
@@ -190,14 +206,14 @@ fun MainActivityContent(
                 content = { paddingValues ->
                     NavHost(
                         navController = navController,
-                        startDestination = BottomNavigation.Payments.route,
+                        startDestination = BottomNavigation.Home.route,
                         modifier =
                         Modifier
                             .fillMaxSize()
                             .padding(paddingValues),
                     ) {
-                        composable(BottomNavigation.Payments.route) {
-                            PaymentsView(
+                        composable(BottomNavigation.Home.route) {
+                            HomeView(
                                 weeklyPayment = weeklyPayment,
                                 monthlyPayment = monthlyPayment,
                                 yearlyPayment = yearlyPayment,
@@ -219,7 +235,7 @@ fun MainActivityContent(
                         }
                         composable(BottomNavigation.Upcoming.route) {
                             UpcomingView(
-                                upcomingPaymentsViewModel = upcomingPaymentsViewModel,
+                                upcomingHomeViewModel = upcomingHomeViewModel,
                                 onItemClicked = {
                                     selectedRecurringPayment = it
                                 },

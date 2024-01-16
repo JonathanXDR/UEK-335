@@ -28,7 +28,7 @@ import com.jonathan_russ.expense_tracker.toCurrencyString
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun PaymentsView(
+fun HomeView(
     weeklyPayment: String,
     monthlyPayment: String,
     yearlyPayment: String,

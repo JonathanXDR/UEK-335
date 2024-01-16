@@ -36,16 +36,16 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun UpcomingView(
-    upcomingPaymentsViewModel: UpcomingViewModel,
+    upcomingHomeViewModel: UpcomingViewModel,
     onItemClicked: (RecurringPaymentData) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
-    if (upcomingPaymentsViewModel.upcomingPaymentsData.size > 0) {
+    if (upcomingHomeViewModel.upcomingPaymentsData.size > 0) {
         UpcomingSummary(
-            upcomingPaymentsData = upcomingPaymentsViewModel.upcomingPaymentsData,
+            upcomingPaymentsData = upcomingHomeViewModel.upcomingPaymentsData,
             onItemClicked = {
-                upcomingPaymentsViewModel.onPaymentWithIdClicked(it, onItemClicked)
+                upcomingHomeViewModel.onPaymentWithIdClicked(it, onItemClicked)
             },
             modifier = modifier,
             contentPadding = contentPadding,

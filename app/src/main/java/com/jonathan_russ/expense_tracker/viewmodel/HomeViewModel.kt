@@ -20,7 +20,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class PaymentsViewModel(
+class HomeViewModel(
     private val paymentRepository: PaymentRepository,
 ) : ViewModel() {
     private val _recurringPaymentData = mutableStateListOf<RecurringPaymentData>()
@@ -165,7 +165,7 @@ class PaymentsViewModel(
         fun create(paymentRepository: PaymentRepository): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    PaymentsViewModel(paymentRepository)
+                    HomeViewModel(paymentRepository)
                 }
             }
         }

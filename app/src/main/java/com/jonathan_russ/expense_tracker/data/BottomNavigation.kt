@@ -2,8 +2,8 @@ package com.jonathan_russ.expense_tracker.data
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Payment
-import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.jonathan_russ.expense_tracker.R
 
@@ -12,8 +12,8 @@ sealed class BottomNavigation(
     @StringRes val name: Int,
     val icon: ImageVector,
 ) {
-    data object Payments :
-        BottomNavigation("payments", R.string.bottom_nav_home, Icons.Rounded.Payments)
+    data object Home :
+        BottomNavigation("home", R.string.bottom_nav_home, Icons.Rounded.Home)
 
     data object Upcoming :
         BottomNavigation("upcoming", R.string.bottom_nav_upcoming, Icons.Rounded.Payment)
