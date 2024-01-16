@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google()
@@ -15,4 +17,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "Expense Tracker"
 include(":app")
- 
