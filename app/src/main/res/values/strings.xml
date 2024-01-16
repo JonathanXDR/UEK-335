@@ -2,9 +2,8 @@
     <string name="app_name">Expense Tracker</string>
 
     <!-- Bottom Navigation -->
-    <string name="bottom_nav_home">Payments</string>
+    <string name="bottom_nav_home">Home</string>
     <string name="bottom_nav_upcoming">Upcoming</string>
-    <string name="bottom_nav_overview">Overview</string>
 
     <!-- Payments Tab -->
     <string name="home_title">Expense Tracker</string>
@@ -40,7 +39,6 @@
     <string name="edit_payment_location_permission_required">Location Permission Required</string>
     <string name="edit_payment_location_permission_explanation">This feature requires location permission. Please allow it in the app settings.</string>
     <string name="edit_payment_category">Category</string>
-    <string name="edit_payment_category_chip_description">Selected</string>
     <string name="edit_payment_set_reminder">Set reminder</string>
 
     <!-- Upcoming Tab -->

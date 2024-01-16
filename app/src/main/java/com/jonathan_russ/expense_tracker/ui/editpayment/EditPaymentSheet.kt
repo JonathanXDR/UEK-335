@@ -23,6 +23,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -107,7 +108,7 @@ private fun EditPaymentInternal(
         mutableLongStateOf(currentData?.firstPayment ?: 0L)
     }
     val nextPaymentRemainingDays = rememberSaveable {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
     val nextPaymentDate = rememberSaveable {
         mutableStateOf("")
@@ -287,7 +288,6 @@ private fun onConfirmClicked(
     val nextPaymentDateValue = nextPaymentDate.value
     val location = locationState.text
     val category = selectedCategory ?: ""
-    val reminder = reminderState
 
 
     if (verifyUserInput(
@@ -311,7 +311,7 @@ private fun onConfirmClicked(
                 firstPayment = firstPayment,
                 location = location,
                 category = category,
-                reminder = reminder
+                reminder = reminderState
             ),
         )
     }
