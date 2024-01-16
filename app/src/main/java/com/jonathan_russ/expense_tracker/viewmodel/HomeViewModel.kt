@@ -17,7 +17,6 @@ import com.jonathan_russ.expense_tracker.viewmodel.database.RecurrenceDatabase
 import com.jonathan_russ.expense_tracker.viewmodel.database.RecurringPayment
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -99,13 +98,6 @@ class HomeViewModel(
                     reminder = recurringPayment.reminder,
                 ),
             )
-        }
-    }
-
-    fun onDatabaseRestored() {
-        viewModelScope.launch {
-            val recurringPayments = paymentRepository.allRecurringPaymentsByPrice.first()
-            onDatabaseUpdated(recurringPayments)
         }
     }
 

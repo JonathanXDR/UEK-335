@@ -87,7 +87,6 @@ private fun UpcomingSummary(
 private fun Payment(
     upcomingPaymentData: UpcomingPaymentData,
     onItemClicked: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val inDaysString =
         when (upcomingPaymentData.nextPaymentRemainingDays) {
@@ -104,7 +103,7 @@ private fun Payment(
         (upcomingPaymentData.nextPaymentRemainingDays.toFloat() / 30) // Assuming a 30-day month
 
     Card(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .clickable { onItemClicked() }
             .padding(8.dp),

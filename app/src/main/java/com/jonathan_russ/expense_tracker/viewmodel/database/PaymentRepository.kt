@@ -8,7 +8,6 @@ import kotlinx.coroutines.withContext
 class PaymentRepository(
     private val recurringPaymentDao: RecurringPaymentDao,
 ) {
-    val allRecurringPayments: Flow<List<RecurringPayment>> = recurringPaymentDao.getAll()
     val allRecurringPaymentsByPrice: Flow<List<RecurringPayment>> =
         recurringPaymentDao.getAllByPrice()
 

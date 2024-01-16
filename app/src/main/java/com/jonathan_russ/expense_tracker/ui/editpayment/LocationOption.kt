@@ -1,8 +1,9 @@
+package com.jonathan_russ.expense_tracker.ui.editpayment
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
@@ -40,7 +41,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import com.jonathan_russ.expense_tracker.R
-import com.jonathan_russ.expense_tracker.ui.editpayment.PaymentTextField
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -185,14 +185,13 @@ private fun getCityNameAsync(
     onCityNameFound: (String) -> Unit
 ) {
     val geocoder = Geocoder(context, Locale.getDefault())
-    geocoder.getFromLocation(latitude, longitude, 1, object : Geocoder.GeocodeListener {
-        override fun onGeocode(addresses: List<Address>) {
-            if (addresses.isNotEmpty()) {
-                val cityName = addresses[0].locality ?: "Unknown Location"
-                onCityNameFound(cityName)
-            } else {
-                onCityNameFound("Location Not Found")
-            }
+    geocoder.getFromLocation(latitude, longitude, 1
+    ) { addresses ->
+        if (addresses.isNotEmpty()) {
+            val cityName = addresses[0].locality ?: "Unknown Location"
+            onCityNameFound(cityName)
+        } else {
+            onCityNameFound("Location Not Found")
         }
-    })
+    }
 }

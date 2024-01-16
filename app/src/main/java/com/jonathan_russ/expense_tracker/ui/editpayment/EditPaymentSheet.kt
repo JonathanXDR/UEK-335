@@ -1,7 +1,6 @@
 package com.jonathan_russ.expense_tracker.ui.editpayment
 
 
-import LocationOption
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -79,7 +78,6 @@ fun EditPaymentSheet(
 private fun EditPaymentInternal(
     onUpdatePayment: (RecurringPaymentData) -> Unit,
     confirmButtonString: String,
-    modifier: Modifier = Modifier,
     currentData: RecurringPaymentData? = null,
     onDeletePayment: ((RecurringPaymentData) -> Unit)? = null,
 ) {
@@ -145,7 +143,7 @@ private fun EditPaymentInternal(
 
     Column(
         modifier =
-        modifier
+        Modifier
             .padding(horizontal = 16.dp)
             .verticalScroll(scrollState),
     ) {

@@ -119,10 +119,9 @@ private fun PaymentSummary(
 private fun RecurringPayment(
     recurringPaymentData: RecurringPaymentData,
     onItemClicked: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier.clickable { onItemClicked() },
+        modifier = Modifier.clickable { onItemClicked() },
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
