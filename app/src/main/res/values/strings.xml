@@ -34,11 +34,11 @@
     <string name="edit_payment_first_payment">First Payment (optional)</string>
     <string name="edit_payment_first_payment_placeholder">Today</string>
     <string name="edit_payment_location">Location (optional)</string>
-    <string name="edit_payment_location_placeholder">Zürich</string>
+    <string name="edit_payment_location_placeholder">Zuerich</string>
     <string name="edit_payment_location_get_current">Get Current Location</string>
     <string name="edit_payment_location_permission_required">Location Permission Required</string>
     <string name="edit_payment_location_permission_explanation">This feature requires location permission. Please allow it in the app settings.</string>
-    <string name="edit_payment_category">Category</string>
+    <string name="edit_payment_category">Category (optional)</string>
     <string name="edit_payment_set_reminder">Set reminder</string>
 
     <!-- Upcoming Tab -->
