@@ -112,15 +112,18 @@ private fun EditPaymentInternal(
     val nextPaymentDate = rememberSaveable {
         mutableStateOf("")
     }
-    val location = rememberSaveable {
-        mutableStateOf("")
+    var locationState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(currentData?.location ?: ""))
     }
-    val category = rememberSaveable {
-        mutableStateOf("")
+
+    var selectedCategory by rememberSaveable {
+        mutableStateOf(currentData?.category)
     }
-    val reminder = rememberSaveable {
-        mutableStateOf(false)
+
+    var reminderState by rememberSaveable {
+        mutableStateOf(currentData?.reminder ?: false)
     }
+
 
     val scrollState = rememberScrollState()
     val localFocusManager = LocalFocusManager.current
@@ -175,22 +178,22 @@ private fun EditPaymentInternal(
             onDateSelected = { firstPaymentDate = it },
         )
         LocationOption(
-            location = null,
-            onLocationSelected = {},
-            onLocationChanged = {},
+            location = locationState.text,
+            onLocationSelected = { location -> locationState = TextFieldValue(location) },
+            onLocationChanged = { locationState = it },
             locationInputError = false,
             onNext = { localFocusManager.clearFocus() },
         )
         CategoryOption(
             categories = categories,
-        ) { selectedCategory ->
-            handleCategorySelected(selectedCategory)
-        }
+            selectedCategory = selectedCategory,
+            onCategorySelected = { newCategory ->
+                selectedCategory = newCategory
+            }
+        )
         ReminderOption(
-            reminder = reminder.value,
-            onReminderToggled = { reminderState ->
-                reminder.value = reminderState
-            },
+            reminder = reminderState,
+            onReminderToggled = { reminderState = it },
         )
         Row(
             modifier =
@@ -231,9 +234,9 @@ private fun EditPaymentInternal(
                         firstPaymentDate,
                         nextPaymentRemainingDays,
                         nextPaymentDate,
-                        location,
-                        category,
-                        reminder,
+                        locationState,
+                        selectedCategory,
+                        reminderState,
                         onUpdatePayment,
                         currentData,
                     )
@@ -263,9 +266,9 @@ private fun onConfirmClicked(
     firstPayment: Long,
     nextPaymentRemainingDays: MutableState<Int>,
     nextPaymentDate: MutableState<String>,
-    location: MutableState<String>,
-    category: MutableState<String>,
-    reminder: MutableState<Boolean>,
+    locationState: TextFieldValue,
+    selectedCategory: String?,
+    reminderState: Boolean,
     onUpdatePayment: (RecurringPaymentData) -> Unit,
     currentData: RecurringPaymentData?
 ) {
@@ -282,9 +285,10 @@ private fun onConfirmClicked(
     val nextPaymentRemainingDaysValue =
         nextPaymentRemainingDays.value
     val nextPaymentDateValue = nextPaymentDate.value
-    val locationValue = location.value
-    val categoryValue = category.value
-    val reminderValue = reminder.value
+    val location = locationState.text
+    val category = selectedCategory ?: ""
+    val reminder = reminderState
+
 
     if (verifyUserInput(
             name = name,
@@ -305,6 +309,9 @@ private fun onConfirmClicked(
                 everyXRecurrence = everyXRecurrence,
                 recurrence = selectedRecurrence,
                 firstPayment = firstPayment,
+                location = location,
+                category = category,
+                reminder = reminder
             ),
         )
     }

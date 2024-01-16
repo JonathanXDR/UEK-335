@@ -13,6 +13,9 @@ data class RecurringPayment(
     @ColumnInfo(name = "everyXRecurrence") val everyXRecurrence: Int?,
     @ColumnInfo(name = "recurrence") val recurrence: Int?,
     @ColumnInfo(name = "firstPayment") val firstPayment: Long?,
+    @ColumnInfo(name = "location") val location: String?,
+    @ColumnInfo(name = "category") val category: String?,
+    @ColumnInfo(name = "reminder") val reminder: Boolean?,
 ) {
     fun getMonthlyPrice(): Float {
         return when (recurrence) {

@@ -10,4 +10,7 @@ data class RecurringPaymentData(
     val everyXRecurrence: Int,
     val recurrence: RecurrenceEnum,
     val firstPayment: Long,
+    val location: String,
+    val category: String,
+    val reminder: Boolean,
 )

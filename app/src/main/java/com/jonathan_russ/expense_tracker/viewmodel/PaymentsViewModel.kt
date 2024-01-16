@@ -56,6 +56,9 @@ class PaymentsViewModel(
                     everyXRecurrence = recurringPayment.everyXRecurrence,
                     recurrence = getRecurrenceIntFromUIRecurrence(recurringPayment.recurrence),
                     firstPayment = recurringPayment.firstPayment,
+                    location = recurringPayment.location,
+                    category = recurringPayment.category,
+                    reminder = recurringPayment.reminder,
                 ),
             )
         }
@@ -72,6 +75,9 @@ class PaymentsViewModel(
                     everyXRecurrence = recurringPayment.everyXRecurrence,
                     recurrence = getRecurrenceIntFromUIRecurrence(recurringPayment.recurrence),
                     firstPayment = recurringPayment.firstPayment,
+                    location = recurringPayment.location,
+                    category = recurringPayment.category,
+                    reminder = recurringPayment.reminder,
                 ),
             )
         }
@@ -88,6 +94,9 @@ class PaymentsViewModel(
                     everyXRecurrence = recurringPayment.everyXRecurrence,
                     recurrence = getRecurrenceIntFromUIRecurrence(recurringPayment.recurrence),
                     firstPayment = recurringPayment.firstPayment,
+                    location = recurringPayment.location,
+                    category = recurringPayment.category,
+                    reminder = recurringPayment.reminder,
                 ),
             )
         }
@@ -113,6 +122,9 @@ class PaymentsViewModel(
                     everyXRecurrence = it.everyXRecurrence!!,
                     recurrence = getRecurrenceFromDatabaseInt(it.recurrence!!),
                     firstPayment = it.firstPayment!!,
+                    location = it.location!!,
+                    category = it.category!!,
+                    reminder = it.reminder!!,
                 ),
             )
         }

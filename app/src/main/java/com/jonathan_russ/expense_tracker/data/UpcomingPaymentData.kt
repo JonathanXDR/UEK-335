@@ -11,4 +11,7 @@ data class UpcomingPaymentData(
     val firstPayment: Long,
     val nextPaymentRemainingDays: Int,
     val nextPaymentDate: String,
+    val location: String,
+    val category: String,
+    val reminder: Boolean,
 )

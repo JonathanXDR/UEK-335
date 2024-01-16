@@ -52,6 +52,9 @@ class UpcomingViewModel(
                         everyXRecurrence = it.everyXRecurrence!!,
                         recurrence = getRecurrenceFromDatabaseInt(it.recurrence!!),
                         firstPayment = it.firstPayment!!,
+                        location = it.location!!,
+                        category = it.category!!,
+                        reminder = it.reminder!!
                     )
                 onItemClicked(recurringPaymentData)
             }
@@ -67,6 +70,7 @@ class UpcomingViewModel(
             val nextPaymentRemainingDays = getNextPaymentDays(nextPaymentInMilliseconds)
             val nextPaymentDate =
                 DateFormat.getDateInstance().format(Date(nextPaymentInMilliseconds))
+
             if (firstPayment > 0L) {
                 _upcomingPaymentsData.add(
                     UpcomingPaymentData(
@@ -80,6 +84,9 @@ class UpcomingViewModel(
                         firstPayment = it.firstPayment,
                         nextPaymentRemainingDays = nextPaymentRemainingDays,
                         nextPaymentDate = nextPaymentDate,
+                        location = it.location!!,
+                        category = it.category!!,
+                        reminder = it.reminder!!
                     ),
                 )
             }
