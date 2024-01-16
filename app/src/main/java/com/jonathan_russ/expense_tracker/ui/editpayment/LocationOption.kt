@@ -40,7 +40,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import com.jonathan_russ.expense_tracker.R
-import com.jonathan_russ.expense_tracker.ui.editexpense.ExpenseTextField
+import com.jonathan_russ.expense_tracker.ui.editpayment.PaymentTextField
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -85,7 +85,7 @@ fun LocationOption(
     ) {
         Column(modifier = Modifier.padding(top = 16.dp)) {
             Text(
-                text = stringResource(R.string.edit_expense_location),
+                text = stringResource(R.string.edit_payment_location),
                 style = MaterialTheme.typography.bodyLarge,
             )
 
@@ -96,14 +96,14 @@ fun LocationOption(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ExpenseTextField(
+                PaymentTextField(
                     value = locationText,
                     onValueChange = {
                         locationText = it
                         onLocationChanged(it)
                         autoLocationAcquired = false
                     },
-                    placeholder = stringResource(R.string.edit_expense_location_placeholder),
+                    placeholder = stringResource(R.string.edit_payment_location_placeholder),
                     keyboardActions = KeyboardActions(onNext = onNext),
                     singleLine = true,
                     isError = locationInputError,
@@ -121,7 +121,7 @@ fun LocationOption(
                 ) {
                     Icon(
                         Icons.Filled.MyLocation,
-                        contentDescription = stringResource(R.string.edit_expense_location_get_current)
+                        contentDescription = stringResource(R.string.edit_payment_location_get_current)
                     )
                 }
             }
@@ -130,8 +130,8 @@ fun LocationOption(
         if (showPermissionDeniedDialog) {
             AlertDialog(
                 onDismissRequest = { showPermissionDeniedDialog = false },
-                title = { Text(text = stringResource(R.string.edit_expense_location_permission_required)) },
-                text = { Text(text = stringResource(R.string.edit_expense_location_permission_explanation)) },
+                title = { Text(text = stringResource(R.string.edit_payment_location_permission_required)) },
+                text = { Text(text = stringResource(R.string.edit_payment_location_permission_explanation)) },
                 confirmButton = {
                     Button(onClick = {
                         showPermissionDeniedDialog = false

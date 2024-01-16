@@ -22,7 +22,7 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class UpcomingViewModel(
-    private val expenseRepository: PaymentRepository?,
+    private val paymentRepository: PaymentRepository?,
 ) : ViewModel() {
     private val _upcomingPaymentsData = mutableStateListOf<UpcomingPaymentData>()
     val upcomingPaymentsData: ImmutableList<UpcomingPaymentData>
@@ -30,18 +30,18 @@ class UpcomingViewModel(
 
     init {
         viewModelScope.launch {
-            expenseRepository?.allRecurringExpensesByPrice?.collect { recurringExpenses ->
-                onDatabaseUpdated(recurringExpenses)
+            paymentRepository?.allRecurringPaymentsByPrice?.collect { recurringPayments ->
+                onDatabaseUpdated(recurringPayments)
             }
         }
     }
 
-    fun onExpenseWithIdClicked(
+    fun onPaymentWithIdClicked(
         expenceId: Int,
         onItemClicked: (RecurringPaymentData) -> Unit,
     ) {
         viewModelScope.launch {
-            expenseRepository?.getRecurringExpenseById(expenceId)?.let {
+            paymentRepository?.getRecurringPaymentById(expenceId)?.let {
                 val recurringPaymentData =
                     RecurringPaymentData(
                         id = it.id,
@@ -58,9 +58,9 @@ class UpcomingViewModel(
         }
     }
 
-    private fun onDatabaseUpdated(recurringExpenses: List<RecurringPayment>) {
+    private fun onDatabaseUpdated(recurringPayments: List<RecurringPayment>) {
         _upcomingPaymentsData.clear()
-        recurringExpenses.forEach {
+        recurringPayments.forEach {
             val firstPayment = it.firstPayment!!
             val nextPaymentInMilliseconds =
                 getNextPaymentInMilliseconds(firstPayment, it.everyXRecurrence!!, it.recurrence!!)
@@ -132,10 +132,10 @@ class UpcomingViewModel(
     }
 
     companion object {
-        fun create(expenseRepository: PaymentRepository): ViewModelProvider.Factory {
+        fun create(paymentRepository: PaymentRepository): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    UpcomingViewModel(expenseRepository)
+                    UpcomingViewModel(paymentRepository)
                 }
             }
         }

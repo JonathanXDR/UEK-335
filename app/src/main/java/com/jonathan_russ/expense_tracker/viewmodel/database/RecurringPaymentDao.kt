@@ -9,21 +9,21 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecurringPaymentDao {
-    @Query("SELECT * FROM recurring_expenses")
+    @Query("SELECT * FROM recurring_payments")
     fun getAll(): Flow<List<RecurringPayment>>
 
-    @Query("SELECT * FROM recurring_expenses ORDER BY price DESC")
+    @Query("SELECT * FROM recurring_payments ORDER BY price DESC")
     fun getAllByPrice(): Flow<List<RecurringPayment>>
 
-    @Query("SELECT * FROM recurring_expenses WHERE id = :id")
+    @Query("SELECT * FROM recurring_payments WHERE id = :id")
     fun getById(id: Int): RecurringPayment?
 
     @Insert
-    fun insert(recurringExpense: RecurringPayment)
+    fun insert(recurringPayment: RecurringPayment)
 
     @Update
-    fun update(recurringExpense: RecurringPayment)
+    fun update(recurringPayment: RecurringPayment)
 
     @Delete
-    fun delete(recurringExpense: RecurringPayment)
+    fun delete(recurringPayment: RecurringPayment)
 }

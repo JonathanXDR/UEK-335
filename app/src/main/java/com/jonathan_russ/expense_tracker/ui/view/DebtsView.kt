@@ -45,7 +45,7 @@ fun UpcomingView(
         UpcomingSummary(
             upcomingPaymentsData = upcomingPaymentsViewModel.upcomingPaymentsData,
             onItemClicked = {
-                upcomingPaymentsViewModel.onExpenseWithIdClicked(it, onItemClicked)
+                upcomingPaymentsViewModel.onPaymentWithIdClicked(it, onItemClicked)
             },
             modifier = modifier,
             contentPadding = contentPadding,

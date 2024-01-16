@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui.editexpense
+package com.jonathan_russ.expense_tracker.ui.editpayment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,12 +48,12 @@ fun FirstPaymentOption(
         if (date != INVALID_DATE) {
             DateFormat.getDateInstance().format(Date(date))
         } else {
-            stringResource(id = R.string.edit_expense_first_payment_placeholder)
+            stringResource(id = R.string.edit_payment_first_payment_placeholder)
         }
 
     Column(modifier = modifier.padding(vertical = 8.dp)) {
         Text(
-            text = stringResource(R.string.edit_expense_first_payment),
+            text = stringResource(R.string.edit_payment_first_payment),
             style = MaterialTheme.typography.bodyLarge,
         )
         Row(

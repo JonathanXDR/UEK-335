@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui.editexpense
+package com.jonathan_russ.expense_tracker.ui.editpayment
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -26,7 +26,7 @@ fun CategoryOption(
 ) {
     val (selectedCategory, setSelectedCategory) = remember { mutableStateOf<String?>(null) }
 
-    Text(text = stringResource(R.string.edit_expense_category))
+    Text(text = stringResource(R.string.edit_payment_category))
     LazyRow {
         items(categories) { category ->
             FilterChip(
@@ -45,7 +45,7 @@ fun CategoryOption(
                     {
                         Icon(
                             imageVector = Icons.Filled.Check,
-                            contentDescription = stringResource(R.string.edit_expense_category_chip_description)
+                            contentDescription = stringResource(R.string.edit_payment_category_chip_description)
                         )
                     }
                 } else null,

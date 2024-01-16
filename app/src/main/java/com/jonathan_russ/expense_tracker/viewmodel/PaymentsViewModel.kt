@@ -21,73 +21,73 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class PaymentsViewModel(
-    private val expenseRepository: PaymentRepository,
+    private val paymentRepository: PaymentRepository,
 ) : ViewModel() {
     private val _recurringPaymentData = mutableStateListOf<RecurringPaymentData>()
     val recurringPaymentData: ImmutableList<RecurringPaymentData>
         get() = _recurringPaymentData.toImmutableList()
 
-    private var _weeklyExpense by mutableStateOf("")
-    private var _monthlyExpense by mutableStateOf("")
-    private var _yearlyExpense by mutableStateOf("")
-    val weeklyExpense: String
-        get() = _weeklyExpense
-    val monthlyExpense: String
-        get() = _monthlyExpense
-    val yearlyExpense: String
-        get() = _yearlyExpense
+    private var _weeklyPayment by mutableStateOf("")
+    private var _monthlyPayment by mutableStateOf("")
+    private var _yearlyPayment by mutableStateOf("")
+    val weeklyPayment: String
+        get() = _weeklyPayment
+    val monthlyPayment: String
+        get() = _monthlyPayment
+    val yearlyPayment: String
+        get() = _yearlyPayment
 
     init {
         viewModelScope.launch {
-            expenseRepository.allRecurringExpensesByPrice.collect { recurringExpenses ->
-                onDatabaseUpdated(recurringExpenses)
+            paymentRepository.allRecurringPaymentsByPrice.collect { recurringPayments ->
+                onDatabaseUpdated(recurringPayments)
             }
         }
     }
 
-    fun addRecurringExpense(recurringExpense: RecurringPaymentData) {
+    fun addRecurringPayment(recurringPayment: RecurringPaymentData) {
         viewModelScope.launch {
-            expenseRepository.insert(
+            paymentRepository.insert(
                 RecurringPayment(
                     id = 0,
-                    name = recurringExpense.name,
-                    description = recurringExpense.description,
-                    price = recurringExpense.price,
-                    everyXRecurrence = recurringExpense.everyXRecurrence,
-                    recurrence = getRecurrenceIntFromUIRecurrence(recurringExpense.recurrence),
-                    firstPayment = recurringExpense.firstPayment,
+                    name = recurringPayment.name,
+                    description = recurringPayment.description,
+                    price = recurringPayment.price,
+                    everyXRecurrence = recurringPayment.everyXRecurrence,
+                    recurrence = getRecurrenceIntFromUIRecurrence(recurringPayment.recurrence),
+                    firstPayment = recurringPayment.firstPayment,
                 ),
             )
         }
     }
 
-    fun editRecurringExpense(recurringExpense: RecurringPaymentData) {
+    fun editRecurringPayment(recurringPayment: RecurringPaymentData) {
         viewModelScope.launch {
-            expenseRepository.update(
+            paymentRepository.update(
                 RecurringPayment(
-                    id = recurringExpense.id,
-                    name = recurringExpense.name,
-                    description = recurringExpense.description,
-                    price = recurringExpense.price,
-                    everyXRecurrence = recurringExpense.everyXRecurrence,
-                    recurrence = getRecurrenceIntFromUIRecurrence(recurringExpense.recurrence),
-                    firstPayment = recurringExpense.firstPayment,
+                    id = recurringPayment.id,
+                    name = recurringPayment.name,
+                    description = recurringPayment.description,
+                    price = recurringPayment.price,
+                    everyXRecurrence = recurringPayment.everyXRecurrence,
+                    recurrence = getRecurrenceIntFromUIRecurrence(recurringPayment.recurrence),
+                    firstPayment = recurringPayment.firstPayment,
                 ),
             )
         }
     }
 
-    fun deleteRecurringExpense(recurringExpense: RecurringPaymentData) {
+    fun deleteRecurringPayment(recurringPayment: RecurringPaymentData) {
         viewModelScope.launch {
-            expenseRepository.delete(
+            paymentRepository.delete(
                 RecurringPayment(
-                    id = recurringExpense.id,
-                    name = recurringExpense.name,
-                    description = recurringExpense.description,
-                    price = recurringExpense.price,
-                    everyXRecurrence = recurringExpense.everyXRecurrence,
-                    recurrence = getRecurrenceIntFromUIRecurrence(recurringExpense.recurrence),
-                    firstPayment = recurringExpense.firstPayment,
+                    id = recurringPayment.id,
+                    name = recurringPayment.name,
+                    description = recurringPayment.description,
+                    price = recurringPayment.price,
+                    everyXRecurrence = recurringPayment.everyXRecurrence,
+                    recurrence = getRecurrenceIntFromUIRecurrence(recurringPayment.recurrence),
+                    firstPayment = recurringPayment.firstPayment,
                 ),
             )
         }
@@ -95,14 +95,14 @@ class PaymentsViewModel(
 
     fun onDatabaseRestored() {
         viewModelScope.launch {
-            val recurringExpenses = expenseRepository.allRecurringExpensesByPrice.first()
-            onDatabaseUpdated(recurringExpenses)
+            val recurringPayments = paymentRepository.allRecurringPaymentsByPrice.first()
+            onDatabaseUpdated(recurringPayments)
         }
     }
 
-    private fun onDatabaseUpdated(recurringExpenses: List<RecurringPayment>) {
+    private fun onDatabaseUpdated(recurringPayments: List<RecurringPayment>) {
         _recurringPaymentData.clear()
-        recurringExpenses.forEach {
+        recurringPayments.forEach {
             _recurringPaymentData.add(
                 RecurringPaymentData(
                     id = it.id,
@@ -117,7 +117,7 @@ class PaymentsViewModel(
             )
         }
         _recurringPaymentData.sortByDescending { it.monthlyPrice }
-        updateExpenseSummary()
+        updatePaymentSummary()
     }
 
     private fun getRecurrenceFromDatabaseInt(recurrenceInt: Int): RecurrenceEnum {
@@ -139,21 +139,21 @@ class PaymentsViewModel(
         }
     }
 
-    private fun updateExpenseSummary() {
+    private fun updatePaymentSummary() {
         var price = 0f
         _recurringPaymentData.forEach {
             price += it.monthlyPrice
         }
-        _weeklyExpense = (price / (52 / 12f)).toCurrencyString()
-        _monthlyExpense = price.toCurrencyString()
-        _yearlyExpense = (price * 12).toCurrencyString()
+        _weeklyPayment = (price / (52 / 12f)).toCurrencyString()
+        _monthlyPayment = price.toCurrencyString()
+        _yearlyPayment = (price * 12).toCurrencyString()
     }
 
     companion object {
-        fun create(expenseRepository: PaymentRepository): ViewModelProvider.Factory {
+        fun create(paymentRepository: PaymentRepository): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    PaymentsViewModel(expenseRepository)
+                    PaymentsViewModel(paymentRepository)
                 }
             }
         }

@@ -29,9 +29,9 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PaymentsView(
-    weeklyExpense: String,
-    monthlyExpense: String,
-    yearlyExpense: String,
+    weeklyPayment: String,
+    monthlyPayment: String,
+    yearlyPayment: String,
     recurringPaymentData: ImmutableList<RecurringPaymentData>,
     onItemClicked: (RecurringPaymentData) -> Unit,
     modifier: Modifier = Modifier,
@@ -44,9 +44,9 @@ fun PaymentsView(
     ) {
         item {
             PaymentSummary(
-                weeklyExpense = weeklyExpense,
-                monthlyExpense = monthlyExpense,
-                yearlyExpense = yearlyExpense,
+                weeklyPayment = weeklyPayment,
+                monthlyPayment = monthlyPayment,
+                yearlyPayment = yearlyPayment,
                 modifier = Modifier.padding(bottom = 8.dp),
             )
         }
@@ -63,9 +63,9 @@ fun PaymentsView(
 
 @Composable
 private fun PaymentSummary(
-    weeklyExpense: String,
-    monthlyExpense: String,
-    yearlyExpense: String,
+    weeklyPayment: String,
+    monthlyPayment: String,
+    yearlyPayment: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -80,7 +80,7 @@ private fun PaymentSummary(
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = monthlyExpense,
+            text = monthlyPayment,
             style = MaterialTheme.typography.titleMedium,
         )
         Spacer(modifier = Modifier.size(8.dp))
@@ -94,7 +94,7 @@ private fun PaymentSummary(
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Text(
-                    text = weeklyExpense,
+                    text = weeklyPayment,
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }
@@ -107,7 +107,7 @@ private fun PaymentSummary(
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Text(
-                    text = yearlyExpense,
+                    text = yearlyPayment,
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }

@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui.editexpense
+package com.jonathan_russ.expense_tracker.ui.editpayment
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,13 +24,13 @@ fun NameOption(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.edit_expense_name),
+            text = stringResource(R.string.edit_payment_name),
             style = MaterialTheme.typography.bodyLarge,
         )
-        ExpenseTextField(
+        PaymentTextField(
             value = name,
             onValueChange = onNameChanged,
-            placeholder = stringResource(R.string.edit_expense_name_placeholder),
+            placeholder = stringResource(R.string.edit_payment_name_placeholder),
             keyboardActions =
             KeyboardActions(onNext = onNext),
             singleLine = true,

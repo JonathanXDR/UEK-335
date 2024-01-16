@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui.editexpense
+package com.jonathan_russ.expense_tracker.ui.editpayment
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,7 +27,7 @@ fun ReminderOption(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = stringResource(R.string.edit_expense_set_reminder),
+            text = stringResource(R.string.edit_payment_set_reminder),
             modifier = Modifier.weight(1f)
         )
 

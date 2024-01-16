@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui.editexpense
+package com.jonathan_russ.expense_tracker.ui.editpayment
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,12 +43,12 @@ fun RecurrenceOption(
 
     Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.edit_expense_recurrence),
+            text = stringResource(R.string.edit_payment_recurrence),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp),
         )
         Row {
-            ExpenseTextField(
+            PaymentTextField(
                 value = everyXRecurrence,
                 onValueChange = onEveryXRecurrenceChanged,
                 placeholder = "1",

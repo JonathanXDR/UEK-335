@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui.editexpense
+package com.jonathan_russ.expense_tracker.ui.editpayment
 
 
 import LocationOption
@@ -42,11 +42,11 @@ import com.jonathan_russ.expense_tracker.toLocalString
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPaymentSheet(
-    onUpdateExpense: (RecurringPaymentData) -> Unit,
+    onUpdatePayment: (RecurringPaymentData) -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     currentData: RecurringPaymentData? = null,
-    onDeleteExpense: ((RecurringPaymentData) -> Unit)? = null,
+    onDeletePayment: ((RecurringPaymentData) -> Unit)? = null,
 ) {
     val sheetState: SheetState =
         rememberModalBottomSheetState(
@@ -59,28 +59,28 @@ fun EditPaymentSheet(
         modifier = modifier,
     ) {
         EditPaymentInternal(
-            onUpdateExpense = onUpdateExpense,
+            onUpdatePayment = onUpdatePayment,
             confirmButtonString =
             if (currentData == null) {
-                stringResource(R.string.edit_expense_button_add)
+                stringResource(R.string.edit_payment_button_add)
             } else {
                 stringResource(
-                    R.string.edit_expense_button_update,
+                    R.string.edit_payment_button_update,
                 )
             },
             currentData = currentData,
-            onDeleteExpense = onDeleteExpense,
+            onDeletePayment = onDeletePayment,
         )
     }
 }
 
 @Composable
 private fun EditPaymentInternal(
-    onUpdateExpense: (RecurringPaymentData) -> Unit,
+    onUpdatePayment: (RecurringPaymentData) -> Unit,
     confirmButtonString: String,
     modifier: Modifier = Modifier,
     currentData: RecurringPaymentData? = null,
-    onDeleteExpense: ((RecurringPaymentData) -> Unit)? = null,
+    onDeletePayment: ((RecurringPaymentData) -> Unit)? = null,
 ) {
     var nameState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(currentData?.name ?: ""))
@@ -202,7 +202,7 @@ private fun EditPaymentInternal(
             if (currentData != null) {
                 OutlinedButton(
                     onClick = {
-                        onDeleteExpense?.invoke(currentData)
+                        onDeletePayment?.invoke(currentData)
                     },
                     colors =
                     ButtonDefaults.outlinedButtonColors(
@@ -213,7 +213,7 @@ private fun EditPaymentInternal(
                         .weight(1f)
                 ) {
                     Text(
-                        text = stringResource(R.string.edit_expense_button_delete),
+                        text = stringResource(R.string.edit_payment_button_delete),
                     )
                 }
             }
@@ -234,7 +234,7 @@ private fun EditPaymentInternal(
                         location,
                         category,
                         reminder,
-                        onUpdateExpense,
+                        onUpdatePayment,
                         currentData,
                     )
                 },
@@ -266,7 +266,7 @@ private fun onConfirmClicked(
     location: MutableState<String>,
     category: MutableState<String>,
     reminder: MutableState<Boolean>,
-    onUpdateExpense: (RecurringPaymentData) -> Unit,
+    onUpdatePayment: (RecurringPaymentData) -> Unit,
     currentData: RecurringPaymentData?
 ) {
     nameInputError.value = false
@@ -295,7 +295,7 @@ private fun onConfirmClicked(
             onEveryXRecurrenceError = { everyXRecurrenceInputError.value = true },
         )
     ) {
-        onUpdateExpense(
+        onUpdatePayment(
             RecurringPaymentData(
                 id = currentData?.id ?: 0,
                 name = name,

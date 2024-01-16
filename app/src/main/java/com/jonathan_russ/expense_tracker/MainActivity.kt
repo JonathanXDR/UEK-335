@@ -39,7 +39,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jonathan_russ.expense_tracker.data.BottomNavigation
 import com.jonathan_russ.expense_tracker.data.RecurringPaymentData
-import com.jonathan_russ.expense_tracker.ui.editexpense.EditPaymentSheet
+import com.jonathan_russ.expense_tracker.ui.editpayment.EditPaymentSheet
 import com.jonathan_russ.expense_tracker.ui.theme.ExpenseTrackerTheme
 import com.jonathan_russ.expense_tracker.ui.view.PaymentsView
 import com.jonathan_russ.expense_tracker.ui.view.UpcomingView
@@ -62,18 +62,18 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainActivityContent(
-                weeklyExpense = paymentsViewModel.weeklyExpense,
-                monthlyExpense = paymentsViewModel.monthlyExpense,
-                yearlyExpense = paymentsViewModel.yearlyExpense,
+                weeklyPayment = paymentsViewModel.weeklyPayment,
+                monthlyPayment = paymentsViewModel.monthlyPayment,
+                yearlyPayment = paymentsViewModel.yearlyPayment,
                 recurringPaymentData = paymentsViewModel.recurringPaymentData,
-                onRecurringExpenseAdded = {
-                    paymentsViewModel.addRecurringExpense(it)
+                onRecurringPaymentAdded = {
+                    paymentsViewModel.addRecurringPayment(it)
                 },
-                onRecurringExpenseEdited = {
-                    paymentsViewModel.editRecurringExpense(it)
+                onRecurringPaymentEdited = {
+                    paymentsViewModel.editRecurringPayment(it)
                 },
-                onRecurringExpenseDeleted = {
-                    paymentsViewModel.deleteRecurringExpense(it)
+                onRecurringPaymentDeleted = {
+                    paymentsViewModel.deleteRecurringPayment(it)
                 },
                 upcomingPaymentsViewModel = upcomingPaymentsViewModel,
             )
@@ -85,13 +85,13 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainActivityContent(
-    weeklyExpense: String,
-    monthlyExpense: String,
-    yearlyExpense: String,
+    weeklyPayment: String,
+    monthlyPayment: String,
+    yearlyPayment: String,
     recurringPaymentData: ImmutableList<RecurringPaymentData>,
-    onRecurringExpenseAdded: (RecurringPaymentData) -> Unit,
-    onRecurringExpenseEdited: (RecurringPaymentData) -> Unit,
-    onRecurringExpenseDeleted: (RecurringPaymentData) -> Unit,
+    onRecurringPaymentAdded: (RecurringPaymentData) -> Unit,
+    onRecurringPaymentEdited: (RecurringPaymentData) -> Unit,
+    onRecurringPaymentDeleted: (RecurringPaymentData) -> Unit,
     upcomingPaymentsViewModel: UpcomingViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -108,9 +108,9 @@ fun MainActivityContent(
         }
     }
 
-    var addRecurringExpenseVisible by rememberSaveable { mutableStateOf(false) }
+    var addRecurringPaymentVisible by rememberSaveable { mutableStateOf(false) }
 
-    var selectedRecurringExpense by rememberSaveable { mutableStateOf<RecurringPaymentData?>(null) }
+    var selectedRecurringPayment by rememberSaveable { mutableStateOf<RecurringPaymentData?>(null) }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -177,12 +177,12 @@ fun MainActivityContent(
                         BottomNavigation.Upcoming.route == backStackEntry.value?.destination?.route
                     ) {
                         FloatingActionButton(onClick = {
-                            addRecurringExpenseVisible = true
+                            addRecurringPaymentVisible = true
                         }) {
                             Icon(
                                 imageVector = Icons.Rounded.Add,
                                 contentDescription =
-                                stringResource(R.string.home_add_expense_fab_content_description),
+                                stringResource(R.string.home_add_payment_fab_content_description),
                             )
                         }
                     }
@@ -198,12 +198,12 @@ fun MainActivityContent(
                     ) {
                         composable(BottomNavigation.Payments.route) {
                             PaymentsView(
-                                weeklyExpense = weeklyExpense,
-                                monthlyExpense = monthlyExpense,
-                                yearlyExpense = yearlyExpense,
+                                weeklyPayment = weeklyPayment,
+                                monthlyPayment = monthlyPayment,
+                                yearlyPayment = yearlyPayment,
                                 recurringPaymentData = recurringPaymentData,
                                 onItemClicked = {
-                                    selectedRecurringExpense = it
+                                    selectedRecurringPayment = it
                                 },
                                 contentPadding =
                                 PaddingValues(
@@ -221,7 +221,7 @@ fun MainActivityContent(
                             UpcomingView(
                                 upcomingPaymentsViewModel = upcomingPaymentsViewModel,
                                 onItemClicked = {
-                                    selectedRecurringExpense = it
+                                    selectedRecurringPayment = it
                                 },
                                 modifier =
                                 Modifier
@@ -230,26 +230,26 @@ fun MainActivityContent(
                             )
                         }
                     }
-                    if (addRecurringExpenseVisible) {
+                    if (addRecurringPaymentVisible) {
                         EditPaymentSheet(
-                            onUpdateExpense = {
-                                onRecurringExpenseAdded(it)
-                                addRecurringExpenseVisible = false
+                            onUpdatePayment = {
+                                onRecurringPaymentAdded(it)
+                                addRecurringPaymentVisible = false
                             },
-                            onDismissRequest = { addRecurringExpenseVisible = false },
+                            onDismissRequest = { addRecurringPaymentVisible = false },
                         )
                     }
-                    if (selectedRecurringExpense != null) {
+                    if (selectedRecurringPayment != null) {
                         EditPaymentSheet(
-                            onUpdateExpense = {
-                                onRecurringExpenseEdited(it)
-                                selectedRecurringExpense = null
+                            onUpdatePayment = {
+                                onRecurringPaymentEdited(it)
+                                selectedRecurringPayment = null
                             },
-                            onDismissRequest = { selectedRecurringExpense = null },
-                            currentData = selectedRecurringExpense,
-                            onDeleteExpense = {
-                                onRecurringExpenseDeleted(it)
-                                selectedRecurringExpense = null
+                            onDismissRequest = { selectedRecurringPayment = null },
+                            currentData = selectedRecurringPayment,
+                            onDeletePayment = {
+                                onRecurringPaymentDeleted(it)
+                                selectedRecurringPayment = null
                             },
                         )
                     }

@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui.editexpense
+package com.jonathan_russ.expense_tracker.ui.editpayment
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,11 +28,11 @@ fun PriceOption(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.edit_expense_price),
+            text = stringResource(R.string.edit_payment_price),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp),
         )
-        ExpenseTextField(
+        PaymentTextField(
             value = price,
             onValueChange = onPriceChanged,
             placeholder = 0f.toLocalString(),

@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui.editexpense
+package com.jonathan_russ.expense_tracker.ui.editpayment
 
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,7 +17,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.jonathan_russ.expense_tracker.R
 
 @Composable
-fun ExpenseTextField(
+fun PaymentTextField(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     placeholder: String,
@@ -44,7 +44,7 @@ fun ExpenseTextField(
         supportingText = {
             if (isError) {
                 Text(
-                    text = stringResource(R.string.edit_expense_invalid_input),
+                    text = stringResource(R.string.edit_payment_invalid_input),
                     color = MaterialTheme.colorScheme.error,
                 )
             }

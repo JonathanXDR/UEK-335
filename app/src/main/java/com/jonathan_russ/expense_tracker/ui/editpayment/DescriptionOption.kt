@@ -1,4 +1,4 @@
-package com.jonathan_russ.expense_tracker.ui.editexpense
+package com.jonathan_russ.expense_tracker.ui.editpayment
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,14 +23,14 @@ fun DescriptionOption(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.edit_expense_description),
+            text = stringResource(R.string.edit_payment_description),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp),
         )
-        ExpenseTextField(
+        PaymentTextField(
             value = description,
             onValueChange = onDescriptionChanged,
-            placeholder = stringResource(R.string.edit_expense_description_placeholder),
+            placeholder = stringResource(R.string.edit_payment_description_placeholder),
             keyboardActions =
             KeyboardActions(onNext = onNext),
             maxLines = 2,
