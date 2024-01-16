@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.provider.Settings
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,18 +46,13 @@ fun ReminderOption(
             onCheckedChange = { newValue ->
                 onReminderToggled(newValue)
                 if (newValue) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        if (context.getSystemService(AlarmManager::class.java)
-                                .canScheduleExactAlarms()
-                        ) {
-                            scheduleReminder(firstPaymentDate, selectedRecurrence, context)
-                        } else {
-
-                            requestScheduleExactAlarmPermission(context)
-                        }
+                    if (context.getSystemService(AlarmManager::class.java)
+                            .canScheduleExactAlarms()
+                    ) {
+                        scheduleReminder(firstPaymentDate, selectedRecurrence, context)
                     } else {
 
-                        scheduleReminder(firstPaymentDate, selectedRecurrence, context)
+                        requestScheduleExactAlarmPermission(context)
                     }
                 }
             },
@@ -76,11 +70,8 @@ fun Context.scheduleNotification(timeInMillis: Long, title: String, content: Str
 
     val requestCode = 0
 
-    val pendingIntentFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    val pendingIntentFlag =
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-    } else {
-        PendingIntent.FLAG_UPDATE_CURRENT
-    }
 
     val pendingIntent = PendingIntent.getBroadcast(this, requestCode, intent, pendingIntentFlag)
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager

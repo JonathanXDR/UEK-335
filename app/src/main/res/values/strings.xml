@@ -56,9 +56,4 @@
     <!-- Notification Strings -->
     <string name="notification_channel_name">Expense Tracker Alerts</string>
     <string name="notification_channel_description">Stay updated with alerts on your financial tracking with payment reminders.</string>
-    <string name="notification_reminder_title">Payment Reminder</string>
-    <string name="notification_reminder_content">Don\'t forget your upcoming payment for %1$s.</string>
-    <string name="notification_reminder_content_today">Your payment for %1$s is due today.</string>
-    <string name="notification_reminder_content_tomorrow">Your payment for %1$s is due tomorrow.</string>
-    <string name="notification_reminder_content_upcoming">Your payment for %1$s is coming up in %2$d days.</string>
 </resources>
